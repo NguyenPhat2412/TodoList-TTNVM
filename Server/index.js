@@ -26,6 +26,10 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// import routes
+const clientRoutes = require("./routes/client/todo");
+app.use("/api", clientRoutes);
+
 // uploads image
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Handle 404 errors

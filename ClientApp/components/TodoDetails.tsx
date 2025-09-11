@@ -1,7 +1,11 @@
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 const TodoDetails = () => {
-  return <View></View>;
+  return (
+    <View>
+      <Text>Todo Details Screen - Under Construction</Text>
+    </View>
+  );
 };
 
 export default TodoDetails;

@@ -1,6 +1,6 @@
 // List models used in this controller
-const Todo = require("../../models/Todo");
-const User = require("../../models/User");
+const Todo = require("../models/Todo");
+const User = require("../models/User");
 
 const nodemailer = require("nodemailer");
 const express = require("express");
@@ -11,7 +11,6 @@ const { default: mongoose } = require("mongoose");
 
 const { sendOrderConfirmationEmail } = require("../utils/emailService");
 const { sendContactEmail } = require("../utils/contactService");
-const { useInsertionEffect } = require("react");
 
 let otpStore = {};
 
@@ -22,7 +21,7 @@ function generateOTP() {
 
 // Todo CRUD Operations
 exports.createTodo = async (req, res) => {
-  const { title, completed, description } = req.body;
+  const { title, completed } = req.body;
   try {
     if (!title) {
       return res.status(400).json({ error: "Title is required" });
@@ -38,13 +37,7 @@ exports.createTodo = async (req, res) => {
         .json({ error: "Title cannot exceed 100 characters" });
     }
 
-    if (description && description.length > 500) {
-      return res
-        .status(400)
-        .json({ error: "Description cannot exceed 500 characters" });
-    }
-
-    const newTodo = new Todo({ title, completed, description });
+    const newTodo = new Todo({ title, completed });
     const savedTodo = await newTodo.save();
     res.status(201).json(savedTodo);
   } catch (error) {
