@@ -199,7 +199,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
+  Image,
 } from 'react-native';
 import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 
@@ -223,6 +223,10 @@ const Home = () => {
       try {
         const res = await fetch(`${API_URL}/api/todos`);
         const data = await res.json();
+
+        if (res.ok) {
+          console.log('Fetched todos:', data);
+        }
         setTodos(data);
       } catch (err) {
         console.error('Error fetching todos:', err);
@@ -275,23 +279,11 @@ const Home = () => {
     []
   );
 
-  const DismissKeyBoard = ({ children }: { children: React.ReactNode }) => (
-    <TouchableOpacity
-      onPress={() => {
-        Keyboard.dismiss();
-      }}
-      accessible={false}>
-      {children}
-    </TouchableOpacity>
-  );
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.container}>
-        <Text style={styles.title}>Todo List (Draggable)</Text>
-
         {loading ? (
           <Text>Loading...</Text>
         ) : (
@@ -302,14 +294,14 @@ const Home = () => {
             onDragEnd={({ data }) => setTodos(data)}
           />
         )}
-        <DismissKeyBoard>
-          <TextInput
-            style={styles.input}
-            placeholder="Add new todo..."
-            value={newTodo}
-            onChangeText={setNewTodo}
-          />
-        </DismissKeyBoard>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Add new todo..."
+          value={newTodo}
+          onChangeText={setNewTodo}
+        />
+
         <TouchableOpacity style={styles.button} onPress={addTodo}>
           <Text style={styles.buttonText}>Add Todo</Text>
         </TouchableOpacity>
@@ -370,5 +362,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 10,
   },
 });
