@@ -1,43 +1,60 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
 import { useNavigation } from '@react-navigation/native';
+import Svg, { Path } from 'react-native-svg';
+import { useState } from 'react';
+
+const { width } = Dimensions.get('window');
+const height = 70;
+const notchWidth = 120;
+const notchDepth = 40;
 
 const Footer = () => {
   const navigation = useNavigation();
+  const [activeTab, setActiveTab] = useState('Home');
+
+  const TabItem = ({ name, icon, screen }: { name: string; icon: string; screen: string }) => (
+    <TouchableOpacity
+      onPress={() => {
+        setActiveTab(name);
+        navigation.navigate(screen as never);
+      }}>
+      <Feather name={icon} size={24} color={activeTab === name ? '#b700ff' : '#680686ff'} />
+    </TouchableOpacity>
+  );
+  // Vẽ path với chỗ lõm ở giữa
+  const d = `
+      M0 0 
+  H${width / 2 - notchWidth / 2} 
+  C${width / 2 - notchWidth / 4} 0, ${width / 2 - notchWidth / 4} ${notchDepth}, ${width / 2} ${notchDepth}
+  C${width / 2 + notchWidth / 4} ${notchDepth}, ${width / 2 + notchWidth / 4} 0, ${width / 2 + notchWidth / 2} 0
+  H${width}  
+  V${height} 
+  H0 
+  Z
+  `;
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.item}
-        onPress={() => {
-          navigation.navigate('Home' as never);
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Home' as never }],
-          });
-        }}>
-        <Feather name="home" size={24} color="#555" />
-        <Text style={styles.text}>Home</Text>
-      </TouchableOpacity>
+      <Svg width={width} height={height} style={styles.background}>
+        <Path d={d} fill="#e9aff5ff" />
+      </Svg>
 
-      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('About' as never)}>
-        <Feather name="info" size={24} color="#555" />
-        <Text style={styles.text}>About</Text>
-      </TouchableOpacity>
+      <View style={styles.iconRow}>
+        <TabItem name="Home" icon="home" screen="Home" />
+        <TabItem name="About" icon="calendar" screen="About" />
+        <View style={{ width: 70 }} />
+        <TabItem name="Privacy" icon="shield" screen="Privacy" />
+        <TabItem name="Profile" icon="user" screen="Profile" />
+      </View>
 
-      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Contact' as never)}>
-        <Feather name="phone" size={24} color="#555" />
-        <Text style={styles.text}>Contact</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Privacy' as never)}>
-        <Feather name="shield" size={24} color="#555" />
-        <Text style={styles.text}>Privacy</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Profile' as never)}>
-        <Feather name="user" size={24} color="#555" />
-        <Text style={styles.text}>Profile</Text>
-      </TouchableOpacity>
+      <View style={styles.plusWrapper}>
+        <TouchableOpacity
+          style={styles.plusButton}
+          onPress={() => navigation.navigate('Contact' as never)}>
+          <Feather name="plus" size={28} color="#fff" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -46,20 +63,46 @@ export default Footer;
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
-    backgroundColor: '#f8f8f8',
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderColor: '#e7e7e7',
-    justifyContent: 'space-around',
-    paddingBottom: 20,
-  },
-  item: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: height,
     alignItems: 'center',
   },
-  text: {
-    fontSize: 12,
-    color: '#555',
-    marginTop: 4,
+  background: {
+    position: 'absolute',
+    bottom: 0,
+  },
+  iconRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 30,
+    height: '100%',
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
+  plusWrapper: {
+    position: 'absolute',
+    top: -30,
+    alignSelf: 'center',
+  },
+  plusButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#b700ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 5,
+  },
+  icon: {
+    color: '#c300ffff',
+    fontSize: 24,
   },
 });

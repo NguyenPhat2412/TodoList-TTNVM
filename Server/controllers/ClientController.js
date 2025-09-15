@@ -21,7 +21,7 @@ function generateOTP() {
 
 // Todo CRUD Operations
 exports.createTodo = async (req, res) => {
-  const { title, completed } = req.body;
+  const { title, completed, description, index } = req.body;
   try {
     if (!title) {
       return res.status(400).json({ error: "Title is required" });
@@ -36,8 +36,16 @@ exports.createTodo = async (req, res) => {
         .status(400)
         .json({ error: "Title cannot exceed 100 characters" });
     }
+    if (description && description.length > 500) {
+      return res
+        .status(400)
+        .json({ error: "Description cannot exceed 500 characters" });
+    }
+    if (index !== undefined && typeof index !== "number") {
+      return res.status(400).json({ error: "Index must be a number" });
+    }
 
-    const newTodo = new Todo({ title, completed });
+    const newTodo = new Todo({ title, completed, description, index });
     const savedTodo = await newTodo.save();
     res.status(201).json(savedTodo);
   } catch (error) {
@@ -45,8 +53,27 @@ exports.createTodo = async (req, res) => {
   }
 };
 
-// Get all todos
+// reorder todos
+exports.reorderTodos = async (req, res) => {
+  try {
+    const { orderedIds } = req.body;
+    if (!Array.isArray(orderedIds)) {
+      return res.status(400).json({ error: "Invalid data format" });
+    }
+    for (let i = 0; i < orderedIds.length; i++) {
+      const id = orderedIds[i];
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: `Invalid todo ID: ${id}` });
+      }
+      await Todo.findByIdAndUpdate(id, { index: i, updatedAt: Date.now() });
+    }
+    res.status(200).json({ message: "Todos reordered successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to reorder todos" });
+  }
+};
 
+// Get all todos
 exports.getTodos = async (req, res) => {
   try {
     const todos = await Todo.find();
@@ -109,6 +136,8 @@ exports.updateTodo = async (req, res) => {
     res.status(500).json({ error: "Failed to update todo" });
   }
 };
+
+// Save todo before drag and drop
 
 // Delete a todo
 exports.deleteTodo = async (req, res) => {

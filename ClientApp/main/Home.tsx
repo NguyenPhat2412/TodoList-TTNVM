@@ -1,195 +1,3 @@
-// import React from 'react';
-// import { Text, View, FlatList, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
-
-// // eslint-disable-next-line import/no-unresolved
-// import { API_URL } from '@env';
-// import TodoInput from 'components/TodoInput';
-
-// interface Todo {
-//   userId: number;
-//   _id: number;
-//   title: string;
-//   completed: boolean;
-// }
-
-// const Home = () => {
-//   const [todos, setTodos] = React.useState<Todo[]>([]);
-//   const [loading, setLoading] = React.useState(true);
-//   const [newTodo, setNewTodo] = React.useState('');
-
-//   React.useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await fetch(`${API_URL}/api/todos`, {
-//           method: 'GET',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//         });
-//         const data = await response.json();
-//         console.log('Fetched todos:', data);
-//         setTodos(data);
-//       } catch (error) {
-//         console.error('Error fetching todos:', error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   // Post todo
-//   const postData = async () => {
-//     if (newTodo.trim() === '') return;
-//     try {
-//       const response = await fetch(`${API_URL}/api/todos`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ title: newTodo, completed: false }),
-//       });
-//       const data = await response.json();
-//       setTodos((prevTodos) => [...prevTodos, data]);
-//       setNewTodo('');
-//     } catch (error) {
-//       console.error('Error posting todo:', error);
-//     }
-//   };
-
-//   // Delete todo
-//   const deleteData = async (id: number) => {
-//     try {
-//       await fetch(`${API_URL}/api/todos/${id}`, {
-//         method: 'DELETE',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       });
-//       setTodos((prevTodos) => prevTodos.filter((todo) => todo._id !== id));
-//     } catch (error) {
-//       console.error('Error deleting todo:', error);
-//     }
-//   };
-
-//   return (
-//     <KeyboardAvoidingView
-//       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-//       style={{ flex: 1 }}>
-//       <View style={styles.container}>
-//         <Text style={styles.title}>Todo List</Text>
-//         <Text style={styles.welcomeText}>Welcome to your Todo List App!</Text>
-
-//         {loading ? (
-//           <Text>Loading...</Text>
-//         ) : todos.length > 0 ? (
-//           <FlatList
-//             data={todos}
-//             keyExtractor={(item) => item?._id.toString()}
-//             renderItem={({ item }) => (
-//               <View style={styles.todoItem}>
-//                 <Text style={styles.todoText}>Todo ID: {item?._id}</Text>
-//                 <Text style={styles.todoText}>Title: {item?.title}</Text>
-//                 <Text style={styles.todoCompleted}>
-//                   Completed: {item?.completed ? 'Yes' : 'No'}
-//                 </Text>
-
-//                 <Text style={styles.deleteText} onPress={() => deleteData(item?._id)}>
-//                   🗑️
-//                 </Text>
-//               </View>
-//             )}
-//           />
-//         ) : (
-//           <Text>No todo data available.</Text>
-//         )}
-//         <TodoInput newTodo={newTodo} setNewTodo={setNewTodo} postData={postData} />
-//       </View>
-//     </KeyboardAvoidingView>
-//   );
-// };
-
-// export default Home;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//     marginTop: 40,
-//     backgroundColor: '#f5f5f5',
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     marginBottom: 10,
-//     color: '#333',
-//   },
-//   welcomeText: {
-//     fontSize: 18,
-//     marginBottom: 20,
-//     color: '#666',
-//   },
-//   todoItem: {
-//     backgroundColor: '#fff',
-
-//     padding: 15,
-//     marginVertical: 8,
-//     borderRadius: 5,
-//     shadowColor: '#000',
-
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.1,
-//     shadowRadius: 5,
-//     elevation: 3,
-//   },
-//   todoText: {
-//     fontSize: 16,
-//     color: '#555',
-//     marginBottom: 5,
-//   },
-//   todoCompleted: {
-//     fontSize: 14,
-//     color: 'green',
-//     fontWeight: 'bold',
-//   },
-//   deleteText: {
-//     fontSize: 18,
-//     color: 'red',
-//     position: 'absolute',
-//     top: 30,
-//     right: 10,
-//   },
-//   input: {
-//     borderWidth: 1,
-//     borderColor: '#ccc',
-//     padding: 10,
-//     marginTop: 20,
-//     borderRadius: 5,
-//     backgroundColor: '#fff',
-//     fontSize: 16,
-//     color: '#333',
-//   },
-//   button: {
-//     backgroundColor: '#007bff',
-//     padding: 12,
-//     marginTop: 10,
-//     borderRadius: 5,
-//     alignItems: 'center',
-
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.2,
-//     shadowRadius: 5,
-//     elevation: 3,
-//   },
-//   buttonText: {
-//     color: '#fff',
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//   },
-// });
-
 import { useEffect, useState, useCallback } from 'react';
 import {
   Text,
@@ -200,22 +8,29 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
+import Navbar from 'components/Navbar';
+import ViewTask from 'components/ViewTask';
 
 interface Todo {
   _id: string;
-  title: string;
-  completed: boolean;
+  title?: string;
+  completed?: boolean;
+  description?: string;
+  index?: number;
 }
 
 const Home = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [newTodo, setNewTodo] = useState('');
+  const [index, setIndex] = useState<number | undefined>(undefined);
 
   // Fetch todos
   useEffect(() => {
@@ -227,7 +42,8 @@ const Home = () => {
         if (res.ok) {
           console.log('Fetched todos:', data);
         }
-        setTodos(data);
+        const sortedData = data.sort((a: Todo, b: Todo) => (a.index || 0) - (b.index || 0));
+        setTodos(sortedData);
       } catch (err) {
         console.error('Error fetching todos:', err);
       } finally {
@@ -240,11 +56,14 @@ const Home = () => {
   // Add new todo
   const addTodo = async () => {
     if (!newTodo.trim()) return;
+
+    setIndex(todos.length > 0 ? (todos[todos.length - 1].index || 0) + 1 : 0);
+
     try {
       const res = await fetch(`${API_URL}/api/todos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: newTodo, completed: false }),
+        body: JSON.stringify({ title: newTodo, completed: false, index }),
       });
       const data = await res.json();
       setTodos((prev) => [...prev, data]);
@@ -283,6 +102,8 @@ const Home = () => {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <Navbar />
+      <ViewTask />
       <View style={styles.container}>
         {loading ? (
           <Text>Loading...</Text>
@@ -291,7 +112,19 @@ const Home = () => {
             data={todos}
             keyExtractor={(item) => item._id}
             renderItem={renderItem}
-            onDragEnd={({ data }) => setTodos(data)}
+            onDragEnd={({ data }) => {
+              // Update index based on new order
+              const updatedData = data.map((item, idx) => ({ ...item, index: idx }));
+              console.log('Reordered todos:', updatedData);
+              setTodos(updatedData);
+
+              // Save new order to server
+              fetch(`${API_URL}/api/todos/reorder`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderedIds: updatedData.map((item) => item._id) }),
+              }).catch((err) => console.error('Error reordering todos:', err));
+            }}
           />
         )}
 
@@ -303,7 +136,7 @@ const Home = () => {
         />
 
         <TouchableOpacity style={styles.button} onPress={addTodo}>
-          <Text style={styles.buttonText}>Add Todo</Text>
+          <Text style={styles.buttonText}>Add My Todo</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
