@@ -28,23 +28,27 @@ export default function App() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <NavigationContainer>
           <View style={{ flex: 1 }}>
-            <Stack.Navigator initialRouteName="Home">
-              <Stack.Screen
-                name="Home"
-                component={Home}
-                options={{
-                  headerTitle: () => <CustomHeader />,
-                  headerBackVisible: false,
-                }}
-              />
-              <Stack.Screen name="About" component={About} />
-              <Stack.Screen name="Contact" component={AddTodo} />
-              <Stack.Screen name="Privacy" component={Privacy} />
-              <Stack.Screen name="Profile" component={Profile} />
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="Register" component={Register} />
-            </Stack.Navigator>
-            <Footer />
+            <View style={{ flex: 12 }}>
+              <Stack.Navigator initialRouteName="Home">
+                <Stack.Screen
+                  name="Home"
+                  component={Home}
+                  options={{
+                    headerTitle: () => <CustomHeader />,
+                    headerBackVisible: false,
+                  }}
+                />
+                <Stack.Screen name="About" component={About} />
+                <Stack.Screen name="Contact" component={AddTodo} />
+                <Stack.Screen name="Privacy" component={Privacy} />
+                <Stack.Screen name="Profile" component={Profile} />
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="Register" component={Register} />
+              </Stack.Navigator>
+            </View>
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+              <Footer />
+            </View>
           </View>
         </NavigationContainer>
       </GestureHandlerRootView>

@@ -7,9 +7,6 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  Image,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from 'react-native';
 import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 
@@ -17,6 +14,7 @@ import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flat
 import { API_URL } from '@env';
 import Navbar from 'components/Navbar';
 import ViewTask from 'components/ViewTask';
+import InProgress from 'components/InProgress';
 
 interface Todo {
   _id: string;
@@ -98,47 +96,53 @@ const Home = () => {
     []
   );
 
+  // Header UI (trước danh sách)
+  const ListHeader = () => (
+    <View style={styles.container}>
+      <Navbar />
+      <ViewTask />
+      <InProgress />
+
+      <View style={styles.logoContainer}>
+        <Text style={styles.logoText}>Task Groups </Text>
+        <Text style={styles.logoTextLength}>{todos.length}</Text>
+      </View>
+
+      <TouchableOpacity style={styles.button} onPress={addTodo}>
+        <Text style={styles.buttonText}>Add My Todo</Text>
+      </TouchableOpacity>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Add new todo..."
+        value={newTodo}
+        onChangeText={setNewTodo}
+      />
+
+      {loading && <Text>Loading...</Text>}
+    </View>
+  );
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <Navbar />
-      <ViewTask />
-      <View style={styles.container}>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : (
-          <DraggableFlatList
-            data={todos}
-            keyExtractor={(item) => item._id}
-            renderItem={renderItem}
-            onDragEnd={({ data }) => {
-              // Update index based on new order
-              const updatedData = data.map((item, idx) => ({ ...item, index: idx }));
-              console.log('Reordered todos:', updatedData);
-              setTodos(updatedData);
+      <DraggableFlatList
+        data={todos}
+        keyExtractor={(item) => item._id}
+        renderItem={renderItem}
+        ListHeaderComponent={<ListHeader />}
+        onDragEnd={({ data }) => {
+          const updatedData = data.map((item, idx) => ({ ...item, index: idx }));
+          setTodos(updatedData);
 
-              // Save new order to server
-              fetch(`${API_URL}/api/todos/reorder`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderedIds: updatedData.map((item) => item._id) }),
-              }).catch((err) => console.error('Error reordering todos:', err));
-            }}
-          />
-        )}
-
-        <TextInput
-          style={styles.input}
-          placeholder="Add new todo..."
-          value={newTodo}
-          onChangeText={setNewTodo}
-        />
-
-        <TouchableOpacity style={styles.button} onPress={addTodo}>
-          <Text style={styles.buttonText}>Add My Todo</Text>
-        </TouchableOpacity>
-      </View>
+          fetch(`${API_URL}/api/todos/reorder`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderedIds: updatedData.map((item) => item._id) }),
+          }).catch((err) => console.error('Error reordering todos:', err));
+        }}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -149,13 +153,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    marginTop: 40,
     backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
   todoItem: {
     flexDirection: 'row',
@@ -196,11 +194,22 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  logo: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginBottom: 10,
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logoText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  logoTextLength: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#007bff',
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    backgroundColor: '#e0f0ff',
   },
 });

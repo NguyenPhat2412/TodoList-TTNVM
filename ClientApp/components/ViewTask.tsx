@@ -14,9 +14,9 @@ const ViewTask = () => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <Text>Your today's tasks almost done!</Text>
-        <TouchableOpacity style={styles.button}>
+      <View style={styles.viewTaskInfo}>
+        <Text style={styles.taskInfoText}>Your today's tasks almost done!</Text>
+        <TouchableOpacity style={styles.button} onPress={handleViewTasks}>
           <Text style={styles.buttonText}>View Tasks</Text>
         </TouchableOpacity>
       </View>
@@ -67,19 +67,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-    marginBottom: 20,
     marginTop: 20,
     marginHorizontal: 20,
     position: 'relative',
     zIndex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 120,
+    height: 150,
   },
   circleContainer: {
     position: 'absolute',
     right: 20,
-    top: 10,
+    top: 25,
+    width: 100,
+    height: 100,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -116,5 +117,16 @@ const styles = StyleSheet.create({
   progressSubText: {
     fontSize: 12,
     color: '#666',
+  },
+  viewTaskInfo: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingRight: 120,
+  },
+  taskInfoText: {
+    fontSize: 16,
+    marginBottom: 10,
+    color: '#333',
+    fontWeight: '500',
   },
 });
