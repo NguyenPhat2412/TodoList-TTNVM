@@ -1,5 +1,8 @@
+// eslint-disable-next-line import/no-unresolved
+import { API_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 const Profile = () => {
@@ -17,8 +20,41 @@ const Profile = () => {
 
   const handleLogout = () => {
     setUser(null);
+
+    // Delete token trong async storage
+    AsyncStorage.removeItem('userToken');
     console.log('User logged out');
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        if (!token) {
+          console.log('No token found, user not logged in');
+          return null;
+        }
+        const response = await fetch(`${API_URL}/api/profile`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const user = await response.json();
+        console.log('Fetched user:', user);
+        setUser(user);
+        return user;
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        return null;
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -56,6 +92,15 @@ const Profile = () => {
             style={[styles.button, styles.buttonSecondary]}
             onPress={handleRegister}>
             <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.buttonLogout}
+            onPress={() => {
+              navigation.navigate('Home' as never);
+              handleLogout();
+            }}>
+            <Text style={styles.buttonText}>Go to Home</Text>
           </TouchableOpacity>
         </>
       )}

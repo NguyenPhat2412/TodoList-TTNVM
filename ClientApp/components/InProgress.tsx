@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Text, View, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 
@@ -32,6 +33,38 @@ const InProgress = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+
+        if (!token) {
+          console.log('No token found, user not logged in');
+          return null;
+        }
+
+        const response = await fetch(`${API_URL}/api/profile`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        const user = await response.json();
+        console.log('Fetched user:', user);
+        return user;
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        return null;
+      }
+    };
+    fetchUser();
+  }, []);
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -42,7 +75,7 @@ const InProgress = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>In My Progress</Text>
+      <Text style={styles.header}>In Progress</Text>
 
       {/* Horizontal ScrollView for cards */}
       <ScrollView

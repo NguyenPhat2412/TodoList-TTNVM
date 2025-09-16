@@ -1,4 +1,7 @@
-import { useState } from 'react';
+// eslint-disable-next-line import/no-unresolved
+import { API_URL } from '@env';
+import { useNavigation } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
 import {
   Text,
   TextInput,
@@ -8,19 +11,53 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
+  const navigation = useNavigation();
+
+  const handleLogin = async () => {
     if (!email || !password) {
       alert('Please enter both email and password!');
       return;
     }
-    // TODO: call API login here
-    console.log('Logging in with:', { email, password });
+
+    // Fetch API to login user
+    try {
+      const response = await fetch(`${API_URL}/api/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      if (response.ok) {
+        alert('Login successful!');
+        // Navigate to Home or Home screen
+        await AsyncStorage.setItem('userToken', (await response.json()).token);
+
+        navigation.navigate('Home' as never);
+      } else {
+        alert('Login failed. Please check your credentials.');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('An error occurred. Please try again later.');
+    }
   };
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      const token = await AsyncStorage.getItem('userToken');
+
+      if (token) {
+        navigation.navigate('Home' as never);
+      }
+    };
+    checkLogin();
+  }, []);
 
   return (
     <KeyboardAvoidingView

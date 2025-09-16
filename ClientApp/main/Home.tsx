@@ -37,9 +37,6 @@ const Home = () => {
         const res = await fetch(`${API_URL}/api/todos`);
         const data = await res.json();
 
-        if (res.ok) {
-          console.log('Fetched todos:', data);
-        }
         const sortedData = data.sort((a: Todo, b: Todo) => (a.index || 0) - (b.index || 0));
         setTodos(sortedData);
       } catch (err) {

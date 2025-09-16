@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const todoController = require("../../controllers/ClientController");
+const {
+  authMiddleware,
+  authMiddlewareLocalStorage,
+} = require("../../middleware/authMiddleware");
 
 router.post("/todos", todoController.createTodo);
 router.get("/todos", todoController.getTodos);
@@ -12,7 +16,12 @@ router.patch("/todos/reorder", todoController.reorderTodos);
 
 router.post("/register", todoController.registerUser);
 router.post("/login", todoController.loginUser);
-router.get("/profile", todoController.getUserProfile);
+
 router.get("/logout", todoController.logoutUser);
 
+router.get(
+  "/profile",
+  authMiddlewareLocalStorage,
+  todoController.getUserProfile
+);
 module.exports = router;

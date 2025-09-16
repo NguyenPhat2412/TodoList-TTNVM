@@ -171,37 +171,37 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    // send otp to email
-    const otp = generateOTP();
-    otpStore[email] = { otp, createdAt: Date.now() + 5 * 60 * 1000 }; // OTP valid for 5 minutes
+    // // send otp to email
+    // const otp = generateOTP();
+    // otpStore[email] = { otp, createdAt: Date.now() + 5 * 60 * 1000 }; // OTP valid for 5 minutes
 
-    // send mail
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // // send mail
+    // const transporter = nodemailer.createTransport({
+    //   service: "gmail",
+    //   auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASS,
+    //   },
+    // });
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Your OTP Code",
-      text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
-    };
+    // const mailOptions = {
+    //   from: process.env.EMAIL_USER,
+    //   to: email,
+    //   subject: "Your OTP Code",
+    //   text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
+    // };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log("Error sending email:", error);
-        return res.status(500).json({ error: "Failed to send OTP email" });
-      } else {
-        console.log("Email sent: " + info.response);
-        return res
-          .status(200)
-          .json({ message: "OTP sent to email. Please verify to continue." });
-      }
-    });
+    // transporter.sendMail(mailOptions, (error, info) => {
+    //   if (error) {
+    //     console.log("Error sending email:", error);
+    //     return res.status(500).json({ error: "Failed to send OTP email" });
+    //   } else {
+    //     console.log("Email sent: " + info.response);
+    //     return res
+    //       .status(200)
+    //       .json({ message: "OTP sent to email. Please verify to continue." });
+    //   }
+    // });
 
     const newUser = new User({ name, email, phone, password });
     await newUser.save();
@@ -217,22 +217,21 @@ exports.loginUser = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
     }
+
     const user = await User.findOne({
       email,
     });
+
     if (!user) {
-      return res.status(400).json({ error: "Invalid email or password" });
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    res
-      .status(200)
-      .json({ token, user: { name: user.name, email: user.email } });
+    res.status(200).json({
+      token,
+      user: { id: user._id, name: user.name, email: user.email },
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to login" });
   }
@@ -249,7 +248,8 @@ exports.logoutUser = async (req, res) => {
 
 // Get User Profile
 exports.getUserProfile = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.id;
+  console.log("User ID from token:", userId);
   try {
     const user = await User.findById(userId).select("-password");
     if (!user) {

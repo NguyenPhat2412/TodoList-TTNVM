@@ -1,7 +1,35 @@
+// eslint-disable-next-line import/no-unresolved
+import { API_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Feather from '@react-native-vector-icons/feather';
+import React, { useEffect } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 const Navbar = () => {
+  const [userName, setUserName] = React.useState('User');
+  useEffect(() => {
+    const getUserName = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/profile`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${await AsyncStorage.getItem('userToken')}`,
+          },
+        });
+        if (response.ok) {
+          const user = await response.json();
+          setUserName(user.name || 'User');
+          return user.name || 'User';
+        }
+        return 'User';
+      } catch (error) {
+        console.error('Error retrieving user name:', error);
+        return 'User';
+      }
+    };
+    getUserName();
+  }, []);
   return (
     <View style={styles.container}>
       {/* Image */}
@@ -9,7 +37,7 @@ const Navbar = () => {
         <Image source={require('../assets/logo.png')} style={styles.logo} />
         <View style={styles.textContainer}>
           <Text style={styles.greetingText}>Hello!</Text>
-          <Text style={styles.userNameText}>Name user</Text>
+          <Text style={styles.userNameText}>{userName}</Text>
         </View>
       </View>
 

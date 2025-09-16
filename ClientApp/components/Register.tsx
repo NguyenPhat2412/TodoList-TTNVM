@@ -1,3 +1,7 @@
+// eslint-disable-next-line import/no-unresolved
+import { API_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import {
   Text,
@@ -10,12 +14,14 @@ import {
 } from 'react-native';
 
 const Register = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
 
-  const handleRegister = () => {
+  const navigation = useNavigation();
+  const handleRegister = async () => {
     if (!email || !password || !confirmPassword || !phone) {
       alert('Please fill in all fields!');
       return;
@@ -24,8 +30,25 @@ const Register = () => {
       alert('Passwords do not match!');
       return;
     }
-    // TODO: call API register here
-    console.log('Registering with:', { email, password, phone });
+
+    // Fetch API to register user
+    try {
+      const response = await fetch(`${API_URL}/api/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password, phone }),
+      });
+      if (response.ok) {
+        navigation.navigate('Login' as never);
+      } else {
+        alert('Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during registration:', error);
+      alert('An error occurred. Please try again later.');
+    }
   };
 
   return (
@@ -35,6 +58,14 @@ const Register = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Register</Text>
 
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          placeholderTextColor="#aaa"
+          value={name}
+          onChangeText={setName}
+          autoCapitalize="none"
+        />
         <TextInput
           style={styles.input}
           placeholder="Email"
