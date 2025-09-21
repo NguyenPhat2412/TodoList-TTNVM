@@ -13,7 +13,13 @@ router.get("/todos/:id", todoController.getTodoById);
 router.put("/todos/:id", todoController.updateTodo);
 router.delete("/todos/:id", todoController.deleteTodo);
 router.patch("/todos/reorder", todoController.reorderTodos);
+router.get("/todos/user/:userId", todoController.getTodoByUserId);
 
+// number todo with category by userId
+router.get(
+  "/todos/category/count/:userId",
+  todoController.getNumberOfCategoriesTodo
+);
 router.post("/register", todoController.registerUser);
 router.post("/login", todoController.loginUser);
 

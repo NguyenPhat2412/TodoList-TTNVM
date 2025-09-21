@@ -24,6 +24,8 @@ const Login = () => {
       return;
     }
 
+    console.log(email, password);
+
     // Fetch API to login user
     try {
       const response = await fetch(`${API_URL}/api/login`, {

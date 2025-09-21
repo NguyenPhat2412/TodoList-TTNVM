@@ -4,41 +4,74 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   KeyboardAvoidingView,
   Platform,
+  FlatList,
 } from 'react-native';
-import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
 import Navbar from 'components/Navbar';
 import ViewTask from 'components/ViewTask';
 import InProgress from 'components/InProgress';
+import Feather from '@react-native-vector-icons/feather';
 
-interface Todo {
-  _id: string;
-  title?: string;
-  completed?: boolean;
-  description?: string;
-  index?: number;
+interface CategoryCount {
+  category: string;
+  count: number;
 }
 
-const Home = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [newTodo, setNewTodo] = useState('');
-  const [index, setIndex] = useState<number | undefined>(undefined);
+const categories = [
+  { name: 'Work', color: '#ff7eb9', icon: 'briefcase' },
+  { name: 'Personal', color: '#7afcff', icon: 'user' },
+  { name: 'Shopping', color: '#feff9c', icon: 'shopping-cart' },
+  { name: 'Fitness', color: '#b9ffb7', icon: 'activity' },
+  { name: 'Others', color: '#fbc1ff', icon: 'layers' },
+];
 
-  // Fetch todos
+const Home = () => {
+  const [counts, setCounts] = useState<CategoryCount[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Lấy userId từ AsyncStorage
+  useFocusEffect(
+    useCallback(() => {
+      const loadUserId = async () => {
+        try {
+          const storedId = await AsyncStorage.getItem('userId');
+          if (storedId) {
+            setUserId(storedId);
+          } else {
+            console.log('No userId found, user not logged in');
+          }
+        } catch (error) {
+          console.error('Error reading userId:', error);
+        }
+      };
+      loadUserId();
+    }, [])
+  );
+
+  // Fetch số lượng todos theo category
   useEffect(() => {
+    if (!userId) return;
     const fetchData = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/todos`);
+        setLoading(true);
+        const res = await fetch(`${API_URL}/api/todos/category/count/${userId}`);
         const data = await res.json();
-
-        const sortedData = data.sort((a: Todo, b: Todo) => (a.index || 0) - (b.index || 0));
-        setTodos(sortedData);
+        if (res.ok && data && typeof data === 'object') {
+          const formattedData = Object.entries(data).map(([category, count]) => ({
+            category,
+            count: Number(count),
+          }));
+          setCounts(formattedData);
+        } else {
+          setCounts([]);
+        }
       } catch (err) {
         console.error('Error fetching todos:', err);
       } finally {
@@ -46,155 +79,79 @@ const Home = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [userId]);
 
-  // Add new todo
-  const addTodo = async () => {
-    if (!newTodo.trim()) return;
-
-    setIndex(todos.length > 0 ? (todos[todos.length - 1].index || 0) + 1 : 0);
-
-    try {
-      const res = await fetch(`${API_URL}/api/todos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: newTodo, completed: false, index }),
-      });
-      const data = await res.json();
-      setTodos((prev) => [...prev, data]);
-      setNewTodo('');
-    } catch (err) {
-      console.error('Error adding todo:', err);
-    }
+  const getCountForCategory = (name: string) => {
+    const found = counts.find((c) => c.category === name);
+    return found ? found.count : 0;
   };
 
-  // Delete todo
-  const deleteTodo = async (id: string) => {
-    try {
-      await fetch(`${API_URL}/api/todos/${id}`, { method: 'DELETE' });
-      setTodos((prev) => prev.filter((t) => t._id !== id));
-    } catch (err) {
-      console.error('Error deleting todo:', err);
-    }
-  };
-
-  // Render item for DraggableFlatList
-  const renderItem = useCallback(
-    ({ item, drag, isActive }: RenderItemParams<Todo>) => (
-      <TouchableOpacity
-        style={[styles.todoItem, { backgroundColor: isActive ? '#e0f7fa' : '#fff' }]}
-        onLongPress={drag}>
-        <Text style={styles.todoText}>{item.title}</Text>
-        <TouchableOpacity onPress={() => deleteTodo(item._id)}>
-          <Text style={styles.deleteText}>🗑️</Text>
-        </TouchableOpacity>
-      </TouchableOpacity>
-    ),
-    []
-  );
-
-  // Header UI (trước danh sách)
   const ListHeader = () => (
-    <View style={styles.container}>
+    <View>
       <Navbar />
       <ViewTask />
-      <InProgress />
 
-      <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>Task Groups </Text>
-        <Text style={styles.logoTextLength}>{todos.length}</Text>
+      {/* InProgress có thể lướt ngang */}
+      <View style={styles.section}>
+        <InProgress />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={addTodo}>
-        <Text style={styles.buttonText}>Add My Todo</Text>
-      </TouchableOpacity>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Add new todo..."
-        value={newTodo}
-        onChangeText={setNewTodo}
-      />
-
-      {loading && <Text>Loading...</Text>}
+      {/* Task Groups */}
+      <View style={styles.logoContainer}>
+        <Text style={styles.logoText}>Task Groups</Text>
+        <Text style={styles.logoTextLength}>{counts.reduce((sum, c) => sum + c.count, 0)}</Text>
+      </View>
     </View>
   );
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <DraggableFlatList
-        data={todos}
-        keyExtractor={(item) => item._id}
-        renderItem={renderItem}
-        ListHeaderComponent={<ListHeader />}
-        onDragEnd={({ data }) => {
-          const updatedData = data.map((item, idx) => ({ ...item, index: idx }));
-          setTodos(updatedData);
-
-          fetch(`${API_URL}/api/todos/reorder`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderedIds: updatedData.map((item) => item._id) }),
-          }).catch((err) => console.error('Error reordering todos:', err));
-        }}
-      />
-    </KeyboardAvoidingView>
+    <>
+      <ListHeader />
+      <KeyboardAvoidingView
+        style={{ flex: 1, backgroundColor: '#f9f9f9' }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <FlatList
+          data={categories}
+          keyExtractor={(item) => item.name}
+          contentContainerStyle={styles.listContainer}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={[styles.card, { borderLeftColor: item.color }]}>
+              <View style={styles.cardLeft}>
+                <View style={[styles.iconBox, { backgroundColor: item.color }]}>
+                  <Feather name={item.icon as any} size={20} color="#fff" />
+                </View>
+                <View>
+                  <Text style={styles.cardTitle}>{item.name}</Text>
+                  <Text style={styles.cardCount}>{getCountForCategory(item.name)} tasks</Text>
+                </View>
+              </View>
+              <Feather name="chevron-right" size={20} color="#aaa" />
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={loading ? <Text style={styles.loading}>Loading...</Text> : null}
+        />
+      </KeyboardAvoidingView>
+    </>
   );
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  listContainer: {
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    paddingBottom: 40,
   },
-  todoItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 15,
-    marginVertical: 5,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  todoText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  deleteText: {
-    fontSize: 18,
-    color: 'red',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 12,
+  section: {
     marginTop: 20,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-  },
-  button: {
-    backgroundColor: '#007bff',
-    marginTop: 10,
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    marginBottom: 10,
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginTop: 30,
+    marginBottom: 10,
+    marginHorizontal: 20,
   },
   logoText: {
     fontSize: 20,
@@ -202,11 +159,53 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   logoTextLength: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#007bff',
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     borderRadius: 12,
     backgroundColor: '#e0f0ff',
+    marginLeft: 8,
+  },
+  card: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    marginBottom: 16,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
+    borderLeftWidth: 6,
+  },
+  cardLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconBox: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111',
+  },
+  cardCount: {
+    fontSize: 13,
+    color: '#555',
+  },
+  loading: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#666',
   },
 });

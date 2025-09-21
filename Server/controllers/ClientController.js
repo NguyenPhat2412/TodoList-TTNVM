@@ -21,7 +21,16 @@ function generateOTP() {
 
 // Todo CRUD Operations
 exports.createTodo = async (req, res) => {
-  const { title, completed, description, index } = req.body;
+  const {
+    title,
+    completed,
+    description,
+    index,
+    userId,
+    category,
+    startDate,
+    dueDate,
+  } = req.body;
   try {
     if (!title) {
       return res.status(400).json({ error: "Title is required" });
@@ -45,7 +54,17 @@ exports.createTodo = async (req, res) => {
       return res.status(400).json({ error: "Index must be a number" });
     }
 
-    const newTodo = new Todo({ title, completed, description, index });
+    const newTodo = new Todo({
+      title,
+      completed,
+      description,
+      index,
+      userId,
+      category,
+      startDate,
+      dueDate,
+    });
+
     const savedTodo = await newTodo.save();
     res.status(201).json(savedTodo);
   } catch (error) {
@@ -105,7 +124,8 @@ exports.getTodoById = async (req, res) => {
 exports.updateTodo = async (req, res) => {
   const { id } = req.params;
   try {
-    const { title, completed, description } = req.body;
+    const { title, completed, description, category, startDate, dueDate } =
+      req.body;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid todo ID" });
     }
@@ -125,7 +145,15 @@ exports.updateTodo = async (req, res) => {
     }
     const updatedTodo = await Todo.findByIdAndUpdate(
       id,
-      { title, completed, description, updatedAt: Date.now() },
+      {
+        title,
+        completed,
+        description,
+        category,
+        startDate,
+        dueDate,
+        updatedAt: Date.now(),
+      },
       { new: true }
     );
     if (!updatedTodo) {
@@ -157,6 +185,38 @@ exports.deleteTodo = async (req, res) => {
   }
 };
 
+// Get todo by Id
+exports.getTodoByUserId = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+    const todos = await Todo.find({
+      userId: userId,
+    }).sort({ index: 1 });
+    res.status(200).json(todos);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to retrieve todos" });
+  }
+};
+
+exports.getNumberOfCategoriesTodo = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+    const todos = await Todo.find({ userId: userId });
+    const categoryCount = {};
+    todos.forEach((todo) => {
+      categoryCount[todo.category] = (categoryCount[todo.category] || 0) + 1;
+    });
+    res.status(200).json(categoryCount);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to retrieve todos" });
+  }
+};
 // User Registration
 exports.registerUser = async (req, res) => {
   const { name, email, phone, password } = req.body;
@@ -249,12 +309,12 @@ exports.logoutUser = async (req, res) => {
 // Get User Profile
 exports.getUserProfile = async (req, res) => {
   const userId = req.id;
-  console.log("User ID from token:", userId);
   try {
     const user = await User.findById(userId).select("-password");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+    console.log(user);
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve user profile" });

@@ -7,6 +7,7 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 
 const Navbar = () => {
   const [userName, setUserName] = React.useState('User');
+
   useEffect(() => {
     const getUserName = async () => {
       try {
@@ -20,6 +21,7 @@ const Navbar = () => {
         if (response.ok) {
           const user = await response.json();
           setUserName(user.name || 'User');
+
           return user.name || 'User';
         }
         return 'User';

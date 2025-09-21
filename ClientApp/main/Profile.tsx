@@ -30,6 +30,7 @@ const Profile = () => {
     const fetchUser = async () => {
       try {
         const token = await AsyncStorage.getItem('userToken');
+        console.log('Retrieved token:', token);
         if (!token) {
           console.log('No token found, user not logged in');
           return null;
@@ -45,8 +46,9 @@ const Profile = () => {
           throw new Error('Failed to fetch user data');
         }
         const user = await response.json();
-        console.log('Fetched user:', user);
+
         setUser(user);
+        await AsyncStorage.setItem('userId', user._id);
         return user;
       } catch (error) {
         console.error('Error fetching user:', error);

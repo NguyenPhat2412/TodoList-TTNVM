@@ -15,6 +15,7 @@ import {
 import Feather from '@react-native-vector-icons/feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RouteProp } from '@react-navigation/native';
 
 interface Todo {
   _id: string;
@@ -26,15 +27,19 @@ interface Todo {
   startDate: Date | null;
   dueDate: Date | null;
 }
-export default function CategorySelect() {
-  const [selected, setSelected] = useState('Work');
+
+type UpdateRouteProp = RouteProp<{ UpdateTodo: { todo: Todo } }, 'UpdateTodo'>;
+export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
+  const { todo } = route.params;
+  console.log('Editing todo:', todo);
+  const [selected, setSelected] = useState(todo.category || 'Work');
   const [open, setOpen] = useState(false);
   const [showProjectName, setShowProjectName] = useState(false);
-  const [projectName, setProjectName] = useState('');
-  const [description, setDescription] = useState('');
+  const [projectName, setProjectName] = useState(todo.title || '');
+  const [description, setDescription] = useState(todo.description || '');
 
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(todo.startDate || null);
+  const [dueDate, setDueDate] = useState<Date | null>(todo.dueDate || null);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showDueDatePicker, setShowDueDatePicker] = useState(false);
 
@@ -82,8 +87,7 @@ export default function CategorySelect() {
     setDueDate(selectedDate || dueDate);
   };
 
-  console.log(selected);
-  const addTodo = async () => {
+  const updateTodo = async (id: string) => {
     if (!projectName.trim()) return;
 
     if (!description.trim()) return;
@@ -91,8 +95,8 @@ export default function CategorySelect() {
     setIndex(todos.length > 0 ? (todos[todos.length - 1].index || 0) + 1 : 0);
 
     try {
-      const res = await fetch(`${API_URL}/api/todos`, {
-        method: 'POST',
+      const res = await fetch(`${API_URL}/api/todos/${id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId,
@@ -106,7 +110,7 @@ export default function CategorySelect() {
         }),
       });
       const data: Todo = await res.json();
-      setTodos((prev) => [...prev, data]);
+      setTodos((prev) => prev.map((t) => (t._id === id ? data : t)));
       setProjectName('');
       setDescription('');
       setStartDate(null);
@@ -114,9 +118,8 @@ export default function CategorySelect() {
       setSelected('Work');
       setShowProjectName(false);
       Keyboard.dismiss();
-      console.log('Todo added:', data);
     } catch (err) {
-      console.error('Error adding todo:', err);
+      console.error('Error updating todo:', err);
     }
   };
 
@@ -252,8 +255,8 @@ export default function CategorySelect() {
 
           {/* Add Todo */}
           <View style={{ marginTop: 24 }}>
-            <TouchableOpacity style={styles.button} onPress={addTodo}>
-              <Text style={styles.buttonText}>Add Todo</Text>
+            <TouchableOpacity style={styles.button} onPress={() => updateTodo(todos[index]._id)}>
+              <Text style={styles.buttonText}>Update Todo</Text>
             </TouchableOpacity>
           </View>
         </View>

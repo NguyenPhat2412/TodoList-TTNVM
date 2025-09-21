@@ -16,8 +16,10 @@ import Profile from 'main/Profile';
 import AddTodo from 'main/AddTodo';
 import Login from 'components/Login';
 import Register from 'components/Register';
+import UpdateTodo from 'main/Update';
+import { RootStackParamList } from 'types/types';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
@@ -44,6 +46,7 @@ export default function App() {
                 <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Register" component={Register} />
+                <Stack.Screen name="UpdateTodo" component={UpdateTodo} />
               </Stack.Navigator>
             </View>
             <View style={{ flex: 1, justifyContent: 'flex-end' }}>

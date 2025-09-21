@@ -7,6 +7,9 @@ const TodoSchema = new Schema({
   title: { type: String, required: true },
   completed: { type: Boolean, default: false },
   description: { type: String, default: "", required: true },
+  category: { type: String, default: "Work", required: true },
+  startDate: { type: Date, default: null },
+  dueDate: { type: Date, default: null },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

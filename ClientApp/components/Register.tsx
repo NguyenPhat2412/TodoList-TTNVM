@@ -1,6 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import {

@@ -15,11 +15,28 @@ const InProgress = () => {
   const [data, setData] = useState<Data[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [userId, setUserId] = useState<string>('');
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        if (userId) {
+          setUserId(userId);
+        } else {
+          console.log('No userId found in AsyncStorage');
+        }
+      } catch (error) {
+        console.error('Error retrieving userId from AsyncStorage:', error);
+      }
+    };
+    fetchUser();
+  }, []);
+
   useEffect(() => {
     // Fetch data from API
     const fetchData = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/todos`);
+        const response = await fetch(`${API_URL}/api/todos/user/${userId}`);
         const json = await response.json();
         if (response.ok) {
           setData(json.slice(0, 5));
@@ -31,39 +48,7 @@ const InProgress = () => {
       }
     };
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-
-        if (!token) {
-          console.log('No token found, user not logged in');
-          return null;
-        }
-
-        const response = await fetch(`${API_URL}/api/profile`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-        const user = await response.json();
-        console.log('Fetched user:', user);
-        return user;
-      } catch (error) {
-        console.error('Error fetching user:', error);
-        return null;
-      }
-    };
-    fetchUser();
-  }, []);
+  }, [userId]);
 
   if (loading) {
     return (
