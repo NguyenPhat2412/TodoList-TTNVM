@@ -88,7 +88,7 @@ const Login = () => {
         />
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={styles.buttonText}>Login App Todo</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

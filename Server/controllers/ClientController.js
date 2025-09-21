@@ -320,3 +320,17 @@ exports.getUserProfile = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve user profile" });
   }
 };
+
+exports.selectCategory = async (req, res) => {
+  const { category } = req.body;
+  const userId = req.id;
+  try {
+    const todos = await Todo.find({
+      userId: userId,
+      category: category,
+    }).sort({ index: 1 });
+    res.status(200).json(todos);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to retrieve todos" });
+  }
+};

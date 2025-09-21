@@ -1,7 +1,8 @@
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from 'react';
 import { Text, View, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 
 interface Data {
@@ -16,6 +17,7 @@ const InProgress = () => {
   const [loading, setLoading] = useState(true);
 
   const [userId, setUserId] = useState<string>('');
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -32,23 +34,47 @@ const InProgress = () => {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    // Fetch data from API
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/todos/user/${userId}`);
-        const json = await response.json();
-        if (response.ok) {
-          setData(json.slice(0, 5));
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
+  // use useFocusEffect if needed to refresh on screen focus
+  useFocusEffect(
+    useCallback(() => {
+      if (userId) {
+        setLoading(true);
+        // Fetch data from API
+        const fetchData = async () => {
+          try {
+            const response = await fetch(`${API_URL}/api/todos/user/${userId}`);
+            const json = await response.json();
+            if (response.ok) {
+              setData(json.slice(0, 5));
+            }
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchData();
       }
-    };
-    fetchData();
-  }, [userId]);
+    }, [userId])
+  );
+
+  // useEffect(() => {
+  //   // Fetch data from API
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(`${API_URL}/api/todos/user/${userId}`);
+  //       const json = await response.json();
+  //       if (response.ok) {
+  //         setData(json.slice(0, 5));
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [userId]);
 
   if (loading) {
     return (

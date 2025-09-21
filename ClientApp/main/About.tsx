@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Text,
   View,
@@ -11,26 +11,20 @@ import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flat
 
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
-import Navbar from 'components/Navbar';
-import ViewTask from 'components/ViewTask';
-import InProgress from 'components/InProgress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from 'types/types';
+import { RootStackParamList, Todo } from 'types/types';
 import { StackNavigationProp } from '@react-navigation/stack';
-interface Todo {
-  _id: string;
-  title?: string;
-  completed?: boolean;
-  description?: string;
-  index?: number;
-}
+import ListCategory from 'components/ListCategory';
+import { useCategory } from 'Context/useCategory';
 
 type AboutNavProp = StackNavigationProp<RootStackParamList, 'About'>;
 const About = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [allTodos, setAllTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const { selectedCategory } = useCategory();
   const [userId, setUserId] = useState<string | null>(null);
 
   const navigation = useNavigation<AboutNavProp>();
@@ -53,33 +47,46 @@ const About = () => {
     }, [])
   );
 
-  // Fetch todos
-  useEffect(() => {
-    if (!userId) return;
-    const fetchData = async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/todos/user/${userId}`);
-        const data = await res.json();
-        console.log('Fetched todos:', data);
-        if (res?.ok) {
-          const sortedData = data.sort((a: Todo, b: Todo) => (a.index || 0) - (b.index || 0));
-          setTodos(sortedData);
-        } else {
-          setTodos([]);
+  useFocusEffect(
+    // Fetch todos
+    React.useCallback(() => {
+      if (!userId) return;
+      const fetchData = async () => {
+        try {
+          const res = await fetch(`${API_URL}/api/todos/user/${userId}`);
+          const data = await res.json();
+
+          if (res?.ok) {
+            const sortedData = data.sort((a: Todo, b: Todo) => (a.index || 0) - (b.index || 0));
+            setAllTodos(sortedData);
+            setTodos(sortedData);
+          } else {
+            setTodos([]);
+          }
+        } catch (err) {
+          console.error('Error fetching todos:', err);
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        console.error('Error fetching todos:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [userId]);
+      };
+      fetchData();
+    }, [userId])
+  );
+
+  // Lọc theo danh mục đã chọn
+  useEffect(() => {
+    if (selectedCategory && selectedCategory !== 'All') {
+      setTodos(allTodos.filter((todo) => todo.category === selectedCategory));
+    } else {
+      setTodos(allTodos);
+    }
+  }, [selectedCategory, allTodos]);
 
   // Delete todo
   const deleteTodo = async (id: string) => {
     try {
       await fetch(`${API_URL}/api/todos/${id}`, { method: 'DELETE' });
+      setAllTodos((prev) => prev.filter((t) => t._id !== id));
       setTodos((prev) => prev.filter((t) => t._id !== id));
     } catch (err) {
       console.error('Error deleting todo:', err);
@@ -93,13 +100,14 @@ const About = () => {
         style={[styles.todoItem, { backgroundColor: isActive ? '#f0f9ff' : '#fff' }]}
         onLongPress={drag}
         onPress={() => {
-          // navigate to Update screen with item details;
-          console.log('Pressed todo:', item);
           navigation.navigate('UpdateTodo', { todo: item });
         }}>
-        <Text style={styles.todoText}>{item.title}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#555', fontSize: 14 }}>{item.description}</Text>
+          <Text style={styles.todoText}>{item.title}</Text>
+        </View>
         <TouchableOpacity onPress={() => deleteTodo(item._id)}>
-          <Text style={styles.deleteText}>🗑️</Text>
+          <Text style={styles.deleteText}>❌</Text>
         </TouchableOpacity>
       </TouchableOpacity>
     ),
@@ -108,33 +116,9 @@ const About = () => {
 
   // Header UI (trước danh sách)
   const ListHeader = () => (
-    <View>
-      <Navbar />
-      <ViewTask />
-
-      {/* InProgress có thể lướt ngang */}
-      <View style={styles.section}>
-        <InProgress />
-        {/* <FlatList
-          data={todos.filter((t) => !t.completed)} // lọc task chưa hoàn thành
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <View style={styles.progressCard}>
-              <Text style={styles.progressTitle}>{item.title}</Text>
-              <Text style={styles.progressDesc}>{item.description || 'No description'}</Text>
-            </View>
-          )}
-        /> */}
-      </View>
-
-      {/* Task Groups */}
-      <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>Task Groups</Text>
-        <Text style={styles.logoTextLength}>{todos.length}</Text>
-      </View>
-
+    <View
+      style={{ marginBottom: 20, marginTop: 10, backgroundColor: '#f9f9f9', marginHorizontal: 8 }}>
+      <ListCategory />
       {loading && <Text>Loading...</Text>}
     </View>
   );
@@ -169,12 +153,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#333',
-    marginBottom: 12,
-  },
   progressCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
@@ -196,35 +174,46 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#555',
   },
-  todoItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 15,
-    marginHorizontal: 20,
-    marginVertical: 6,
-    borderRadius: 12,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  todoText: {
-    fontSize: 16,
-    color: '#333',
-    flex: 1,
-    marginRight: 10,
-  },
-  deleteText: {
-    fontSize: 18,
-    color: 'red',
-  },
+
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 30,
     marginBottom: 10,
     marginHorizontal: 20,
+  },
+  todoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    borderRadius: 14,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
+  },
+  todoText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#2d3436',
+    flex: 1,
+    marginRight: 12,
+  },
+  deleteText: {
+    fontSize: 20,
+    color: '#d63031',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#2d3436',
+    marginVertical: 12,
+    marginLeft: 16,
   },
   logoText: {
     fontSize: 20,

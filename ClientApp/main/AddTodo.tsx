@@ -15,6 +15,7 @@ import {
 import Feather from '@react-native-vector-icons/feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Todo {
   _id: string;
@@ -43,29 +44,32 @@ export default function CategorySelect() {
 
   // Get userId from local storage
   const [userId, setUserId] = useState<string | null>(null);
-  useEffect(() => {
-    const getUserId = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/profile`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${await AsyncStorage.getItem('userToken')}`,
-          },
-        });
-        if (response.ok) {
-          const user = await response.json();
-          setUserId(user._id || 'User');
-          return user._id || 'User';
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const getUserId = async () => {
+        try {
+          const response = await fetch(`${API_URL}/api/profile`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${await AsyncStorage.getItem('userToken')}`,
+            },
+          });
+          if (response.ok) {
+            const user = await response.json();
+            setUserId(user._id || 'User');
+            return user._id || 'User';
+          }
+          return 'User';
+        } catch (error) {
+          console.error('Error retrieving user ID:', error);
+          return 'User';
         }
-        return 'User';
-      } catch (error) {
-        console.error('Error retrieving user ID:', error);
-        return 'User';
-      }
-    };
-    getUserId();
-  }, []);
+      };
+      getUserId();
+    }, [])
+  );
 
   const handleStartDateChange = (event: any, selectedDate: Date | undefined) => {
     const currentDate = selectedDate || startDate;
@@ -83,6 +87,7 @@ export default function CategorySelect() {
   };
 
   console.log(selected);
+
   const addTodo = async () => {
     if (!projectName.trim()) return;
 

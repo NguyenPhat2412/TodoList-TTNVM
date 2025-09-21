@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 const Profile = () => {
@@ -26,38 +26,39 @@ const Profile = () => {
     console.log('User logged out');
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-        console.log('Retrieved token:', token);
-        if (!token) {
-          console.log('No token found, user not logged in');
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUser = async () => {
+        try {
+          const token = await AsyncStorage.getItem('userToken');
+          console.log('Retrieved token:', token);
+          if (!token) {
+            console.log('No token found, user not logged in');
+            return null;
+          }
+          const response = await fetch(`${API_URL}/api/profile`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+          }
+          const user = await response.json();
+
+          setUser(user);
+          await AsyncStorage.setItem('userId', user._id);
+          return user;
+        } catch (error) {
+          console.error('Error fetching user:', error);
           return null;
         }
-        const response = await fetch(`${API_URL}/api/profile`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-        const user = await response.json();
-
-        setUser(user);
-        await AsyncStorage.setItem('userId', user._id);
-        return user;
-      } catch (error) {
-        console.error('Error fetching user:', error);
-        return null;
-      }
-    };
-    fetchUser();
-  }, []);
-
+      };
+      fetchUser();
+    }, [])
+  );
   return (
     <View style={styles.container}>
       {user ? (

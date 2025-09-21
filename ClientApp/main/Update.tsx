@@ -15,7 +15,7 @@ import {
 import Feather from '@react-native-vector-icons/feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 
 interface Todo {
   _id: string;
@@ -31,15 +31,17 @@ interface Todo {
 type UpdateRouteProp = RouteProp<{ UpdateTodo: { todo: Todo } }, 'UpdateTodo'>;
 export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
   const { todo } = route.params;
-  console.log('Editing todo:', todo);
+  console.log(todo);
   const [selected, setSelected] = useState(todo.category || 'Work');
   const [open, setOpen] = useState(false);
   const [showProjectName, setShowProjectName] = useState(false);
   const [projectName, setProjectName] = useState(todo.title || '');
   const [description, setDescription] = useState(todo.description || '');
 
-  const [startDate, setStartDate] = useState<Date | null>(todo.startDate || null);
-  const [dueDate, setDueDate] = useState<Date | null>(todo.dueDate || null);
+  const [startDate, setStartDate] = useState<Date | null>(
+    todo.startDate ? new Date(todo.startDate) : null
+  );
+  const [dueDate, setDueDate] = useState<Date | null>(todo.dueDate ? new Date(todo.dueDate) : null);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showDueDatePicker, setShowDueDatePicker] = useState(false);
 
@@ -48,29 +50,32 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
 
   // Get userId from local storage
   const [userId, setUserId] = useState<string | null>(null);
-  useEffect(() => {
-    const getUserId = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/profile`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${await AsyncStorage.getItem('userToken')}`,
-          },
-        });
-        if (response.ok) {
-          const user = await response.json();
-          setUserId(user._id || 'User');
-          return user._id || 'User';
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const getUserId = async () => {
+        try {
+          const response = await fetch(`${API_URL}/api/profile`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${await AsyncStorage.getItem('userToken')}`,
+            },
+          });
+          if (response.ok) {
+            const user = await response.json();
+            setUserId(user._id || 'User');
+            return user._id || 'User';
+          }
+          return 'User';
+        } catch (error) {
+          console.error('Error retrieving user ID:', error);
+          return 'User';
         }
-        return 'User';
-      } catch (error) {
-        console.error('Error retrieving user ID:', error);
-        return 'User';
-      }
-    };
-    getUserId();
-  }, []);
+      };
+      getUserId();
+    }, [])
+  );
 
   const handleStartDateChange = (event: any, selectedDate: Date | undefined) => {
     const currentDate = selectedDate || startDate;
@@ -255,7 +260,7 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
 
           {/* Add Todo */}
           <View style={{ marginTop: 24 }}>
-            <TouchableOpacity style={styles.button} onPress={() => updateTodo(todos[index]._id)}>
+            <TouchableOpacity style={styles.button} onPress={() => updateTodo(todo._id)}>
               <Text style={styles.buttonText}>Update Todo</Text>
             </TouchableOpacity>
           </View>

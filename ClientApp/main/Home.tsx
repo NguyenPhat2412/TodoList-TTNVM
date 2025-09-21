@@ -55,31 +55,56 @@ const Home = () => {
     }, [])
   );
 
-  // Fetch số lượng todos theo category
-  useEffect(() => {
-    if (!userId) return;
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`${API_URL}/api/todos/category/count/${userId}`);
-        const data = await res.json();
-        if (res.ok && data && typeof data === 'object') {
-          const formattedData = Object.entries(data).map(([category, count]) => ({
-            category,
-            count: Number(count),
-          }));
-          setCounts(formattedData);
-        } else {
-          setCounts([]);
+  // // Fetch số lượng todos theo category
+  // useEffect(() => {
+  //   if (!userId) return;
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const res = await fetch(`${API_URL}/api/todos/category/count/${userId}`);
+  //       const data = await res.json();
+  //       if (res.ok && data && typeof data === 'object') {
+  //         const formattedData = Object.entries(data).map(([category, count]) => ({
+  //           category,
+  //           count: Number(count),
+  //         }));
+  //         setCounts(formattedData);
+  //       } else {
+  //         setCounts([]);
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching todos:', err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [userId]);
+
+  // Use useFocusEffect to refresh counts when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      if (!userId) return;
+      const fetchCounts = async () => {
+        try {
+          const res = await fetch(`${API_URL}/api/todos/category/count/${userId}`);
+          const data = await res.json();
+          if (res.ok && data && typeof data === 'object') {
+            const formattedData = Object.entries(data).map(([category, count]) => ({
+              category,
+              count: Number(count),
+            }));
+            setCounts(formattedData);
+          } else {
+            setCounts([]);
+          }
+        } catch (err) {
+          console.error('Error fetching todos:', err);
         }
-      } catch (err) {
-        console.error('Error fetching todos:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [userId]);
+      };
+      fetchCounts();
+    }, [userId])
+  );
 
   const getCountForCategory = (name: string) => {
     const found = counts.find((c) => c.category === name);
@@ -98,7 +123,7 @@ const Home = () => {
 
       {/* Task Groups */}
       <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>Task Groups</Text>
+        <Text style={styles.logoText}>Task Group</Text>
         <Text style={styles.logoTextLength}>{counts.reduce((sum, c) => sum + c.count, 0)}</Text>
       </View>
     </View>

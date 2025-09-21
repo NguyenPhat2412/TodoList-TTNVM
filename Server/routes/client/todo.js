@@ -25,6 +25,7 @@ router.post("/login", todoController.loginUser);
 
 router.get("/logout", todoController.logoutUser);
 
+router.get("/selectCategory/:userId/:category", todoController.selectCategory);
 router.get(
   "/profile",
   authMiddlewareLocalStorage,
