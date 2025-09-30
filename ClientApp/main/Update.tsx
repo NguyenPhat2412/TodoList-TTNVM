@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
-import React, { useEffect, useState } from 'react';
+
+import { useCallback, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -16,28 +17,25 @@ import Feather from '@react-native-vector-icons/feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteProp, useFocusEffect } from '@react-navigation/native';
-
-interface Todo {
-  _id: string;
-  title: string;
-  completed: boolean;
-  description: string;
-  index: number;
-  category: string;
-  startDate: Date | null;
-  dueDate: Date | null;
-}
+import { Todo } from 'types/types';
 
 type UpdateRouteProp = RouteProp<{ UpdateTodo: { todo: Todo } }, 'UpdateTodo'>;
 export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
+  // Đường dẫn
   const { todo } = route.params;
-  console.log(todo);
+
+  // Các state của form.
   const [selected, setSelected] = useState(todo.category || 'Work');
   const [open, setOpen] = useState(false);
+
   const [showProjectName, setShowProjectName] = useState(false);
   const [projectName, setProjectName] = useState(todo.title || '');
   const [description, setDescription] = useState(todo.description || '');
 
+  const [prioritize, setPrioritize] = useState(todo.prioritize || 'Medium');
+  const [openPrioritize, setOpenPrioritize] = useState(false);
+  const [openProgress, setOpenProgress] = useState(false);
+  const [progress, setProgress] = useState(todo.progress || 'Not Start');
   const [startDate, setStartDate] = useState<Date | null>(
     todo.startDate ? new Date(todo.startDate) : null
   );
@@ -52,28 +50,22 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
   const [userId, setUserId] = useState<string | null>(null);
 
   useFocusEffect(
-    React.useCallback(() => {
-      const getUserId = async () => {
+    useCallback(() => {
+      const loadUserId = async () => {
         try {
-          const response = await fetch(`${API_URL}/api/profile`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${await AsyncStorage.getItem('userToken')}`,
-            },
-          });
-          if (response.ok) {
-            const user = await response.json();
-            setUserId(user._id || 'User');
-            return user._id || 'User';
+          const storedId = await AsyncStorage.getItem('userId');
+          console.log(storedId);
+
+          if (storedId) {
+            setUserId(storedId);
+          } else {
+            console.error('No userId found, user not logged in');
           }
-          return 'User';
         } catch (error) {
-          console.error('Error retrieving user ID:', error);
-          return 'User';
+          console.error('Error reading userId:', error);
         }
       };
-      getUserId();
+      loadUserId();
     }, [])
   );
 
@@ -104,23 +96,27 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId,
           title: projectName,
           completed: false,
           index,
           description,
-          startDate,
-          dueDate,
+          startDate: startDate ? startDate.toISOString() : null,
+          dueDate: dueDate ? dueDate.toISOString() : null,
+          prioritize,
+          progress,
           category: selected,
         }),
       });
       const data: Todo = await res.json();
+
       setTodos((prev) => prev.map((t) => (t._id === id ? data : t)));
       setProjectName('');
       setDescription('');
       setStartDate(null);
       setDueDate(null);
       setSelected('Work');
+      setPrioritize('Medium');
+      setProgress('Not Start');
       setShowProjectName(false);
       Keyboard.dismiss();
     } catch (err) {
@@ -135,7 +131,6 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <View style={styles.wrapper}>
           {/* Select Box */}
-
           <TouchableOpacity style={styles.selectBox} onPress={() => setOpen(!open)}>
             {/* Left icon + label */}
             <View style={styles.left}>
@@ -151,7 +146,6 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
             {/* Right arrow */}
             <Feather name={open ? 'chevron-up' : 'chevron-down'} size={20} color="#333" />
           </TouchableOpacity>
-
           {/* Dropdown list */}
           {open && (
             <View style={styles.dropdown}>
@@ -171,7 +165,74 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
               />
             </View>
           )}
+          <TouchableOpacity
+            style={styles.selectBox}
+            onPress={() => setOpenPrioritize(!openPrioritize)}>
+            {/* Left icon + label */}
+            <View style={styles.left}>
+              <View style={styles.iconBox}>
+                <Feather name="briefcase" size={20} color="#ff7eb9" />
+              </View>
+              <View>
+                <Text style={styles.label}>Prioritize</Text>
+                <Text style={styles.value}>{prioritize}</Text>
+              </View>
+            </View>
 
+            {/* Right arrow */}
+            <Feather name={open ? 'chevron-up' : 'chevron-down'} size={20} color="#333" />
+          </TouchableOpacity>
+          {openPrioritize && (
+            <View style={styles.dropdown}>
+              <FlatList
+                data={['Low', 'Medium', 'High']}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.dropdownItem}
+                    onPress={() => {
+                      setPrioritize(item);
+                      setOpenPrioritize(false);
+                    }}>
+                    <Text style={styles.dropdownText}>{item}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          )}
+          <TouchableOpacity style={styles.selectBox} onPress={() => setOpenProgress(!openProgress)}>
+            {/* Left icon + label */}
+            <View style={styles.left}>
+              <View style={styles.iconBox}>
+                <Feather name="briefcase" size={20} color="#ff7eb9" />
+              </View>
+              <View>
+                <Text style={styles.label}>In Progress</Text>
+                <Text style={styles.value}>{progress}</Text>
+              </View>
+            </View>
+
+            {/* Right arrow */}
+            <Feather name={openProgress ? 'chevron-up' : 'chevron-down'} size={20} color="#333" />
+          </TouchableOpacity>
+          {openProgress && (
+            <View style={styles.dropdown}>
+              <FlatList
+                data={['Not Start', 'In Progress', 'Completed', 'Interruption']}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.dropdownItem}
+                    onPress={() => {
+                      setProgress(item);
+                      setOpenProgress(false);
+                    }}>
+                    <Text style={styles.dropdownText}>{item}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          )}
           {/* Project Name */}
           <View style={styles.projectName}>
             <Text style={styles.projectNameLabel}>Project Name</Text>
@@ -182,7 +243,6 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
               placeholder="Enter project name"
             />
           </View>
-
           {/* Description */}
           <View style={styles.description}>
             <Text style={styles.descriptionLabel}>Description</Text>
@@ -194,7 +254,6 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
               multiline
             />
           </View>
-
           {/* Set up start date and due date here */}
           <View style={styles.calendarContainer}>
             <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
@@ -247,7 +306,7 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
             </TouchableOpacity>
           </View>
 
-          {/* Change Logo */}
+          {/* Change Logo
           <View style={styles.projectName}>
             <Text style={styles.projectNameLabel}>Project Logo</Text>
             <TouchableOpacity
@@ -256,8 +315,7 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
               <Text>{showProjectName ? 'Logo Selected' : 'Select Logo'}</Text>
               <Feather name="image" size={20} color="#333" />
             </TouchableOpacity>
-          </View>
-
+          </View> */}
           {/* Add Todo */}
           <View style={{ marginTop: 24 }}>
             <TouchableOpacity style={styles.button} onPress={() => updateTodo(todo._id)}>
@@ -281,6 +339,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#fff',
     padding: 16,
+    marginTop: 16,
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 6,

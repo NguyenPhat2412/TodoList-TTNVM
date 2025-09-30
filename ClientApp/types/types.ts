@@ -7,8 +7,17 @@ export interface Todo {
   category?: string;
   startDate?: Date | null;
   dueDate?: Date | null;
+  userId?: string;
+  prioritize?: string;
+  progress?: string;
 }
 
+export interface Data {
+  _id: string;
+  id: number;
+  title: string;
+  completed: boolean;
+}
 export type RootStackParamList = {
   About: undefined;
   Home: undefined;

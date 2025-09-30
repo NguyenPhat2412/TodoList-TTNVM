@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Text,
   View,
@@ -6,8 +6,13 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
 } from 'react-native';
-import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
+import DraggableFlatList, {
+  RenderItemParams,
+  ScaleDecorator,
+} from 'react-native-draggable-flatlist';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
@@ -17,6 +22,9 @@ import { RootStackParamList, Todo } from 'types/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import ListCategory from 'components/ListCategory';
 import { useCategory } from 'Context/useCategory';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
+import CustomDay from 'components/CustomDay';
 
 type AboutNavProp = StackNavigationProp<RootStackParamList, 'About'>;
 const About = () => {
@@ -47,31 +55,29 @@ const About = () => {
     }, [])
   );
 
-  useFocusEffect(
-    // Fetch todos
-    React.useCallback(() => {
-      if (!userId) return;
-      const fetchData = async () => {
-        try {
-          const res = await fetch(`${API_URL}/api/todos/user/${userId}`);
-          const data = await res.json();
+  // Fetch todos
+  useEffect(() => {
+    if (!userId) return;
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/todos/user/${userId}`);
+        const data = await res.json();
 
-          if (res?.ok) {
-            const sortedData = data.sort((a: Todo, b: Todo) => (a.index || 0) - (b.index || 0));
-            setAllTodos(sortedData);
-            setTodos(sortedData);
-          } else {
-            setTodos([]);
-          }
-        } catch (err) {
-          console.error('Error fetching todos:', err);
-        } finally {
-          setLoading(false);
+        if (res?.ok) {
+          const sortedData = data.sort((a: Todo, b: Todo) => (a.index || 0) - (b.index || 0));
+          setAllTodos(sortedData);
+          setTodos(sortedData);
+        } else {
+          setTodos([]);
         }
-      };
-      fetchData();
-    }, [userId])
-  );
+      } catch (err) {
+        console.error('Error fetching todos:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [userId]);
 
   // Lọc theo danh mục đã chọn
   useEffect(() => {
@@ -96,20 +102,14 @@ const About = () => {
   // Render item cho DraggableFlatList
   const renderItem = useCallback(
     ({ item, drag, isActive }: RenderItemParams<Todo>) => (
-      <TouchableOpacity
-        style={[styles.todoItem, { backgroundColor: isActive ? '#f0f9ff' : '#fff' }]}
-        onLongPress={drag}
-        onPress={() => {
-          navigation.navigate('UpdateTodo', { todo: item });
-        }}>
-        <View style={{ flex: 1 }}>
-          <Text style={{ color: '#555', fontSize: 14 }}>{item.description}</Text>
-          <Text style={styles.todoText}>{item.title}</Text>
-        </View>
-        <TouchableOpacity onPress={() => deleteTodo(item._id)}>
-          <Text style={styles.deleteText}>❌</Text>
-        </TouchableOpacity>
-      </TouchableOpacity>
+      <ScaleDecorator>
+        <Pressable
+          onLongPress={drag}
+          disabled={isActive}
+          style={[styles.todoItem, { backgroundColor: isActive ? '#e2e3e5' : '#fff' }]}>
+          <Text>{item.title}</Text>
+        </Pressable>
+      </ScaleDecorator>
     ),
     []
   );
@@ -118,6 +118,7 @@ const About = () => {
   const ListHeader = () => (
     <View
       style={{ marginBottom: 20, marginTop: 10, backgroundColor: '#f9f9f9', marginHorizontal: 8 }}>
+      <CustomDay />
       <ListCategory />
       {loading && <Text>Loading...</Text>}
     </View>
@@ -127,6 +128,51 @@ const About = () => {
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: '#f9f9f9' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <LinearGradient
+        colors={['#dff3ff', '#fef6ff']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+      />
+      <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFillObject}>
+        <View
+          style={{
+            position: 'absolute',
+            top: 50,
+            left: -50,
+            width: 200,
+            height: 200,
+            borderRadius: 100,
+            backgroundColor: '#9b5de5',
+            opacity: 0.15,
+            shadowColor: '#000',
+            shadowOpacity: 0.3,
+            shadowRadius: 20,
+            shadowOffset: { width: 0, height: 10 },
+            elevation: 10,
+          }}
+        />
+      </BlurView>
+      <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFillObject}>
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 100,
+            right: -30,
+            width: 150,
+            height: 150,
+            borderRadius: 75,
+            backgroundColor: '#00bbf9',
+            opacity: 0.15,
+            shadowColor: '#000',
+            shadowOpacity: 0.3,
+            shadowRadius: 20,
+            shadowOffset: { width: 0, height: 10 },
+            elevation: 10,
+          }}
+        />
+      </BlurView>
+
       <DraggableFlatList
         data={todos}
         keyExtractor={(item) => item._id}
@@ -228,5 +274,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#e0f0ff',
     marginLeft: 8,
+  },
+  progress: {
+    fontSize: 12,
+    color: '#0984e3',
+    marginTop: 4,
+    textAlign: 'right',
+    fontWeight: '600',
   },
 });

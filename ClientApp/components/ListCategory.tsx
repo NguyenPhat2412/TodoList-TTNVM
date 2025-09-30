@@ -1,14 +1,6 @@
 // CategorySelector.tsx
-import React, { useRef } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Animated,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import { useRef } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, ScrollView, Animated } from 'react-native';
 import { useCategory } from '../Context/useCategory';
 
 const categories = ['All', 'Work', 'Personal', 'Shopping', 'Others'];
@@ -33,27 +25,30 @@ export default function ListCategory() {
 
   return (
     <View style={styles.container}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {categories.map((cat) => (
-          <Animated.View key={cat} style={{ transform: [{ scale }] }}>
-            <TouchableOpacity
-              style={[styles.button, selectedCategory === cat && styles.activeButton]}
-              onPress={() => setSelectedCategory(cat)}
-              onPressIn={handlePressIn}
-              onPressOut={handlePressOut}>
-              <Text style={[styles.text, selectedCategory === cat && styles.activeText]}>
-                {cat}
-              </Text>
-            </TouchableOpacity>
-          </Animated.View>
-        ))}
-      </ScrollView>
+      {categories.map((cat) => (
+        <Animated.View key={cat} style={{ transform: [{ scale }] }}>
+          <TouchableOpacity
+            style={[styles.button, selectedCategory === cat && styles.activeButton]}
+            onPress={() => setSelectedCategory(cat)}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}>
+            <Text style={[styles.text, selectedCategory === cat && styles.activeText]}>{cat}</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginVertical: 12 },
+  container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginVertical: 12,
+    position: 'relative',
+    zIndex: 1,
+  },
   button: {
     paddingVertical: 10,
     paddingHorizontal: 18,

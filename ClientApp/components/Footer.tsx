@@ -37,7 +37,7 @@ const Footer = () => {
   return (
     <View style={styles.container}>
       <Svg width={width} height={height} style={styles.background}>
-        <Path d={d} fill="#e9aff5ff" />
+        <Path d={d} fill="#7e57c2" />
       </Svg>
 
       <View style={styles.iconRow}>
@@ -51,7 +51,7 @@ const Footer = () => {
       <View style={styles.plusWrapper}>
         <TouchableOpacity
           style={styles.plusButton}
-          onPress={() => navigation.navigate('Contact' as never)}>
+          onPress={() => navigation.navigate('AddTodo' as never)}>
           <Feather name="plus" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#b700ff',
+    backgroundColor: '#7e57c2',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   icon: {
-    color: '#c300ffff',
+    color: '#673ab7',
     fontSize: 24,
   },
 });

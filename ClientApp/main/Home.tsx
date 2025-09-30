@@ -17,6 +17,9 @@ import Navbar from 'components/Navbar';
 import ViewTask from 'components/ViewTask';
 import InProgress from 'components/InProgress';
 import Feather from '@react-native-vector-icons/feather';
+import { useFonts } from 'expo-font';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 interface CategoryCount {
   category: string;
@@ -36,16 +39,21 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
 
+  const [fontsLoaded] = useFonts({
+    'PatrickHand-Regular': require('../assets/fonts/PatrickHand-Regular.ttf'),
+  });
   // Lấy userId từ AsyncStorage
   useFocusEffect(
     useCallback(() => {
       const loadUserId = async () => {
         try {
           const storedId = await AsyncStorage.getItem('userId');
+          console.log(storedId);
+
           if (storedId) {
             setUserId(storedId);
           } else {
-            console.log('No userId found, user not logged in');
+            console.error('No userId found, user not logged in');
           }
         } catch (error) {
           console.error('Error reading userId:', error);
@@ -123,22 +131,65 @@ const Home = () => {
 
       {/* Task Groups */}
       <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>Task Group</Text>
+        <Text style={styles.logoText}>Tasks Group</Text>
         <Text style={styles.logoTextLength}>{counts.reduce((sum, c) => sum + c.count, 0)}</Text>
       </View>
     </View>
   );
 
   return (
-    <>
-      <ListHeader />
+    <View style={{ flex: 1 }}>
       <KeyboardAvoidingView
         style={{ flex: 1, backgroundColor: '#f9f9f9' }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <LinearGradient
+          colors={['#dff3ff', '#fef6ff']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
+        <BlurView
+          style={{
+            position: 'absolute',
+            top: 50,
+            left: -50,
+            width: 200,
+            height: 200,
+            borderRadius: 100,
+            backgroundColor: '#9b5de5',
+            opacity: 0.15,
+            shadowColor: '#000',
+            shadowOpacity: 0.3,
+            shadowRadius: 20,
+            shadowOffset: { width: 0, height: 10 },
+            elevation: 10,
+          }}
+        />
+
+        <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFillObject}>
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 100,
+              right: -30,
+              width: 150,
+              height: 150,
+              borderRadius: 75,
+              backgroundColor: '#00bbf9',
+              opacity: 0.15,
+              shadowColor: '#000',
+              shadowOpacity: 0.3,
+              shadowRadius: 20,
+              shadowOffset: { width: 0, height: 10 },
+              elevation: 10,
+            }}
+          />
+        </BlurView>
         <FlatList
           data={categories}
           keyExtractor={(item) => item.name}
           contentContainerStyle={styles.listContainer}
+          ListHeaderComponent={<ListHeader />}
           renderItem={({ item }) => (
             <TouchableOpacity style={[styles.card, { borderLeftColor: item.color }]}>
               <View style={styles.cardLeft}>
@@ -156,7 +207,7 @@ const Home = () => {
           ListEmptyComponent={loading ? <Text style={styles.loading}>Loading...</Text> : null}
         />
       </KeyboardAvoidingView>
-    </>
+    </View>
   );
 };
 
@@ -220,12 +271,12 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '600',
     color: '#111',
   },
   cardCount: {
-    fontSize: 13,
+    fontSize: 16,
     color: '#555',
   },
   loading: {

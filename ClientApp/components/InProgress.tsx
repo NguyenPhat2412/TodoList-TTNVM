@@ -4,16 +4,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 import { Text, View, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
-
-interface Data {
-  _id: string;
-  id: number;
-  title: string;
-  completed: boolean;
-}
+import { Todo } from 'types/types';
 
 const InProgress = () => {
-  const [data, setData] = useState<Data[]>([]);
+  const [data, setData] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [userId, setUserId] = useState<string>('');
@@ -86,8 +80,7 @@ const InProgress = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>In Progress</Text>
-
+      <Text style={styles.header}>List In Progress</Text>
       {/* Horizontal ScrollView for cards */}
       <ScrollView
         horizontal
@@ -96,7 +89,9 @@ const InProgress = () => {
         {data.map((item) => (
           <View key={item._id} style={styles.card}>
             <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.status}>{item.completed ? '✅ Completed' : '⌛ In Progress'}</Text>
+            <Text style={styles.status}>
+              {item.progress === 'completed' ? '✅ Completed' : '⌛ In Progress'}
+            </Text>
           </View>
         ))}
       </ScrollView>

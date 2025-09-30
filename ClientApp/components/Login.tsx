@@ -66,7 +66,7 @@ const Login = () => {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.container}>
-        <Text style={styles.title}>Login</Text>
+        <Text style={styles.title}>Login App Todo</Text>
 
         <TextInput
           style={styles.input}
@@ -88,7 +88,7 @@ const Login = () => {
         />
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login App Todo</Text>
+          <Text style={styles.buttonText}>Login App</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

@@ -84,7 +84,7 @@ const Profile = () => {
             }}
             style={styles.avatar}
           />
-          <Text style={styles.name}>Welcome, Guest!</Text>
+          <Text style={styles.name}>Welcome, Guests!</Text>
           <Text style={styles.email}>Please login or register</Text>
 
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
@@ -103,7 +103,7 @@ const Profile = () => {
               navigation.navigate('Home' as never);
               handleLogout();
             }}>
-            <Text style={styles.buttonText}>Go to Home</Text>
+            <Text style={styles.buttonText}>Go to Dashboard</Text>
           </TouchableOpacity>
         </>
       )}
