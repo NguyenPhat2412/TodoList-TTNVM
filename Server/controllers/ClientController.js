@@ -30,6 +30,8 @@ exports.createTodo = async (req, res) => {
     category,
     startDate,
     dueDate,
+    prioritize,
+    progress,
   } = req.body;
   try {
     if (!title) {
@@ -63,6 +65,8 @@ exports.createTodo = async (req, res) => {
       category,
       startDate,
       dueDate,
+      prioritize,
+      progress,
     });
 
     const savedTodo = await newTodo.save();
@@ -124,8 +128,16 @@ exports.getTodoById = async (req, res) => {
 exports.updateTodo = async (req, res) => {
   const { id } = req.params;
   try {
-    const { title, completed, description, category, startDate, dueDate } =
-      req.body;
+    const {
+      title,
+      completed,
+      description,
+      category,
+      startDate,
+      dueDate,
+      prioritize,
+      progress,
+    } = req.body;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid todo ID" });
     }
@@ -152,6 +164,8 @@ exports.updateTodo = async (req, res) => {
         category,
         startDate,
         dueDate,
+        prioritize,
+        progress,
         updatedAt: Date.now(),
       },
       { new: true }

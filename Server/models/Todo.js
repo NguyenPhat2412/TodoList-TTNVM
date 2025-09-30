@@ -10,6 +10,8 @@ const TodoSchema = new Schema({
   category: { type: String, default: "Work", required: true },
   startDate: { type: Date, default: null },
   dueDate: { type: Date, default: null },
+  progress: { type: String, default: "Not Start", required: true },
+  prioritize: { type: String, default: "Medium", required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
