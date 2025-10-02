@@ -20,15 +20,27 @@ router.get(
   "/todos/category/count/:userId",
   todoController.getNumberOfCategoriesTodo
 );
+
+// register
 router.post("/register", todoController.registerUser);
+
+// login
 router.post("/login", todoController.loginUser);
 
+// logout
 router.get("/logout", todoController.logoutUser);
 
+// select category
 router.get("/selectCategory/:userId/:category", todoController.selectCategory);
+
+// get user profile
 router.get(
   "/profile",
   authMiddlewareLocalStorage,
   todoController.getUserProfile
 );
+
+// get todo by userId and category
+router.get("/todos/:userId/:category", todoController.getTodoByCategory);
+
 module.exports = router;

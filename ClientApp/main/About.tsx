@@ -6,12 +6,8 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
 } from 'react-native';
-import DraggableFlatList, {
-  RenderItemParams,
-  ScaleDecorator,
-} from 'react-native-draggable-flatlist';
+import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // eslint-disable-next-line import/no-unresolved
@@ -102,14 +98,35 @@ const About = () => {
   // Render item cho DraggableFlatList
   const renderItem = useCallback(
     ({ item, drag, isActive }: RenderItemParams<Todo>) => (
-      <ScaleDecorator>
-        <Pressable
-          onLongPress={drag}
-          disabled={isActive}
-          style={[styles.todoItem, { backgroundColor: isActive ? '#e2e3e5' : '#fff' }]}>
-          <Text>{item.title}</Text>
-        </Pressable>
-      </ScaleDecorator>
+      <TouchableOpacity
+        style={[
+          styles.todoItem,
+          {
+            backgroundColor:
+              item.prioritize === 'Low'
+                ? '#d4edda'
+                : item.prioritize === 'Medium'
+                  ? '#fff3cd'
+                  : item.prioritize === 'High'
+                    ? '#f8d7da'
+                    : isActive
+                      ? '#e2e3e5'
+                      : '#ffffff',
+          },
+        ]}
+        onLongPress={drag}
+        onPress={() => {
+          navigation.navigate('UpdateTodo', { todo: item });
+        }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: '#555', fontSize: 14 }}>{item.description}</Text>
+          <Text style={styles.todoText}>{item.title}</Text>
+        </View>
+        <TouchableOpacity onPress={() => deleteTodo(item._id)}>
+          <Text style={styles.deleteText}>❌</Text>
+          <Text style={styles.progress}>{item.progress}</Text>
+        </TouchableOpacity>
+      </TouchableOpacity>
     ),
     []
   );

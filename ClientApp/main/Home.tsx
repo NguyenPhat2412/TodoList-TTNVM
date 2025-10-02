@@ -7,8 +7,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
+  Modal,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // eslint-disable-next-line import/no-unresolved
@@ -20,6 +21,8 @@ import Feather from '@react-native-vector-icons/feather';
 import { useFonts } from 'expo-font';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
+import { useCategory } from 'Context/useCategory';
+import { Todo } from 'types/types';
 
 interface CategoryCount {
   category: string;
@@ -38,31 +41,53 @@ const Home = () => {
   const [counts, setCounts] = useState<CategoryCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [tasks, setTasks] = useState<Todo[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
+  const navigator = useNavigation();
   const [fontsLoaded] = useFonts({
     'PatrickHand-Regular': require('../assets/fonts/PatrickHand-Regular.ttf'),
   });
+
+  // Fetch tasks by category (for modal)
+  const fetchTasksByCategory = async (category: string) => {
+    if (!userId) return;
+    try {
+      const res = await fetch(`${API_URL}/api/todos/${userId}/${category}`);
+      const data = await res.json();
+      if (res.ok) {
+        setTasks(data);
+      } else {
+        setTasks([]);
+      }
+    } catch (err) {
+      throw new Error('Error fetching tasks by category:', err as any);
+    }
+  };
   // Lấy userId từ AsyncStorage
   useFocusEffect(
     useCallback(() => {
       const loadUserId = async () => {
         try {
           const storedId = await AsyncStorage.getItem('userId');
-          console.log(storedId);
 
           if (storedId) {
             setUserId(storedId);
           } else {
-            console.error('No userId found, user not logged in');
+            navigator.navigate('Login' as never);
           }
         } catch (error) {
-          console.error('Error reading userId:', error);
+          throw new Error('Error reading userId:', error as any);
         }
       };
       loadUserId();
     }, [])
   );
 
+  // if (userId === null) {
+  //   navigator.navigate('Login' as never);
+  // }
   // // Fetch số lượng todos theo category
   // useEffect(() => {
   //   if (!userId) return;
@@ -107,7 +132,9 @@ const Home = () => {
             setCounts([]);
           }
         } catch (err) {
-          console.error('Error fetching todos:', err);
+          throw new Error('Error fetching todos:', err as any);
+        } finally {
+          setLoading(false);
         }
       };
       fetchCounts();
@@ -119,6 +146,10 @@ const Home = () => {
     return found ? found.count : 0;
   };
 
+  const getCategoryColor = (name: string) => {
+    const category = categories.find((cat) => cat.name === name);
+    return category ? category.color : '#ccc';
+  };
   const ListHeader = () => (
     <View>
       <Navbar />
@@ -191,7 +222,13 @@ const Home = () => {
           contentContainerStyle={styles.listContainer}
           ListHeaderComponent={<ListHeader />}
           renderItem={({ item }) => (
-            <TouchableOpacity style={[styles.card, { borderLeftColor: item.color }]}>
+            <TouchableOpacity
+              style={[styles.card, { borderLeftColor: item.color }]}
+              onPress={() => {
+                setSelectedCategory(item.name);
+                setModalVisible(true);
+                fetchTasksByCategory(item.name);
+              }}>
               <View style={styles.cardLeft}>
                 <View style={[styles.iconBox, { backgroundColor: item.color }]}>
                   <Feather name={item.icon as any} size={20} color="#fff" />
@@ -206,6 +243,40 @@ const Home = () => {
           )}
           ListEmptyComponent={loading ? <Text style={styles.loading}>Loading...</Text> : null}
         />
+
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>{selectedCategory} Tasks</Text>
+
+              <FlatList
+                data={tasks}
+                keyExtractor={(task, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <>
+                    <View style={styles.taskItem}>
+                      <Text style={styles.taskTitle}>{item.title}</Text>
+                      <Text style={styles.taskDesc}>{item.description}</Text>
+                    </View>
+                  </>
+                )}
+                ListEmptyComponent={<Text style={styles.noTasks}>No tasks available</Text>}
+              />
+              <TouchableOpacity
+                style={[
+                  styles.closeButton,
+                  { backgroundColor: getCategoryColor(selectedCategory) },
+                ]}
+                onPress={() => setModalVisible(false)}>
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     </View>
   );
@@ -283,5 +354,50 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     color: '#666',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '85%',
+    maxHeight: '70%',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  taskItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  taskTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  taskDesc: {
+    fontSize: 14,
+    color: '#666',
+  },
+  noTasks: {
+    textAlign: 'center',
+    marginVertical: 20,
+    color: '#999',
+  },
+  closeButton: {
+    marginTop: 15,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    backgroundColor: '#007bff',
   },
 });

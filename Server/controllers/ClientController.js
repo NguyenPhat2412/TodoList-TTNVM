@@ -231,6 +231,24 @@ exports.getNumberOfCategoriesTodo = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve todos" });
   }
 };
+
+exports.getTodoByCategory = async (req, res) => {
+  const { userId, category } = req.params;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+    const todos = await Todo.find({
+      userId: userId,
+      category: category,
+    }).sort({ index: 1 });
+
+    res.status(200).json(todos);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to retrieve todos" });
+  }
+};
+
 // User Registration
 exports.registerUser = async (req, res) => {
   const { name, email, phone, password } = req.body;
