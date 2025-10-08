@@ -21,7 +21,6 @@ import Feather from '@react-native-vector-icons/feather';
 import { useFonts } from 'expo-font';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { useCategory } from 'Context/useCategory';
 import { Todo } from 'types/types';
 
 interface CategoryCount {
@@ -30,11 +29,11 @@ interface CategoryCount {
 }
 
 const categories = [
-  { name: 'Work', color: '#ff7eb9', icon: 'briefcase' },
-  { name: 'Personal', color: '#7afcff', icon: 'user' },
-  { name: 'Shopping', color: '#feff9c', icon: 'shopping-cart' },
-  { name: 'Fitness', color: '#b9ffb7', icon: 'activity' },
-  { name: 'Others', color: '#fbc1ff', icon: 'layers' },
+  { name: 'Work', color: '#ff0000ff', icon: 'briefcase' },
+  { name: 'Personal', color: '#007274ff', icon: 'user' },
+  { name: 'Shopping', color: '#636400ff', icon: 'shopping-cart' },
+  { name: 'Fitness', color: '#1d571bff', icon: 'activity' },
+  { name: 'Others', color: '#7c0085ff', icon: 'layers' },
 ];
 
 const Home = () => {
@@ -286,7 +285,8 @@ export default Home;
 
 const styles = StyleSheet.create({
   listContainer: {
-    padding: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     paddingBottom: 40,
   },
   section: {

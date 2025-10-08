@@ -6,14 +6,8 @@ import { useFonts } from 'expo-font';
 
 //Main Screens
 import Home from 'main/Home';
-import {
-  ActivityIndicator,
-  Keyboard,
-  Pressable,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
-import CustomHeader from 'components/CustomHeader';
+import { ActivityIndicator, Keyboard, Pressable, View } from 'react-native';
+import CustomHeaderHome from 'components/CustomHeaderHome';
 import Footer from 'components/Footer';
 import About from 'main/About';
 import Privacy from 'main/Privacy';
@@ -91,18 +85,38 @@ export default function App() {
                     name="Home"
                     component={Home}
                     options={{
-                      headerTitle: () => <CustomHeader />,
+                      headerTitle: () => <CustomHeaderHome />,
                       headerBackVisible: false,
                     }}
                   />
 
-                  <Stack.Screen name="About" component={About} />
-                  <Stack.Screen name="AddTodo" component={AddTodo} />
-                  <Stack.Screen name="Privacy" component={Privacy} />
-                  <Stack.Screen name="Profile" component={Profile} />
-                  <Stack.Screen name="Login" component={Login} />
-                  <Stack.Screen name="Register" component={Register} />
-                  <Stack.Screen name="UpdateTodo" component={UpdateTodo} />
+                  <Stack.Screen name="About" component={About} options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="AddTodo"
+                    component={AddTodo}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Privacy"
+                    component={Privacy}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Profile"
+                    component={Profile}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="Register"
+                    component={Register}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="UpdateTodo"
+                    component={UpdateTodo}
+                    options={{ headerShown: false }}
+                  />
                 </Stack.Navigator>
               </View>
 

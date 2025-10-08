@@ -23,6 +23,7 @@ const Profile = () => {
 
     // Delete token trong async storage
     AsyncStorage.removeItem('userToken');
+    AsyncStorage.removeItem('userId');
     console.log('User logged out');
   };
 
@@ -74,6 +75,9 @@ const Profile = () => {
 
           <TouchableOpacity style={styles.buttonLogout} onPress={handleLogout}>
             <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonUpdate} onPress={handleLogout}>
+            <Text style={styles.buttonText}>Update Account</Text>
           </TouchableOpacity>
         </>
       ) : (
@@ -151,6 +155,13 @@ const styles = StyleSheet.create({
   },
   buttonLogout: {
     backgroundColor: '#dc3545',
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  buttonUpdate: {
+    backgroundColor: '#007bff',
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 8,

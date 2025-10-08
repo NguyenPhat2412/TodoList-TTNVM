@@ -16,10 +16,11 @@ import {
 import Feather from '@react-native-vector-icons/feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Todo } from 'types/types';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
+import CustomHeader from 'components/CustomHeader';
 
 export default function CategorySelect() {
   const [selected, setSelected] = useState('Work');
@@ -45,6 +46,7 @@ export default function CategorySelect() {
   // Get userId from local storage
   const [userId, setUserId] = useState<string | null>(null);
 
+  const navigator = useNavigation();
   useFocusEffect(
     useCallback(() => {
       const loadUserId = async () => {
@@ -55,7 +57,7 @@ export default function CategorySelect() {
           if (storedId) {
             setUserId(storedId);
           } else {
-            console.error('No userId found, user not logged in');
+            navigator.navigate('Login' as never);
           }
         } catch (error) {
           console.error('Error reading userId:', error);
@@ -123,7 +125,7 @@ export default function CategorySelect() {
   const categories = ['Work', 'Personal', 'Shopping', 'Others'];
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#f9f9f9' }}>
+    <ScrollView style={{ flex: 1, backgroundColor: '#f9f9f9', marginTop: 50 }}>
       <LinearGradient
         colors={['#dff3ff', '#fef6ff']}
         start={{ x: 0, y: 0 }}
@@ -171,6 +173,8 @@ export default function CategorySelect() {
       </BlurView>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+          <CustomHeader title="Add Todo" />
+
           <View style={styles.wrapper}>
             {/* Select Box */}
             <TouchableOpacity style={styles.selectBox} onPress={() => setOpen(!open)}>

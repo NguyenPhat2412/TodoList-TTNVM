@@ -4,10 +4,9 @@ import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { Todo } from 'types/types';
-import * as Notifications from 'expo-notifications';
 
 const ViewTask = () => {
   const [data, setData] = useState<Todo[]>([]);
@@ -43,8 +42,7 @@ const ViewTask = () => {
 
   const handleViewTasks = () => {
     // Logic to navigate to the task list or perform any action
-    console.log('View Tasks button pressed');
-    console.log(data);
+    Alert.alert('View Tasks', 'Navigating to task list...');
   };
 
   return (
@@ -104,7 +102,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
     marginTop: 20,
-    marginHorizontal: 20,
+    marginHorizontal: 0,
     position: 'relative',
     zIndex: 1,
     flexDirection: 'row',

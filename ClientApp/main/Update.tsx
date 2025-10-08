@@ -12,12 +12,16 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { Todo } from 'types/types';
+import CustomHeader from 'components/CustomHeader';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 type UpdateRouteProp = RouteProp<{ UpdateTodo: { todo: Todo } }, 'UpdateTodo'>;
 export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
@@ -127,186 +131,235 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
   const categories = ['Work', 'Personal', 'Shopping', 'Others'];
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-        <View style={styles.wrapper}>
-          {/* Select Box */}
-          <TouchableOpacity style={styles.selectBox} onPress={() => setOpen(!open)}>
-            {/* Left icon + label */}
-            <View style={styles.left}>
-              <View style={styles.iconBox}>
-                <Feather name="briefcase" size={20} color="#ff7eb9" />
-              </View>
-              <View>
-                <Text style={styles.label}>Task Group</Text>
-                <Text style={styles.value}>{selected}</Text>
-              </View>
-            </View>
+    <ScrollView style={{ flex: 1 }}>
+      <LinearGradient
+        colors={['#dff3ff', '#fef6ff']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+      />
 
-            {/* Right arrow */}
-            <Feather name={open ? 'chevron-up' : 'chevron-down'} size={20} color="#333" />
-          </TouchableOpacity>
-          {/* Dropdown list */}
-          {open && (
-            <View style={styles.dropdown}>
-              <FlatList
-                data={categories}
-                keyExtractor={(item) => item}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      setSelected(item);
-                      setOpen(false);
-                    }}>
-                    <Text style={styles.dropdownText}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          )}
-          <TouchableOpacity
-            style={styles.selectBox}
-            onPress={() => setOpenPrioritize(!openPrioritize)}>
-            {/* Left icon + label */}
-            <View style={styles.left}>
-              <View style={styles.iconBox}>
-                <Feather name="briefcase" size={20} color="#ff7eb9" />
-              </View>
-              <View>
-                <Text style={styles.label}>Prioritize</Text>
-                <Text style={styles.value}>{prioritize}</Text>
-              </View>
-            </View>
+      <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFillObject}>
+        <View
+          style={{
+            position: 'absolute',
+            top: 50,
+            left: -50,
+            width: 200,
+            height: 200,
+            borderRadius: 100,
+            backgroundColor: '#9b5de5',
+            opacity: 0.15,
+            shadowColor: '#000',
+            shadowOpacity: 0.3,
+            shadowRadius: 20,
+            shadowOffset: { width: 0, height: 10 },
+            elevation: 10,
+          }}></View>
+      </BlurView>
 
-            {/* Right arrow */}
-            <Feather name={open ? 'chevron-up' : 'chevron-down'} size={20} color="#333" />
-          </TouchableOpacity>
-          {openPrioritize && (
-            <View style={styles.dropdown}>
-              <FlatList
-                data={['Low', 'Medium', 'High']}
-                keyExtractor={(item) => item}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      setPrioritize(item);
-                      setOpenPrioritize(false);
-                    }}>
-                    <Text style={styles.dropdownText}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          )}
-          <TouchableOpacity style={styles.selectBox} onPress={() => setOpenProgress(!openProgress)}>
-            {/* Left icon + label */}
-            <View style={styles.left}>
-              <View style={styles.iconBox}>
-                <Feather name="briefcase" size={20} color="#ff7eb9" />
-              </View>
-              <View>
-                <Text style={styles.label}>In Progress</Text>
-                <Text style={styles.value}>{progress}</Text>
-              </View>
-            </View>
-
-            {/* Right arrow */}
-            <Feather name={openProgress ? 'chevron-up' : 'chevron-down'} size={20} color="#333" />
-          </TouchableOpacity>
-          {openProgress && (
-            <View style={styles.dropdown}>
-              <FlatList
-                data={['Not Start', 'In Progress', 'Completed', 'Interruption']}
-                keyExtractor={(item) => item}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      setProgress(item);
-                      setOpenProgress(false);
-                    }}>
-                    <Text style={styles.dropdownText}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          )}
-          {/* Project Name */}
-          <View style={styles.projectName}>
-            <Text style={styles.projectNameLabel}>Project Name</Text>
-            <TextInput
-              style={styles.projectNameInput}
-              value={projectName}
-              onChangeText={setProjectName}
-              placeholder="Enter project name"
-            />
-          </View>
-          {/* Description */}
-          <View style={styles.description}>
-            <Text style={styles.descriptionLabel}>Description</Text>
-            <TextInput
-              style={styles.descriptionInput}
-              value={description}
-              onChangeText={setDescription}
-              placeholder="Enter task description"
-              multiline
-            />
-          </View>
-          {/* Set up start date and due date here */}
-          <View style={styles.calendarContainer}>
-            <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
-              <View style={styles.datePickerContainer}>
-                <View style={styles.datePickerContent}>
-                  <Feather name="calendar" size={20} color="#333" />
-                  <Text style={styles.datePickerLabel}>
-                    Start Date: {startDate ? startDate.toDateString() : 'Not set'}
-                  </Text>
+      <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFillObject}>
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 100,
+            right: -30,
+            width: 150,
+            height: 150,
+            borderRadius: 75,
+            backgroundColor: '#00bbf9',
+            opacity: 0.15,
+            shadowColor: '#000',
+            shadowOpacity: 0.3,
+            shadowRadius: 20,
+            shadowOffset: { width: 0, height: 10 },
+            elevation: 10,
+          }}
+        />
+      </BlurView>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+          <View style={styles.wrapper}>
+            <CustomHeader title="Update Task" />
+            {/* Select Box */}
+            <TouchableOpacity style={styles.selectBox} onPress={() => setOpen(!open)}>
+              {/* Left icon + label */}
+              <View style={styles.left}>
+                <View style={styles.iconBox}>
+                  <Feather name="briefcase" size={20} color="#ff7eb9" />
                 </View>
-                <Feather
-                  name={showStartDatePicker ? 'chevron-up' : 'chevron-down'}
-                  size={20}
-                  color="#333"
-                />
-                {showStartDatePicker && (
-                  <DateTimePicker
-                    value={startDate || new Date()}
-                    mode="date"
-                    display="default"
-                    onChange={handleStartDateChange}
-                  />
-                )}
-              </View>
-            </TouchableOpacity>
-
-            <View style={{ marginTop: 16 }}></View>
-            <TouchableOpacity onPress={() => setShowDueDatePicker(true)}>
-              <View style={styles.datePickerContainer}>
-                <View style={styles.datePickerContent}>
-                  <Feather name="calendar" size={20} color="#333" />
-                  <Text style={styles.datePickerLabel}>
-                    Due Date: {dueDate ? dueDate.toDateString() : 'Not set'}
-                  </Text>
+                <View>
+                  <Text style={styles.label}>Task Group</Text>
+                  <Text style={styles.value}>{selected}</Text>
                 </View>
-                <Feather
-                  name={showDueDatePicker ? 'chevron-up' : 'chevron-down'}
-                  size={20}
-                  color="#333"
-                />
-                {showDueDatePicker && (
-                  <DateTimePicker
-                    value={dueDate || new Date()}
-                    mode="date"
-                    display="default"
-                    onChange={handleDueDateChange}
-                  />
-                )}
               </View>
-            </TouchableOpacity>
-          </View>
 
-          {/* Change Logo
+              {/* Right arrow */}
+              <Feather name={open ? 'chevron-up' : 'chevron-down'} size={20} color="#333" />
+            </TouchableOpacity>
+            {/* Dropdown list */}
+            {open && (
+              <View style={styles.dropdown}>
+                <FlatList
+                  data={categories}
+                  keyExtractor={(item) => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        setSelected(item);
+                        setOpen(false);
+                      }}>
+                      <Text style={styles.dropdownText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            )}
+            <TouchableOpacity
+              style={styles.selectBox}
+              onPress={() => setOpenPrioritize(!openPrioritize)}>
+              {/* Left icon + label */}
+              <View style={styles.left}>
+                <View style={styles.iconBox}>
+                  <Feather name="briefcase" size={20} color="#ff7eb9" />
+                </View>
+                <View>
+                  <Text style={styles.label}>Prioritize</Text>
+                  <Text style={styles.value}>{prioritize}</Text>
+                </View>
+              </View>
+
+              {/* Right arrow */}
+              <Feather name={open ? 'chevron-up' : 'chevron-down'} size={20} color="#333" />
+            </TouchableOpacity>
+            {openPrioritize && (
+              <View style={styles.dropdown}>
+                <FlatList
+                  data={['Low', 'Medium', 'High']}
+                  keyExtractor={(item) => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        setPrioritize(item);
+                        setOpenPrioritize(false);
+                      }}>
+                      <Text style={styles.dropdownText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            )}
+            <TouchableOpacity
+              style={styles.selectBox}
+              onPress={() => setOpenProgress(!openProgress)}>
+              {/* Left icon + label */}
+              <View style={styles.left}>
+                <View style={styles.iconBox}>
+                  <Feather name="briefcase" size={20} color="#ff7eb9" />
+                </View>
+                <View>
+                  <Text style={styles.label}>In Progress</Text>
+                  <Text style={styles.value}>{progress}</Text>
+                </View>
+              </View>
+
+              {/* Right arrow */}
+              <Feather name={openProgress ? 'chevron-up' : 'chevron-down'} size={20} color="#333" />
+            </TouchableOpacity>
+            {openProgress && (
+              <View style={styles.dropdown}>
+                <FlatList
+                  data={['Not Start', 'In Progress', 'Completed', 'Interruption']}
+                  keyExtractor={(item) => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        setProgress(item);
+                        setOpenProgress(false);
+                      }}>
+                      <Text style={styles.dropdownText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            )}
+            {/* Project Name */}
+            <View style={styles.projectName}>
+              <Text style={styles.projectNameLabel}>Project Name</Text>
+              <TextInput
+                style={styles.projectNameInput}
+                value={projectName}
+                onChangeText={setProjectName}
+                placeholder="Enter project name"
+              />
+            </View>
+            {/* Description */}
+            <View style={styles.description}>
+              <Text style={styles.descriptionLabel}>Description</Text>
+              <TextInput
+                style={styles.descriptionInput}
+                value={description}
+                onChangeText={setDescription}
+                placeholder="Enter task description"
+                multiline
+              />
+            </View>
+            {/* Set up start date and due date here */}
+            <View style={styles.calendarContainer}>
+              <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
+                <View style={styles.datePickerContainer}>
+                  <View style={styles.datePickerContent}>
+                    <Feather name="calendar" size={20} color="#333" />
+                    <Text style={styles.datePickerLabel}>
+                      Start Date: {startDate ? startDate.toDateString() : 'Not set'}
+                    </Text>
+                  </View>
+                  <Feather
+                    name={showStartDatePicker ? 'chevron-up' : 'chevron-down'}
+                    size={20}
+                    color="#333"
+                  />
+                  {showStartDatePicker && (
+                    <DateTimePicker
+                      value={startDate || new Date()}
+                      mode="date"
+                      display="default"
+                      onChange={handleStartDateChange}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+
+              <View style={{ marginTop: 16 }}></View>
+              <TouchableOpacity onPress={() => setShowDueDatePicker(true)}>
+                <View style={styles.datePickerContainer}>
+                  <View style={styles.datePickerContent}>
+                    <Feather name="calendar" size={20} color="#333" />
+                    <Text style={styles.datePickerLabel}>
+                      Due Date: {dueDate ? dueDate.toDateString() : 'Not set'}
+                    </Text>
+                  </View>
+                  <Feather
+                    name={showDueDatePicker ? 'chevron-up' : 'chevron-down'}
+                    size={20}
+                    color="#333"
+                  />
+                  {showDueDatePicker && (
+                    <DateTimePicker
+                      value={dueDate || new Date()}
+                      mode="date"
+                      display="default"
+                      onChange={handleDueDateChange}
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Change Logo
           <View style={styles.projectName}>
             <Text style={styles.projectNameLabel}>Project Logo</Text>
             <TouchableOpacity
@@ -316,21 +369,24 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
               <Feather name="image" size={20} color="#333" />
             </TouchableOpacity>
           </View> */}
-          {/* Add Todo */}
-          <View style={{ marginTop: 24 }}>
-            <TouchableOpacity style={styles.button} onPress={() => updateTodo(todo._id)}>
-              <Text style={styles.buttonText}>Update Todo</Text>
-            </TouchableOpacity>
+            {/* Add Todo */}
+            <View style={{ marginTop: 24 }}>
+              <TouchableOpacity style={styles.button} onPress={() => updateTodo(todo._id)}>
+                <Text style={styles.buttonText}>Update Todo</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   wrapper: {
-    margin: 16,
+    marginTop: 50,
+    flex: 1,
+    paddingHorizontal: 16,
   },
   selectBox: {
     flexDirection: 'row',

@@ -21,6 +21,7 @@ import { useCategory } from 'Context/useCategory';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import CustomDay from 'components/CustomDay';
+import CustomHeader from 'components/CustomHeader';
 
 type AboutNavProp = StackNavigationProp<RootStackParamList, 'About'>;
 const About = () => {
@@ -133,11 +134,15 @@ const About = () => {
 
   // Header UI (trước danh sách)
   const ListHeader = () => (
-    <View
-      style={{ marginBottom: 20, marginTop: 10, backgroundColor: '#f9f9f9', marginHorizontal: 8 }}>
+    <View style={{ marginBottom: 20, marginTop: 50, marginHorizontal: 8 }}>
+      <CustomHeader title="Your Tasks" />
       <CustomDay />
       <ListCategory />
-      {loading && <Text>Loading...</Text>}
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.noTasksText}>You need login to see your tasks</Text>
+        </View>
+      )}
     </View>
   );
 
@@ -298,5 +303,25 @@ const styles = StyleSheet.create({
     marginTop: 4,
     textAlign: 'right',
     fontWeight: '600',
+  },
+  noTasksText: {
+    textAlign: 'center',
+    color: '#555',
+    marginTop: 50,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  loadingContainer: {
+    marginTop: 50,
+
+    height: 100,
+    marginHorizontal: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 5,
   },
 });
