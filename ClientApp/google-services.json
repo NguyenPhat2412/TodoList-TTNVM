@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1085746986717",
+    "project_id": "apptodolist-6307e",
+    "storage_bucket": "apptodolist-6307e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085746986717:android:e3c089556ff69a54c82534",
+        "android_client_info": {
+          "package_name": "com.yourname.myexpoapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAklBpFzkIKCIvLFg8SyuCii_I7XJfIuLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

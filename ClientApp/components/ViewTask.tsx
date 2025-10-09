@@ -1,4 +1,4 @@
-// // eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -48,7 +48,7 @@ const ViewTask = () => {
   return (
     <View style={styles.container}>
       <View style={styles.viewTaskInfo}>
-        <Text style={styles.taskInfoText}>Your today's tasks almost done!</Text>
+        <Text style={styles.taskInfoText}>{`Your today's tasks almost done!`}</Text>
         <TouchableOpacity style={styles.button} onPress={handleViewTasks}>
           <Text style={styles.buttonText}>View Tasks</Text>
         </TouchableOpacity>

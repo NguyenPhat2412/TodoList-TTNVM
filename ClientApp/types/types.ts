@@ -27,4 +27,6 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   UpdateTodo: { todo: Todo };
+  AddTodo: undefined;
+  OnboardingScreen: undefined;
 };
