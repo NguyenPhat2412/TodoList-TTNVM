@@ -33,7 +33,6 @@ const LoginPage = () => {
     e.preventDefault();
     if (!validate()) return;
     const userData = { email, password };
-
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/admin/login`,
@@ -45,15 +44,13 @@ const LoginPage = () => {
         }
       );
       const data = await response.json();
-      if (data.error) {
-        openNotification("error", data.error);
-      } else {
-        openNotification("success", " Login successful!");
-
-        localStorage.setItem("currentUser", JSON.stringify(userData));
+      if (response.ok) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        openNotification("success", data.message);
         navigate("/");
-        window.location.reload();
+      } else {
+        openNotification("error", data.message);
       }
     } catch (error) {
       openNotification("error", "An error occurred, please try again later.");

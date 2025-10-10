@@ -37,11 +37,13 @@ exports.getUserInfo = async (req, res) => {
 };
 
 exports.Login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
+  console.log(email, password);
   try {
-    const userLogin = await User.findOne({ username });
+    const userLogin = await User.findOne({ email, role: "admin" });
+    console.log(userLogin);
     if (!userLogin) {
-      return res.status(400).json({ message: "Invalid username or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
     if (userLogin.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });
@@ -49,7 +51,7 @@ exports.Login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, userLogin.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid username or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
     const token = jwt.sign(
       { id: userLogin._id, role: userLogin.role },
