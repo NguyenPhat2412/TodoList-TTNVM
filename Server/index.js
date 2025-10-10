@@ -30,6 +30,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const clientRoutes = require("./routes/client/todo");
 app.use("/api", clientRoutes);
 
+// admin routes
+const adminRoutes = require("./routes/admin/admin");
+app.use("/api/admin", adminRoutes);
+
 // uploads image
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Handle 404 errors

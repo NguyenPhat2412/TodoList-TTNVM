@@ -2,17 +2,9 @@
 const Todo = require("../models/Todo");
 const User = require("../models/User");
 
-const nodemailer = require("nodemailer");
-const express = require("express");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 
 const { default: mongoose } = require("mongoose");
-
-const { sendOrderConfirmationEmail } = require("../utils/emailService");
-const { sendContactEmail } = require("../utils/contactService");
-
-let otpStore = {};
 
 function generateOTP() {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
