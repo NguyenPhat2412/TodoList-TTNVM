@@ -5,6 +5,7 @@ import Users from "../Pages/Users";
 import Information from "../components/Infomation";
 import LoginPage from "../Pages/Login/LoginPage";
 import SignUpPage from "../Pages/Register/RegisterPage";
+import DetailsUser from "../Pages/DetailsUser/DetailsUser";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<h1>404 Not Found</h1>} />
           <Route path="/register" element={<SignUpPage />} />
+          <Route path="/details-user" element={<DetailsUser />} />
         </Routes>
       </BrowserRouter>
       <Information />

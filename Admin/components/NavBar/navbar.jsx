@@ -32,18 +32,18 @@ const NavBar = () => {
             className="main-list block py-2 px-3 rounded flex "
           >
             <i className="fa-brands fa-rocketchat"></i>
-            <p>Trò chuyện quản trị</p>
+            <p>Feedback</p>
           </Link>
         </div>
 
         <div className="dashboard-list">
           <p className="text-xs text-gray-400 uppercase mb-2">Mới</p>
           <Link
-            to="/new_blog"
+            to="/details-user"
             className="main-list block py-2 px-3 rounded flex "
           >
             <i className="fa-solid fa-blog"></i>
-            <p>Tạo Blog</p>
+            <p>Chi tiết người dùng</p>
           </Link>
           <Link to="/blogs" className="main-list block py-2 px-3 rounded flex ">
             <i className="fa-solid fa-square-rss"></i>

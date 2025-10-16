@@ -38,10 +38,10 @@ exports.getUserInfo = async (req, res) => {
 
 exports.Login = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
+
   try {
     const userLogin = await User.findOne({ email, role: "admin" });
-    console.log(userLogin);
+
     if (!userLogin) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
@@ -50,8 +50,9 @@ exports.Login = async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, userLogin.password);
+
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid password" });
     }
     const token = jwt.sign(
       { id: userLogin._id, role: userLogin.role },
@@ -90,6 +91,16 @@ exports.RegisterAdmin = async (req, res) => {
 
     await newAdmin.save();
     res.status(201).json({ message: "Admin registered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.getAllUsersWithRole = async (req, res) => {
+  const role = req.params.role;
+  try {
+    const users = await User.find({ role }, "-password");
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

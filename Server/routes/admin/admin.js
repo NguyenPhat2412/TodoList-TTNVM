@@ -9,7 +9,7 @@ router.get("/users", /* authenticateAdmin, */ AdminsController.getAllUsers);
 
 // Delete user by ID (admin only)
 router.delete(
-  "/users/:id",
+  "/delete-users/:id",
   /* authenticateAdmin, */ AdminsController.deleteUser
 );
 
@@ -18,5 +18,8 @@ router.post("/login", AdminsController.Login);
 
 // Register admin
 router.post("/register", AdminsController.RegisterAdmin);
+
+// get all user with role
+router.get("/users/role/:role", AdminsController.getAllUsersWithRole);
 
 module.exports = router;

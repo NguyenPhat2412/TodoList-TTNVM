@@ -1,0 +1,202 @@
+[
+  {
+    "name": "Nguyen Van A",
+    "email": "nguyenvana1@st.vju.ac.vn",
+    "phone": "0912345678",
+    "password": "$2b$10$examplehash1",
+    "role": "admin",
+    "createdAt": "2025-10-14T17:37:22.575Z",
+    "updatedAt": "2025-10-14T17:37:22.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Tran Thi B",
+    "email": "tranthib2@st.vju.ac.vn",
+    "phone": "0987654321",
+    "password": "$2b$10$examplehash2",
+    "role": "user",
+    "createdAt": "2025-10-14T17:38:01.575Z",
+    "updatedAt": "2025-10-14T17:38:01.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Le Van C",
+    "email": "levanc3@st.vju.ac.vn",
+    "phone": "0901234567",
+    "password": "$2b$10$examplehash3",
+    "role": "user",
+    "createdAt": "2025-10-14T17:39:12.575Z",
+    "updatedAt": "2025-10-14T17:39:12.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Pham Thi D",
+    "email": "phamthid4@st.vju.ac.vn",
+    "phone": "0976543210",
+    "password": "$2b$10$examplehash4",
+    "role": "admin",
+    "createdAt": "2025-10-14T17:40:55.575Z",
+    "updatedAt": "2025-10-14T17:40:55.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Hoang Van E",
+    "email": "hoangvane5@st.vju.ac.vn",
+    "phone": "0934567890",
+    "password": "$2b$10$examplehash5",
+    "role": "user",
+    "createdAt": "2025-10-14T17:41:34.575Z",
+    "updatedAt": "2025-10-14T17:41:34.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Do Thi F",
+    "email": "dothif6@st.vju.ac.vn",
+    "phone": "0923456789",
+    "password": "$2b$10$examplehash6",
+    "role": "user",
+    "createdAt": "2025-10-14T17:42:10.575Z",
+    "updatedAt": "2025-10-14T17:42:10.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Bui Van G",
+    "email": "buivang7@st.vju.ac.vn",
+    "phone": "0911222333",
+    "password": "$2b$10$examplehash7",
+    "role": "user",
+    "createdAt": "2025-10-14T17:43:22.575Z",
+    "updatedAt": "2025-10-14T17:43:22.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Vu Thi H",
+    "email": "vuthih8@st.vju.ac.vn",
+    "phone": "0988777666",
+    "password": "$2b$10$examplehash8",
+    "role": "admin",
+    "createdAt": "2025-10-14T17:44:11.575Z",
+    "updatedAt": "2025-10-14T17:44:11.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Ngo Van I",
+    "email": "ngovani9@st.vju.ac.vn",
+    "phone": "0909888777",
+    "password": "$2b$10$examplehash9",
+    "role": "user",
+    "createdAt": "2025-10-14T17:45:33.575Z",
+    "updatedAt": "2025-10-14T17:45:33.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Phan Thi J",
+    "email": "phanthij10@st.vju.ac.vn",
+    "phone": "0944556677",
+    "password": "$2b$10$examplehash10",
+    "role": "user",
+    "createdAt": "2025-10-14T17:46:12.575Z",
+    "updatedAt": "2025-10-14T17:46:12.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Tran Van K",
+    "email": "tranvank11@st.vju.ac.vn",
+    "phone": "0911667788",
+    "password": "$2b$10$examplehash11",
+    "role": "admin",
+    "createdAt": "2025-10-14T17:47:55.575Z",
+    "updatedAt": "2025-10-14T17:47:55.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Le Thi L",
+    "email": "lethil12@st.vju.ac.vn",
+    "phone": "0955667788",
+    "password": "$2b$10$examplehash12",
+    "role": "user",
+    "createdAt": "2025-10-14T17:48:44.575Z",
+    "updatedAt": "2025-10-14T17:48:44.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Nguyen Van M",
+    "email": "nguyenvanm13@st.vju.ac.vn",
+    "phone": "0909777666",
+    "password": "$2b$10$examplehash13",
+    "role": "user",
+    "createdAt": "2025-10-14T17:49:33.575Z",
+    "updatedAt": "2025-10-14T17:49:33.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Ho Thi N",
+    "email": "hothin14@st.vju.ac.vn",
+    "phone": "0988111222",
+    "password": "$2b$10$examplehash14",
+    "role": "admin",
+    "createdAt": "2025-10-14T17:50:22.575Z",
+    "updatedAt": "2025-10-14T17:50:22.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Do Van O",
+    "email": "dovano15@st.vju.ac.vn",
+    "phone": "0977554433",
+    "password": "$2b$10$examplehash15",
+    "role": "user",
+    "createdAt": "2025-10-14T17:51:12.575Z",
+    "updatedAt": "2025-10-14T17:51:12.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Vo Thi P",
+    "email": "vothip16@st.vju.ac.vn",
+    "phone": "0933222111",
+    "password": "$2b$10$examplehash16",
+    "role": "user",
+    "createdAt": "2025-10-14T17:52:55.575Z",
+    "updatedAt": "2025-10-14T17:52:55.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Dang Van Q",
+    "email": "dangvanq17@st.vju.ac.vn",
+    "phone": "0912333444",
+    "password": "$2b$10$examplehash17",
+    "role": "admin",
+    "createdAt": "2025-10-14T17:53:40.575Z",
+    "updatedAt": "2025-10-14T17:53:40.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Truong Thi R",
+    "email": "truongthir18@st.vju.ac.vn",
+    "phone": "0955112233",
+    "password": "$2b$10$examplehash18",
+    "role": "user",
+    "createdAt": "2025-10-14T17:54:11.575Z",
+    "updatedAt": "2025-10-14T17:54:11.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Nguyen Van S",
+    "email": "nguyenvans19@st.vju.ac.vn",
+    "phone": "0922333444",
+    "password": "$2b$10$examplehash19",
+    "role": "user",
+    "createdAt": "2025-10-14T17:55:22.575Z",
+    "updatedAt": "2025-10-14T17:55:22.576Z",
+    "__v": 0
+  },
+  {
+    "name": "Pham Thi T",
+    "email": "phamthit20@st.vju.ac.vn",
+    "phone": "0912888999",
+    "password": "$2b$10$examplehash20",
+    "role": "admin",
+    "createdAt": "2025-10-14T17:56:12.575Z",
+    "updatedAt": "2025-10-14T17:56:12.576Z",
+    "__v": 0
+  }
+]
