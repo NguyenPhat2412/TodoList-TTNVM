@@ -21,3 +21,10 @@ export interface PaginationComponentProps {
   itemsPerPage: number;
   onChange?: (page: number, pageSize: number) => void;
 }
+
+export type TreeNode = {
+  label: string;
+  children?: TreeNode[];
+  color?: string;
+  hover?: string;
+};

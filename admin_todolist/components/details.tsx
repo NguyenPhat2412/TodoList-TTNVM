@@ -4,9 +4,8 @@ import { Admin, NotificationType } from "@/types/types";
 import React, { useEffect } from "react";
 import PaginationComponent from "@/components/pagination";
 import { LoadingOutlined } from "@ant-design/icons";
-import Loading from "@/components/Loading";
 
-const ListUser: React.FC = () => {
+const Details: React.FC = () => {
   const [dataUser, setDataUser] = React.useState<Admin[]>([]);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(9);
@@ -82,24 +81,21 @@ const ListUser: React.FC = () => {
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <Flex justify="center" align="center" className="min-h-screen">
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} />} />
+      </Flex>
+    );
   }
   return (
-    <div className="flex-grow min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 p-8">
+    <div className="flex-grow mt-5 bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
       {contextHolder}
-
-      <div className="mx-auto bg-white shadow-lg rounded-xl p-6 border border-gray-200">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-700">User List</h1>
-          <button className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition-all">
-            User TodoList
-          </button>
-        </div>
-
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-bold text-gray-700">Users</h1>
+      </div>
+      <div className=" bg-white shadow-lg rounded-xl p-6 border border-gray-200">
         {dataUser.length === 0 ? (
-          <div className="text-center py-10 text-gray-500 text-lg">
-            No users found.
-          </div>
+          <div className="text-center py-10 text-gray-500 text-lg">Users</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse">
@@ -176,4 +172,4 @@ const ListUser: React.FC = () => {
   );
 };
 
-export default ListUser;
+export default Details;

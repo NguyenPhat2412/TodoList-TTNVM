@@ -12,11 +12,14 @@ const Home = () => {
   return (
     <>
       <div className="min-h-screen relative flex ">
-        <Navbar activeLink={activeLink} setActiveLink={setActiveLink} />
+        <div className="fixed">
+          <Navbar activeLink={activeLink} setActiveLink={setActiveLink} />
+        </div>
 
-        {activeLink === "/" && <DashboardPage />}
-        {activeLink === "/user" && <ListUser />}
-
+        <div className="flex-grow ml-64">
+          {activeLink === "/" && <DashboardPage />}
+          {activeLink === "/user" && <ListUser />}
+        </div>
         <div className="absolute bottom-0 w-full">
           <Footer />
         </div>

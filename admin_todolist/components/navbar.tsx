@@ -3,10 +3,13 @@ import Link from "next/link";
 import React from "react";
 import { NavbarProps } from "@/types/types";
 import {
+  AccountBookOutlined,
   DashboardFilled,
   DashOutlined,
+  ExclamationCircleFilled,
   HomeOutlined,
   LogoutOutlined,
+  QuestionCircleFilled,
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -45,6 +48,29 @@ const Navbar: React.FC<NavbarProps> = ({ activeLink, setActiveLink }) => {
 
         {/* Logout xuống dưới cùng */}
         <div className="w-full ml-2 flex flex-col g-2 pb-2 mt-auto absolute bottom-10">
+          <div className="flex flex-col g-2 pb-2">
+            <div
+              className={`ml-4 main-list block py-2 px-3 rounded flex cursor-pointer ${
+                activeLink === "/about" ? "bg-gray-300" : ""
+              }`}
+              onClick={() => setActiveLink("/about")}
+            >
+              <ExclamationCircleFilled className="mr-2" />
+              <p>About</p>
+            </div>
+          </div>
+          <div className="flex flex-col g-2 pb-2">
+            <div
+              className={`ml-4 main-list block py-2 px-3 rounded flex cursor-pointer ${
+                activeLink === "/feedback" ? "bg-gray-300" : ""
+              }`}
+              onClick={() => setActiveLink("/feedback")}
+            >
+              <QuestionCircleFilled className="mr-2" />
+              <p>Feedback</p>
+            </div>
+          </div>
+
           <div className="flex flex-col g-2 pb-2">
             <div
               className={`ml-4 main-list block py-2 px-3 rounded flex cursor-pointer ${
