@@ -25,23 +25,23 @@ const Navbar: React.FC<NavbarProps> = ({ activeLink, setActiveLink }) => {
         <div className="ml-4 flex flex-col g-2 pb-2">
           <div
             onClick={() => setActiveLink("/")}
-            className={`main-list block py-2 px-3 rounded flex cursor-pointer ${
+            className={`main-list block py-1 px-2 rounded flex cursor-pointer font-bold ${
               activeLink === "/" ? "bg-gray-300" : ""
             }`}
           >
-            <HomeOutlined className="mr-2" />
+            <HomeOutlined className="mr-2 mb-1" />
             <p>Home</p>
           </div>
         </div>
 
         <div className="flex flex-col g-2 pb-2">
           <div
-            className={`ml-4 main-list block py-2 px-3 rounded flex cursor-pointer ${
+            className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold ${
               activeLink === "/user" ? "bg-gray-300" : ""
             }`}
             onClick={() => setActiveLink("/user")}
           >
-            <UserOutlined className="mr-2" />
+            <UserOutlined className="mr-2 mb-1" />
             <p>User</p>
           </div>
         </div>
@@ -50,35 +50,35 @@ const Navbar: React.FC<NavbarProps> = ({ activeLink, setActiveLink }) => {
         <div className="w-full ml-2 flex flex-col g-2 pb-2 mt-auto absolute bottom-10">
           <div className="flex flex-col g-2 pb-2">
             <div
-              className={`ml-4 main-list block py-2 px-3 rounded flex cursor-pointer ${
+              className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold ${
                 activeLink === "/about" ? "bg-gray-300" : ""
               }`}
               onClick={() => setActiveLink("/about")}
             >
-              <ExclamationCircleFilled className="mr-2" />
+              <ExclamationCircleFilled className="mr-2 mb-1" />
               <p>About</p>
             </div>
           </div>
           <div className="flex flex-col g-2 pb-2">
             <div
-              className={`ml-4 main-list block py-2 px-3 rounded flex cursor-pointer ${
-                activeLink === "/feedback" ? "bg-gray-300" : ""
+              className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold ${
+                activeLink === "/Feedback" ? "bg-gray-300" : ""
               }`}
-              onClick={() => setActiveLink("/feedback")}
+              onClick={() => setActiveLink("/Feedback")}
             >
-              <QuestionCircleFilled className="mr-2" />
+              <QuestionCircleFilled className="mr-2 mb-1" />
               <p>Feedback</p>
             </div>
           </div>
 
           <div className="flex flex-col g-2 pb-2">
             <div
-              className={`ml-4 main-list block py-2 px-3 rounded flex cursor-pointer ${
+              className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold  ${
                 activeLink === "/setting" ? "bg-gray-300" : ""
               }`}
               onClick={() => setActiveLink("/setting")}
             >
-              <SettingOutlined className="mr-2" />
+              <SettingOutlined className="mr-2 mb-1" />
               <p>Setting</p>
             </div>
           </div>

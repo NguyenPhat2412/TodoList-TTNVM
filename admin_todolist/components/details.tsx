@@ -159,15 +159,6 @@ const Details: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Pagination */}
-      <div className="flex justify-center mt-6">
-        <PaginationComponent
-          total={dataUser.length}
-          itemsPerPage={pageSize}
-          onChange={handlePageChange}
-        />
-      </div>
     </div>
   );
 };

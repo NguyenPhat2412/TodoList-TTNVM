@@ -10,6 +10,9 @@ const LoginAdmin = () => {
     password: "",
   });
 
+  // Get token from localStorage
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = (type: NotificationType, message: string) => {
@@ -45,6 +48,7 @@ const LoginAdmin = () => {
       .then((data) => {
         if (data.message === "Login successful") {
           openNotification("success", "Login successful!");
+          localStorage.setItem("token", data.token);
           setTimeout(() => {
             window.location.href = "/";
           }, 1500);

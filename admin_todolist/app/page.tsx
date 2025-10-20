@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import ListUser from "./user/page";
 import DashboardPage from "./Dashboard/page";
+import Feedback from "./Feedback/page";
+import Setting from "./setting/page";
 
 const Home = () => {
   const [activeLink, setActiveLink] = useState<string>("/");
@@ -19,6 +21,8 @@ const Home = () => {
         <div className="flex-grow ml-64">
           {activeLink === "/" && <DashboardPage />}
           {activeLink === "/user" && <ListUser />}
+          {activeLink === "/Feedback" && <Feedback />}
+          {activeLink === "/setting" && <Setting />}
         </div>
         <div className="absolute bottom-0 w-full">
           <Footer />

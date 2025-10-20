@@ -9,7 +9,7 @@ import Loading from "@/components/Loading";
 const ListUser: React.FC = () => {
   const [dataUser, setDataUser] = React.useState<Admin[]>([]);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(9);
+  const [pageSize, setPageSize] = React.useState<number>(10);
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = React.useState<boolean>(false);
 
