@@ -64,6 +64,7 @@ const Home = () => {
       throw new Error('Error fetching tasks by category:', err as any);
     }
   };
+
   // Lấy userId từ AsyncStorage
   useFocusEffect(
     useCallback(() => {
@@ -170,13 +171,13 @@ const Home = () => {
   return (
     <View style={{ flex: 1 }}>
       <KeyboardAvoidingView
-        style={{ flex: 1, backgroundColor: '#f9f9f9' }}
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <LinearGradient
           colors={['#dff3ff', '#fef6ff']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFillObject}
+          style={StyleSheet.absoluteFill}
         />
         <BlurView
           style={{

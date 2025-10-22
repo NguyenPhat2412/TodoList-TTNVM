@@ -22,6 +22,7 @@ const Navbar = () => {
           });
           if (response.ok) {
             const user = await response.json();
+            console.log('Fetched user name:', user.name);
             setUserName(user.name || 'User');
 
             return user.name || 'User';
@@ -46,11 +47,10 @@ const Navbar = () => {
           style={styles.logo}
         />
         <View style={styles.textContainer}>
-          <Text style={styles.greetingText}>Hello!</Text>
+          <Text style={styles.greetingText}>Welcome to App Todo!</Text>
           <Text style={styles.userNameText}>{userName}</Text>
         </View>
       </View>
-
       {/* Bell */}
       <View style={styles.bellContainer}>
         <Feather name="bell" size={24} color="black" />
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     elevation: 3,
     shadowColor: '#000',
+    borderRadius: 10,
     shadowOpacity: 0.1,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 2 },

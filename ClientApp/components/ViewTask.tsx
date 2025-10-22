@@ -31,7 +31,7 @@ const ViewTask = () => {
         }
       };
       fetchData();
-    }, [data])
+    }, [])
   );
   const radius = 50;
   const strokeWidth = 10;
@@ -81,7 +81,9 @@ const ViewTask = () => {
         </Svg>
 
         <View style={styles.label}>
-          <Text style={styles.progressText}>{progress.toFixed(2)}%</Text>
+          <Text style={styles.progressText}>
+            {data.length > 0 ? `${progress.toFixed(2)}%` : '0%'}
+          </Text>
           <Text style={styles.progressSubText}>Completed</Text>
         </View>
       </View>
@@ -90,6 +92,7 @@ const ViewTask = () => {
 };
 export default ViewTask;
 
+// Sử dụng phần thông báo
 async function registerForPushNotificationsAsync() {}
 const styles = StyleSheet.create({
   container: {

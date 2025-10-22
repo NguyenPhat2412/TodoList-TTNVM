@@ -210,6 +210,11 @@ const About = () => {
           }).catch((err) => console.error('Error reordering todos:', err));
         }}
       />
+      {todos.length === 0 && !loading && (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.noTasksText}>No tasks available. Add some tasks to get started!</Text>
+        </View>
+      )}
     </KeyboardAvoidingView>
   );
 };

@@ -3,6 +3,7 @@ import Feather from '@react-native-vector-icons/feather';
 import { useNavigation } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
 import { useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 const height = 70;
@@ -19,7 +20,15 @@ const Footer = () => {
         setActiveTab(name);
         navigation.navigate(screen as never);
       }}>
-      <Feather name={icon} size={24} color={activeTab === name ? '#b700ff' : '#680686ff'} />
+      <Feather
+        name={icon}
+        size={24}
+        color={activeTab === name ? '#fff' : '#e5d4f7'}
+        style={{
+          textShadowColor: activeTab === name ? '#fff' : 'transparent',
+          textShadowRadius: activeTab === name ? 8 : 0,
+        }}
+      />
     </TouchableOpacity>
   );
   // Vẽ path với chỗ lõm ở giữa
@@ -36,25 +45,31 @@ const Footer = () => {
 
   return (
     <View style={styles.container}>
-      <Svg width={width} height={height} style={styles.background}>
-        <Path d={d} fill="#7e57c2" />
-      </Svg>
+      <LinearGradient
+        colors={['#61058bff', '#6c3d8bff', '#bd6cecff']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{ width: width, height: height }}>
+        <Svg width={width} height={height} style={styles.background}>
+          <Path d={d} fill="#7e57c2" />
+        </Svg>
 
-      <View style={styles.iconRow}>
-        <TabItem name="Home" icon="home" screen="Home" />
-        <TabItem name="About" icon="calendar" screen="About" />
-        <View style={{ width: 70 }} />
-        <TabItem name="Privacy" icon="shield" screen="Privacy" />
-        <TabItem name="Profile" icon="user" screen="Profile" />
-      </View>
+        <View style={styles.iconRow}>
+          <TabItem name="Home" icon="home" screen="Home" />
+          <TabItem name="About" icon="calendar" screen="About" />
+          <View style={{ width: 70 }} />
+          <TabItem name="Privacy" icon="shield" screen="Privacy" />
+          <TabItem name="Profile" icon="user" screen="Profile" />
+        </View>
 
-      <View style={styles.plusWrapper}>
-        <TouchableOpacity
-          style={styles.plusButton}
-          onPress={() => navigation.navigate('AddTodo' as never)}>
-          <Feather name="plus" size={28} color="#fff" />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.plusWrapper}>
+          <TouchableOpacity
+            style={styles.plusButton}
+            onPress={() => navigation.navigate('AddTodo' as never)}>
+            <Feather name="plus" size={28} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
     </View>
   );
 };
@@ -102,7 +117,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   icon: {
-    color: '#673ab7',
     fontSize: 24,
   },
 });

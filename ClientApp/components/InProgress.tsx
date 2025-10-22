@@ -52,28 +52,18 @@ const InProgress = () => {
     }, [userId])
   );
 
-  // useEffect(() => {
-  //   // Fetch data from API
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(`${API_URL}/api/todos/user/${userId}`);
-  //       const json = await response.json();
-  //       if (response.ok) {
-  //         setData(json.slice(0, 5));
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [userId]);
-
   if (loading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#3498db" />
+      </View>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <View style={styles.center}>
+        <Text style={{ color: '#7f8c8d', fontSize: 16 }}>No tasks in progress.</Text>
       </View>
     );
   }

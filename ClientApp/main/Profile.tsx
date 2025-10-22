@@ -3,173 +3,276 @@ import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import {
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import Feather from '@react-native-vector-icons/feather';
+import { Todo } from 'types/types';
 
 const Profile = () => {
-  // ⚡ State user (mock cho demo, sau này thay bằng API + token)
-  const [user, setUser] = useState<null | { name: string; email: string }>(null);
-
   const navigation = useNavigation();
-  const handleLogin = () => {
-    navigation.navigate('Login' as never);
+  const [user, setUser] = useState<any>(null);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [dataTasks, setDataTasks] = useState<Todo[]>([]);
+
+  const fetchUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (!token) return;
+      const response = await fetch(`${API_URL}/api/profile`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data);
+        setName(data.name);
+        setEmail(data.email);
+        setPhone(data.phone || '');
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
   };
 
-  const handleRegister = () => {
-    navigation.navigate('Register' as never);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-
-    // Delete token trong async storage
-    AsyncStorage.removeItem('userToken');
-    AsyncStorage.removeItem('userId');
-    console.log('User logged out');
+  const fetchUserTasks = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) return;
+      const response = await fetch(`${API_URL}/api/todos/user/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setDataTasks(data);
+      }
+    } catch (error) {
+      console.error('Error fetching user tasks:', error);
+    }
   };
 
   useFocusEffect(
     React.useCallback(() => {
-      const fetchUser = async () => {
-        try {
-          const token = await AsyncStorage.getItem('userToken');
-          console.log('Retrieved token:', token);
-          if (!token) {
-            console.log('No token found, user not logged in');
-            return null;
-          }
-          const response = await fetch(`${API_URL}/api/profile`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-          }
-          const user = await response.json();
-
-          setUser(user);
-          await AsyncStorage.setItem('userId', user._id);
-          return user;
-        } catch (error) {
-          console.error('Error fetching user:', error);
-          return null;
-        }
-      };
       fetchUser();
+      fetchUserTasks();
     }, [])
   );
+
+  const handleUpdate = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (!token) return;
+
+      const response = await fetch(`${API_URL}/api/profile/update`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name, email, phone }),
+      });
+
+      if (response.ok) {
+        alert('Profile updated successfully!');
+        fetchUser();
+      } else {
+        alert('Failed to update profile.');
+      }
+    } catch (error) {
+      console.error('Update error:', error);
+      alert('An error occurred.');
+    }
+  };
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userId');
+    navigation.navigate('Login' as never);
+  };
+
   return (
-    <View style={styles.container}>
-      {user ? (
-        <>
-          <Image
-            source={{
-              uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-            }}
-            style={styles.avatar}
-          />
-          <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.email}>{user.email}</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f9fd' }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          {/* Header gradient */}
+          <LinearGradient
+            colors={['#4c1d95', '#7f43dfff', '#a855f7']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.header}>
+            <Text style={styles.headerText}>Profile</Text>
+          </LinearGradient>
 
-          <TouchableOpacity style={styles.buttonLogout} onPress={handleLogout}>
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonUpdate} onPress={handleLogout}>
-            <Text style={styles.buttonText}>Update Account</Text>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <>
-          <Image
-            source={{
-              uri: 'https://cdn-icons-png.flaticon.com/512/747/747376.png',
-            }}
-            style={styles.avatar}
-          />
-          <Text style={styles.name}>Welcome, Guests!</Text>
-          <Text style={styles.email}>Please login or register</Text>
+          {/* Avatar Card */}
+          <View style={styles.avatarContainer}>
+            <Image
+              source={{
+                uri: user?.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+              }}
+              style={styles.avatar}
+            />
+            <Text style={styles.userName}>{name}</Text>
+            <Text style={styles.userEmail}>{email}</Text>
+          </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
+          {/* Stats */}
+          <View style={styles.statsCard}>
+            <View style={styles.statItem}>
+              <Feather name="list" size={22} color="#ef4444" />
+              <Text style={styles.statLabel}>Tasks</Text>
+              <Text style={styles.statValue}>{dataTasks.length}</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Feather name="check-square" size={22} color="#10b981" />
+              <Text style={styles.statLabel}>Completed</Text>
+              <Text style={styles.statValue}>
+                {dataTasks.filter((task) => task.completed).length}
+              </Text>
+            </View>
+          </View>
 
-          <TouchableOpacity
-            style={[styles.button, styles.buttonSecondary]}
-            onPress={handleRegister}>
-            <Text style={styles.buttonText}>Register</Text>
-          </TouchableOpacity>
+          {/* Menu Section */}
+          <View style={styles.menuCard}>
+            <TouchableOpacity style={styles.menuItem} onPress={handleUpdate}>
+              <Feather name="settings" size={18} color="#6d28d9" />
+              <Text style={styles.menuText}>Profile Settings</Text>
+              <Feather name="chevron-right" size={18} color="#ccc" />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.buttonLogout}
-            onPress={() => {
-              navigation.navigate('Home' as never);
-              handleLogout();
-            }}>
-            <Text style={styles.buttonText}>Go to Dashboard</Text>
-          </TouchableOpacity>
-        </>
-      )}
-    </View>
+            <TouchableOpacity style={styles.menuItem}>
+              <Feather name="lock" size={18} color="#6d28d9" />
+              <Text style={styles.menuText}>Change Password</Text>
+              <Feather name="chevron-right" size={18} color="#ccc" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem}>
+              <Feather name="bell" size={18} color="#6d28d9" />
+              <Text style={styles.menuText}>Notification</Text>
+              <Feather name="chevron-right" size={18} color="#ccc" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem}>
+              <Feather name="credit-card" size={18} color="#6d28d9" />
+              <Text style={styles.menuText}>Transaction History</Text>
+              <Feather name="chevron-right" size={18} color="#ccc" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.menuItem, { borderBottomWidth: 0 }]}
+              onPress={handleLogout}>
+              <Feather name="log-out" size={18} color="#ef4444" />
+              <Text style={[styles.menuText, { color: '#ef4444' }]}>Logout</Text>
+              <Feather name="chevron-right" size={18} color="#ef4444" />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
 export default Profile;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  header: {
+    height: 230,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    padding: 20,
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: '700',
+    marginTop: 20,
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    marginTop: -50,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-    borderRadius: 50,
-    backgroundColor: '#ddd',
+    width: 125,
+    height: 125,
+    borderRadius: 75,
+    borderWidth: 10,
+    borderColor: '#fff',
+    backgroundColor: '#eee',
   },
-  name: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
+  userName: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginTop: 10,
+    color: '#222',
   },
-  email: {
-    fontSize: 16,
+  userEmail: {
+    fontSize: 15,
     color: '#666',
-    marginBottom: 20,
   },
-  button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 8,
-    marginVertical: 8,
+  statsCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#fff',
+    marginHorizontal: 25,
+    marginTop: 25,
+    paddingVertical: 20,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 3,
   },
-  buttonSecondary: {
-    backgroundColor: '#28a745',
+  statItem: {
+    alignItems: 'center',
   },
-  buttonLogout: {
-    backgroundColor: '#dc3545',
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 8,
-    marginTop: 20,
+  statLabel: {
+    color: '#666',
+    fontSize: 14,
+    marginTop: 6,
   },
-  buttonUpdate: {
-    backgroundColor: '#007bff',
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 8,
-    marginTop: 20,
+  statValue: {
+    color: '#111',
+    fontSize: 18,
+    fontWeight: '700',
+    marginTop: 4,
   },
-  buttonText: {
-    color: '#fff',
+  menuCard: {
+    backgroundColor: '#fff',
+    marginHorizontal: 25,
+    marginTop: 25,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    justifyContent: 'space-between',
+  },
+  menuText: {
+    flex: 1,
+    marginLeft: 12,
+    color: '#333',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
 });
