@@ -135,7 +135,7 @@ exports.UpdateUser = async (req, res) => {
 };
 
 exports.getUserInfoAfterLogin = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.id;
   try {
     const userInfo = await User.findById(userId, "-password");
     if (!userInfo) {
@@ -169,3 +169,5 @@ exports.changePassword = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+// Number Tasks by User on the day

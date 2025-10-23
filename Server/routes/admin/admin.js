@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const AdminsController = require("../../controllers/AdminsController");
-const authMiddlewareLocalStorage =
-  require("../../middleware/authMiddleware").authMiddlewareLocalStorage;
+const authMiddlewareLocalStorageAdmin =
+  require("../../middleware/authMiddleware").authMiddlewareLocalStorageAdmin;
 
 // Route to get all users (admin only)
 router.get("/users", /* authenticateAdmin, */ AdminsController.getAllUsers);
@@ -26,20 +26,20 @@ router.get("/users/role/:role", AdminsController.getAllUsersWithRole);
 // update user
 router.put(
   "/users/:id",
-  authMiddlewareLocalStorage,
+  authMiddlewareLocalStorageAdmin,
   AdminsController.UpdateUser
 );
 
 router.get(
   "/users/me",
-  authMiddlewareLocalStorage,
+  authMiddlewareLocalStorageAdmin,
   AdminsController.getUserInfoAfterLogin
 );
 
 // change password
 router.put(
   "/users/change-password",
-  authMiddlewareLocalStorage,
+  authMiddlewareLocalStorageAdmin,
   AdminsController.changePassword
 );
 

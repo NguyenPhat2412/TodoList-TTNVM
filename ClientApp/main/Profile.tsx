@@ -111,7 +111,7 @@ const Profile = () => {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {/* Header gradient */}
           <LinearGradient
-            colors={['#4c1d95', '#7f43dfff', '#a855f7']}
+            colors={['#61058bff', '#6c3d8bff', '#bd6cecff']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.header}>
