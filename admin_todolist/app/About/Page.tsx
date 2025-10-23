@@ -1,4 +1,14 @@
+import { useEffect } from "react";
+
 const About = () => {
-  return <></>;
+  useEffect(() => {
+    document.title = "About - Admin Todo List";
+  });
+
+  return (
+    <>
+      <div></div>
+    </>
+  );
 };
 export default About;

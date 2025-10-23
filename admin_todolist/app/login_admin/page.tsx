@@ -12,7 +12,7 @@ const LoginAdmin = () => {
 
   // Get token from localStorage
   const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = (type: NotificationType, message: string) => {
@@ -48,7 +48,7 @@ const LoginAdmin = () => {
       .then((data) => {
         if (data.message === "Login successful") {
           openNotification("success", "Login successful!");
-          localStorage.setItem("token", data.token);
+          localStorage.setItem("adminToken", data.token);
           setTimeout(() => {
             window.location.href = "/";
           }, 1500);
@@ -61,6 +61,10 @@ const LoginAdmin = () => {
         openNotification("error", "An error occurred. Please try again.");
       });
   };
+
+  // if (!token) {
+  //   openNotification("warning", "You are already logged in.");
+  // }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white px-4">

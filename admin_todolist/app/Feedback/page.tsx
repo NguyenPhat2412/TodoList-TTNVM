@@ -1,8 +1,9 @@
 "use client";
 
 import { Input, notification } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { ContactFormData, NotificationType } from "@/types/types";
+import Loading from "@/components/Loading";
 
 const Feedback = () => {
   const [formData, setFormData] = React.useState<ContactFormData>({
@@ -11,6 +12,8 @@ const Feedback = () => {
     subject: "",
     message: "",
   });
+
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const [api, contextHolder] = notification.useNotification();
 
@@ -52,6 +55,14 @@ const Feedback = () => {
     submitData();
   };
 
+  useEffect(() => {
+    document.title = "Feedback - Admin Todo List";
+    setLoading(true);
+  }, []);
+
+  if (!loading) {
+    return <Loading />;
+  }
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       {contextHolder}

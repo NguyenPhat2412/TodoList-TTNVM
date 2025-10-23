@@ -42,6 +42,7 @@ const Setting = () => {
 
       const data = await response.json();
       setAdminData(data);
+      console.log(data);
       if (data.avatar) setAvatarPreview(data.avatar);
     } catch (error) {
       openNotification("error", "Cannot fetch admin data");
@@ -52,6 +53,7 @@ const Setting = () => {
 
   React.useEffect(() => {
     fetchAdminData();
+    document.title = "Settings - Admin Todo List";
   }, []);
 
   // Upload Avatar
@@ -158,7 +160,14 @@ const Setting = () => {
 
   if (loading) return <Loading />;
 
-  if (!adminData) return <div>No admin data found</div>;
+  if (!adminData)
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <div className="text-center p-6 bg-white rounded-lg shadow-md border border-gray-200">
+          <p className="">You need to be logged in to access this page.</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-6 flex justify-center">
@@ -185,17 +194,20 @@ const Setting = () => {
                 className="object-cover w-full h-full"
               />
             </div>
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-3">
               <Input
                 type="file"
                 id="avatar"
                 name="avatar"
                 onChange={handleAvatarChange}
+                className=""
               />
               <Button
                 type="primary"
                 icon={<UploadOutlined />}
                 onClick={handleUploadAvatar}
+                className="mt-2"
+                disabled={!avatarFile}
               >
                 Upload
               </Button>
@@ -220,6 +232,7 @@ const Setting = () => {
                 onChange={(e) =>
                   setAdminData({ ...adminData, name: e.target.value })
                 }
+                disabled
               />
             </div>
 
@@ -232,6 +245,7 @@ const Setting = () => {
                 onChange={(e) =>
                   setAdminData({ ...adminData, email: e.target.value })
                 }
+                disabled
               />
             </div>
 
@@ -244,6 +258,7 @@ const Setting = () => {
                 onChange={(e) =>
                   setAdminData({ ...adminData, password: e.target.value })
                 }
+                disabled
               />
             </div>
 

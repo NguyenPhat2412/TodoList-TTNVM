@@ -3,9 +3,6 @@ import Link from "next/link";
 import React from "react";
 import { NavbarProps } from "@/types/types";
 import {
-  AccountBookOutlined,
-  DashboardFilled,
-  DashOutlined,
   ExclamationCircleFilled,
   HomeOutlined,
   LogoutOutlined,
@@ -13,8 +10,14 @@ import {
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 
 const Navbar: React.FC<NavbarProps> = ({ activeLink, setActiveLink }) => {
+  const navigate = useRouter();
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    navigate.push("/login_admin");
+  };
   return (
     <div className="nav navbar w-64 h-screen bg-gray-100 p-6 flex flex-col">
       <div className="dashboard logo text-4xl font-bold text-gray-500 mb-6 flex items-center p-3">
@@ -51,9 +54,9 @@ const Navbar: React.FC<NavbarProps> = ({ activeLink, setActiveLink }) => {
           <div className="flex flex-col g-2 pb-2">
             <div
               className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold ${
-                activeLink === "/about" ? "bg-gray-300" : ""
+                activeLink === "/About" ? "bg-gray-300" : ""
               }`}
-              onClick={() => setActiveLink("/about")}
+              onClick={() => setActiveLink("/About")}
             >
               <ExclamationCircleFilled className="mr-2 mb-1" />
               <p>About</p>
@@ -85,7 +88,8 @@ const Navbar: React.FC<NavbarProps> = ({ activeLink, setActiveLink }) => {
 
           <Link
             href="/login_admin"
-            className="ml-4 main-list block py-2 px-4 rounded flex bg-red-500 text-white hover:bg-red-800 transition-colors"
+            className="ml-4 main-list block py-2 px-4 rounded flex bg-blue-500 text-white hover:bg-blue-800 transition-colors"
+            onClick={handleLogout}
           >
             <LogoutOutlined className="mr-2" />
             <p>Logout</p>
