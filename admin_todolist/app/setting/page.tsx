@@ -42,7 +42,6 @@ const Setting = () => {
 
       const data = await response.json();
       setAdminData(data);
-      console.log(data);
       if (data.avatar) setAvatarPreview(data.avatar);
     } catch (error) {
       openNotification("error", "Cannot fetch admin data");
@@ -50,11 +49,6 @@ const Setting = () => {
       setLoading(false);
     }
   };
-
-  React.useEffect(() => {
-    fetchAdminData();
-    document.title = "Settings - Admin Todo List";
-  }, []);
 
   // Upload Avatar
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -157,6 +151,11 @@ const Setting = () => {
       openNotification("error", "Error updating password");
     }
   };
+
+  React.useEffect(() => {
+    fetchAdminData();
+    document.title = "Settings - Admin Todo List";
+  }, []);
 
   if (loading) return <Loading />;
 

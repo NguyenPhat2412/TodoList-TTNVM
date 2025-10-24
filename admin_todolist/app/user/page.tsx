@@ -46,6 +46,7 @@ const ListUser: React.FC = () => {
 
   // Fetch User Data
   useEffect(() => {
+    document.title = "User List - Admin Todo List";
     const fetchData = async () => {
       try {
         const response = await fetch(

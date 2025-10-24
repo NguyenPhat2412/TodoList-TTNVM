@@ -43,4 +43,24 @@ router.put(
   AdminsController.changePassword
 );
 
+// get Number of User on Date.
+router.get(
+  "/users/stats",
+  /* authenticateAdmin, */ AdminsController.getNumberTasksByUserOnDate
+);
+
+// get Number User
+router.get(
+  "/users/number",
+  /* authenticateAdmin, */ AdminsController.getNumberUsersOnDate
+);
+// contact form
+router.post("/contact", AdminsController.contactAdmin);
+
+// get Number Tasks by User
+router.get(
+  "/tasks/user/stats/:userId",
+  /* authenticateAdmin, */ AdminsController.getNumberTasksByUsers
+);
+
 module.exports = router;

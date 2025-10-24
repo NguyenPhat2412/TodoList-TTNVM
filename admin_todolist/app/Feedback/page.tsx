@@ -37,8 +37,24 @@ const Feedback = () => {
 
     const submitData = async () => {
       try {
-        console.log("Form submitted:", formData);
-        openNotification("success", "Your message has been sent successfully!");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_DATABASE}/api/admin/contact`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
+        if (response.ok) {
+          openNotification(
+            "success",
+            "Your message has been sent successfully!"
+          );
+        } else {
+          openNotification("error", "An error occurred. Please try again.");
+        }
       } catch (error) {
         console.error("Error submitting form:", error);
         openNotification("error", "An error occurred. Please try again.");

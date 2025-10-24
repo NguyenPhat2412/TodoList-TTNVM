@@ -1,7 +1,8 @@
 const User = require("../models/User");
+const Todo = require("../models/Todo");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
+const nodemailer = require("nodemailer");
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}, "-password");
@@ -170,4 +171,158 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-// Number Tasks by User on the day
+// Number Tasks by User on the date
+exports.getNumberTasksByUserOnDate = async (req, res) => {
+  const { start, end } = req.query;
+  try {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    endDate.setDate(endDate.getDate() + 1);
+
+    const results = await Todo.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+          },
+          count: { $sum: 1 },
+          completedCount: {
+            $sum: { $cond: [{ $eq: ["$progress", "Completed"] }, 1, 0] },
+          },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    const formattedResults = results.map((item) => ({
+      date: item._id,
+      count: item.count,
+      completedCount: item.completedCount || 0,
+    }));
+
+    res.status(200).json(formattedResults);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.getNumberUsersOnDate = async (req, res) => {
+  const { start, end } = req.query;
+  try {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    endDate.setDate(endDate.getDate() + 1);
+
+    const results = await User.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    const formattedResults = results.map((item) => ({
+      date: item._id,
+      count: item.count,
+    }));
+
+    res.status(200).json(formattedResults);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Contact Admin
+exports.contactAdmin = async (req, res) => {
+  const { name, email, subject, message } = req.body;
+
+  try {
+    const adminUsers = await User.find({ role: "admin" });
+
+    if (adminUsers.length === 0) {
+      return res.status(404).json({ message: "No admin users found" });
+    }
+
+    // Send mail to each admin (email sending logic not implemented here)
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_HOST,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_HOST,
+      subject: `Contact Form Message from ${name}`,
+      text: `You have received a new message from ${name} (${email}) (${subject}):\n\n${message}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("Error sending email:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
+
+    res.status(200).json({ message: "Message sent to admin(s) successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Get Number of Users
+exports.getNumberTasksByUsers = async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const userInfo = await User.findById(userId, "-password");
+    if (!userInfo) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Count number of tasks for the user
+    const taskCount = await Todo.countDocuments({ userId: userId });
+
+    // Count nuumber of completed tasks for the user
+    const completedTaskCount = await Todo.countDocuments({
+      userId: userId,
+      progress: "Completed",
+    });
+    userInfo.taskCount = taskCount;
+    userInfo.completedTaskCount = completedTaskCount;
+
+    res.status(200).json({
+      user: userInfo,
+      taskCount: taskCount,
+      completedTaskCount: completedTaskCount,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Get Number Todo Completed by Users

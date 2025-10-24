@@ -10,8 +10,12 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { DatePicker, Input } from "antd";
+import { useEffect } from "react";
 
 const DashboardPage = () => {
+  useEffect(() => {
+    document.title = "Dashboard - Admin Todo List";
+  }, []);
   return (
     <div className="flex-grow min-h-screen bg-gray-50 flex flex-col px-6">
       {/* Header */}
@@ -46,7 +50,7 @@ const DashboardPage = () => {
             />
           </div>
           {/* Notification */}
-          <button className="relative h-10 w-20 rounded-lg bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center">
+          <button className="relative h-10 w-20 rounded-lg bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center cursor-pointer">
             <BellFilled className="text-gray-600 text-lg" />
             <span className="absolute top-1 right-1 inline-block w-3 h-3 bg-red-600 rounded-full border-2 border-white"></span>
           </button>

@@ -12,6 +12,17 @@ import About from "./About/Page";
 const Home = () => {
   const [activeLink, setActiveLink] = useState<string>("/");
 
+  const checkToken = () => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      window.location.href = "/login_admin";
+    }
+  };
+
+  useEffect(() => {
+    checkToken();
+  }, []);
+
   return (
     <>
       <div className="min-h-screen relative flex ">

@@ -1,9 +1,11 @@
 "use client";
-import { Flex, notification, Spin } from "antd";
+import { Flex, notification, Pagination, Spin } from "antd";
 import { Admin, NotificationType } from "@/types/types";
 import React, { useEffect } from "react";
 import PaginationComponent from "@/components/pagination";
 import { LoadingOutlined } from "@ant-design/icons";
+import UserTodoCell from "./NumberTodo";
+import NumberCompletedTodo from "./NumberCompletedTodo";
 
 const Details: React.FC = () => {
   const [dataUser, setDataUser] = React.useState<Admin[]>([]);
@@ -11,6 +13,7 @@ const Details: React.FC = () => {
   const [pageSize, setPageSize] = React.useState<number>(9);
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [numberTasks, setNumberTasks] = React.useState<number>(0);
 
   // Notification
   const openNotification = (type: NotificationType, message: string) => {
@@ -60,12 +63,15 @@ const Details: React.FC = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setDataUser(data);
+        const filteredData = data.filter(
+          (user: Admin) => user.role !== "admin"
+        );
+        setDataUser(filteredData);
         setLoading(true);
       } catch (error) {
         openNotification("error", "Failed to fetch user data.");
       } finally {
-        setLoading(false);
+        setLoading(true);
       }
     };
     fetchData();
@@ -80,7 +86,7 @@ const Details: React.FC = () => {
     setPageSize(size);
   };
 
-  if (loading) {
+  if (!loading) {
     return (
       <Flex justify="center" align="center" className="min-h-screen">
         <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} />} />
@@ -104,8 +110,8 @@ const Details: React.FC = () => {
                   <th className="py-3 px-4">STT</th>
                   <th className="py-3 px-4">Name</th>
                   <th className="py-3 px-4">Email</th>
-                  <th className="py-3 px-4">Phone</th>
-                  <th className="py-3 px-4">Role</th>
+                  <th className="py-3 px-4">Number Tasks</th>
+                  <th className="py-3 px-4">Completed Tasks</th>
                   <th className="py-3 px-4">Status</th>
                   <th className="py-3 px-4 text-center">Actions</th>
                 </tr>
@@ -121,17 +127,11 @@ const Details: React.FC = () => {
                     </td>
                     <td className="py-3 px-4">{user.name}</td>
                     <td className="py-3 px-4">{user.email}</td>
-                    <td className="py-3 px-4">{user.phone}</td>
                     <td className="py-3 px-4">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          user.role === "admin"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-200 text-gray-700"
-                        }`}
-                      >
-                        {user.role === "admin" ? "Admin" : "User"}
-                      </span>
+                      {<UserTodoCell userId={user._id} />}
+                    </td>
+                    <td className="py-3 px-4">
+                      {<NumberCompletedTodo userId={user._id} />}
                     </td>
                     <td className="py-3 px-4">
                       <span
@@ -158,6 +158,15 @@ const Details: React.FC = () => {
             </table>
           </div>
         )}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-6">
+        <PaginationComponent
+          total={dataUser.length}
+          itemsPerPage={pageSize}
+          onChange={handlePageChange}
+        />
       </div>
     </div>
   );
