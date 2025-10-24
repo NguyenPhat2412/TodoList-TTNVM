@@ -8,6 +8,7 @@ import React from "react";
 const AdminRegistrationPage: React.FC = () => {
   // useState
   const [admin, setAdmin] = React.useState<Admin>({
+    _id: "",
     name: "",
     email: "",
     password: "",
@@ -95,6 +96,7 @@ const AdminRegistrationPage: React.FC = () => {
   const resetForm = () => {
     // Reset form
     setAdmin({
+      _id: "",
       name: "",
       email: "",
       password: "",
