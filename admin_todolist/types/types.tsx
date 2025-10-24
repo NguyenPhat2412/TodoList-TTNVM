@@ -1,8 +1,8 @@
 export interface Admin {
   _id: string;
   name?: string;
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
   currentPassword?: string;
   phone?: string;
   role?: string;

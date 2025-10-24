@@ -6,6 +6,7 @@ import React from "react";
 const LoginAdmin = () => {
   // useState for admin login
   const [admin, setAdmin] = React.useState<Admin>({
+    _id: "",
     email: "",
     password: "",
   });
