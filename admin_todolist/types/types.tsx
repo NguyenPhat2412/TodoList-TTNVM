@@ -7,6 +7,7 @@ export interface Admin {
   phone?: string;
   role?: string;
   active?: boolean;
+  status?: string;
 }
 
 export type NotificationType = "success" | "info" | "warning" | "error";

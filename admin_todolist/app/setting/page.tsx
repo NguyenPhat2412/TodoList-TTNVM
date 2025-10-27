@@ -1,7 +1,7 @@
 "use client";
 
 import { Input, notification, Upload, Button, Spin } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Admin, NotificationType } from "@/types/types";
 import Loading from "@/components/Loading";
@@ -25,6 +25,11 @@ const Setting = () => {
   };
 
   // Fetch admin data
+  useEffect(() => {
+    fetchAdminData();
+    document.title = "Settings - Admin Todo List";
+  }, []);
+
   const fetchAdminData = async () => {
     setLoading(true);
     try {
@@ -151,11 +156,6 @@ const Setting = () => {
       openNotification("error", "Error updating password");
     }
   };
-
-  React.useEffect(() => {
-    fetchAdminData();
-    document.title = "Settings - Admin Todo List";
-  }, []);
 
   if (loading) return <Loading />;
 

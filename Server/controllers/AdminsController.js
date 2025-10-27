@@ -325,4 +325,21 @@ exports.getNumberTasksByUsers = async (req, res) => {
   }
 };
 
-// Get Number Todo Completed by Users
+// Update status online of user (handled in index.js with socket.io)
+exports.UpdateStatusUser = async (req, res) => {
+  const userId = req.params.userId;
+  const { status } = req.body;
+  try {
+    const UpdateUser = await User.findByIdAndUpdate(
+      userId,
+      { status: status },
+      { new: true }
+    );
+    if (!UpdateUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "User status updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

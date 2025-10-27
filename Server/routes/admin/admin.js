@@ -63,4 +63,11 @@ router.get(
   /* authenticateAdmin, */ AdminsController.getNumberTasksByUsers
 );
 
+// update user status (active/inactive)
+router.put(
+  "/users/status/:userId",
+  authMiddlewareLocalStorageAdmin,
+  AdminsController.UpdateStatusUser
+);
+
 module.exports = router;

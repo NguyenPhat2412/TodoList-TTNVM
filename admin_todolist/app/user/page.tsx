@@ -141,12 +141,12 @@ const ListUser: React.FC = () => {
                     <td className="py-3 px-4">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          user.active
+                          user.status === "online"
                             ? "bg-blue-100 text-blue-700"
                             : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {user.active ? "Active" : "Inactive"}
+                        {user.status === "online" ? "Active" : "Inactive"}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-center">
