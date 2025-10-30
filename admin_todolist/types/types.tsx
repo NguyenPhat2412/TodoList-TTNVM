@@ -36,3 +36,11 @@ export interface ContactFormData {
   subject?: string;
   message?: string;
 }
+
+export interface ModalConfirmDeleteProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+  onConfirm?: () => void;
+  itemType?: string;
+  itemName?: string;
+}

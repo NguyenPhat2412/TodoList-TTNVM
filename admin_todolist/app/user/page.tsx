@@ -1,10 +1,10 @@
 "use client";
-import { Flex, notification, Spin } from "antd";
+import { Flex, notification } from "antd";
 import { Admin, NotificationType } from "@/types/types";
 import React, { useEffect } from "react";
 import PaginationComponent from "@/components/pagination";
-import { LoadingOutlined } from "@ant-design/icons";
 import Loading from "@/components/Loading";
+import ModalConfirmDelete from "@/components/ModalConfirmDelete";
 
 const ListUser: React.FC = () => {
   const [dataUser, setDataUser] = React.useState<Admin[]>([]);
@@ -12,6 +12,9 @@ const ListUser: React.FC = () => {
   const [pageSize, setPageSize] = React.useState<number>(10);
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [selectedUserId, setSelectedUserId] = React.useState<string>("");
+  const [selectedUserName, setSelectedUserName] = React.useState<string>("");
 
   // Notification
   const openNotification = (type: NotificationType, message: string) => {
@@ -21,6 +24,32 @@ const ListUser: React.FC = () => {
     });
   };
 
+  // Fetch User Data
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_DATABASE}/api/admin/users`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      setDataUser(data);
+    } catch (error) {
+      openNotification("error", "Failed to fetch user data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    document.title = "User List - Admin Todo List";
+    fetchData();
+  }, []);
+
   // Handle Delete User
   const handleDelete = async (id: string) => {
     try {
@@ -28,50 +57,26 @@ const ListUser: React.FC = () => {
         `${process.env.NEXT_PUBLIC_API_DATABASE}/api/admin/delete-users/${id}`,
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      openNotification("success", "User deleted successfully.");
-      setDataUser(dataUser.filter((user) => user._id !== id));
+      if (!response.ok) throw new Error("Network response was not ok");
+      setDataUser((prev) => prev.filter((user) => user._id !== id));
+      openNotification("success", "User deleted successfully!");
     } catch (error) {
       openNotification("error", "Failed to delete user.");
-      console.error("There was a problem with the delete operation:", error);
+      console.error("Delete operation error:", error);
+    } finally {
+      setIsOpen(false);
     }
   };
 
-  // Fetch User Data
-  useEffect(() => {
-    document.title = "User List - Admin Todo List";
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_DATABASE}/api/admin/users`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setDataUser(data);
-        setLoading(true);
-      } catch (error) {
-        openNotification("error", "Failed to fetch user data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  // Handle Open Modal
+  const handleOpenModal = (id: string, name: string) => {
+    setSelectedUserId(id);
+    setSelectedUserName(name);
+    setIsOpen(true);
+  };
 
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
@@ -82,13 +87,22 @@ const ListUser: React.FC = () => {
     setPageSize(size);
   };
 
-  if (loading) {
-    return <Loading />;
-  }
+  if (loading) return <Loading />;
+
   return (
-    <div className="flex-grow min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 p-8">
+    <div className="flex-grow min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 p-8 relative">
       {contextHolder}
 
+      {/* Modal Confirm Delete */}
+      <ModalConfirmDelete
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={() => handleDelete(selectedUserId)}
+        itemType="user"
+        itemName={selectedUserName}
+      />
+
+      {/* List User */}
       <div className="mx-auto bg-white shadow-lg rounded-xl p-6 border border-gray-200">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-700">User List</h1>
@@ -122,7 +136,7 @@ const ListUser: React.FC = () => {
                     className="hover:bg-gray-50 border-b border-gray-200 transition"
                   >
                     <td className="py-3 px-4 font-medium text-gray-600">
-                      {index + 1}
+                      {startIndex + index + 1}
                     </td>
                     <td className="py-3 px-4">{user.name}</td>
                     <td className="py-3 px-4">{user.email}</td>
@@ -152,7 +166,9 @@ const ListUser: React.FC = () => {
                     <td className="py-3 px-4 text-center">
                       <button
                         className="text-white font-medium py-1 px-2 rounded transition-colors bg-red-400 hover:bg-red-800"
-                        onClick={() => handleDelete(user._id!)}
+                        onClick={() =>
+                          handleOpenModal(user._id, user.name || "Unknown")
+                        }
                       >
                         Delete
                       </button>
