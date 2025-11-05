@@ -30,3 +30,8 @@ export type RootStackParamList = {
   AddTodo: undefined;
   OnboardingScreen: undefined;
 };
+
+export interface CategoryCount {
+  category: string;
+  count: number;
+}

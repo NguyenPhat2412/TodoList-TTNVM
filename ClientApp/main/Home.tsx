@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Text,
   View,
@@ -21,12 +21,8 @@ import Feather from '@react-native-vector-icons/feather';
 import { useFonts } from 'expo-font';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { Todo } from 'types/types';
-
-interface CategoryCount {
-  category: string;
-  count: number;
-}
+import { Todo, CategoryCount } from 'types/types';
+import { io } from 'socket.io-client';
 
 const categories = [
   { name: 'Work', color: '#ff0000ff', icon: 'briefcase' },
@@ -45,27 +41,15 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   const navigator = useNavigation();
+
+  const socketRef = useRef<any>(null);
+
+  // load custom fonts
   const [fontsLoaded] = useFonts({
     'PatrickHand-Regular': require('../assets/fonts/PatrickHand-Regular.ttf'),
   });
 
-  // Fetch tasks by category (for modal)
-  const fetchTasksByCategory = async (category: string) => {
-    if (!userId) return;
-    try {
-      const res = await fetch(`${API_URL}/api/todos/${userId}/${category}`);
-      const data = await res.json();
-      if (res.ok) {
-        setTasks(data);
-      } else {
-        setTasks([]);
-      }
-    } catch (err) {
-      throw new Error('Error fetching tasks by category:', err as any);
-    }
-  };
-
-  // Lấy userId từ AsyncStorage
+  // get userId from AsyncStorage
   useFocusEffect(
     useCallback(() => {
       const loadUserId = async () => {
@@ -84,6 +68,21 @@ const Home = () => {
       loadUserId();
     }, [])
   );
+  // Fetch tasks by category (for modal)
+  const fetchTasksByCategory = async (category: string) => {
+    if (!userId) return;
+    try {
+      const res = await fetch(`${API_URL}/api/todos/${userId}/${category}`);
+      const data = await res.json();
+      if (res.ok) {
+        setTasks(data);
+      } else {
+        setTasks([]);
+      }
+    } catch (err) {
+      throw new Error('Error fetching tasks by category:', err as any);
+    }
+  };
 
   // if (userId === null) {
   //   navigator.navigate('Login' as never);
@@ -140,6 +139,32 @@ const Home = () => {
       fetchCounts();
     }, [userId])
   );
+
+  // set up socket connection
+  useEffect(() => {
+    if (!userId) return;
+
+    const socketSetup = io(`${API_URL}`, {
+      transports: ['websocket'],
+    });
+
+    socketRef.current = socketSetup;
+
+    socketSetup.on('connect', () => {
+      console.log('Socket connected:', socketSetup.id);
+      if (userId) {
+        console.log('Registering userId with socket:', userId);
+        socketSetup.emit('register', userId);
+      }
+    });
+
+    socketSetup.on('users_status', ({ status, userId }) => {
+      console.log(`User ${userId} is now ${status}`);
+    });
+    return () => {
+      socketSetup.disconnect();
+    };
+  }, [userId]);
 
   const getCountForCategory = (name: string) => {
     const found = counts.find((c) => c.category === name);

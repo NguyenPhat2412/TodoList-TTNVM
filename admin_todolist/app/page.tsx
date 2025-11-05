@@ -11,7 +11,6 @@ import About from "./About/Page";
 import { io } from "socket.io-client";
 import { notification } from "antd";
 import { NotificationType } from "@/types/types";
-import { data } from "framer-motion/m";
 
 const Home = () => {
   const [activeLink, setActiveLink] = useState<string>("/");
