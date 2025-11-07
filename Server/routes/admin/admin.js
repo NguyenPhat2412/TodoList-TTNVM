@@ -5,6 +5,7 @@ const AdminsController = require("../../controllers/AdminsController");
 const authMiddlewareLocalStorageAdmin =
   require("../../middleware/authMiddleware").authMiddlewareLocalStorageAdmin;
 
+const upload = require("../../middleware/multerMiddleware");
 // Route to get all users (admin only)
 router.get("/users", /* authenticateAdmin, */ AdminsController.getAllUsers);
 
@@ -30,6 +31,7 @@ router.put(
   AdminsController.UpdateUser
 );
 
+// get inform user after login
 router.get(
   "/users/me",
   authMiddlewareLocalStorageAdmin,
@@ -41,6 +43,14 @@ router.put(
   "/users/change-password",
   authMiddlewareLocalStorageAdmin,
   AdminsController.changePassword
+);
+
+// update admin profile with avatar
+router.put(
+  "/users/avatar/:id",
+  authMiddlewareLocalStorageAdmin,
+  upload.single("avatar"),
+  AdminsController.UpdateAvatarUser
 );
 
 // get Number of User on Date.
@@ -70,4 +80,12 @@ router.put(
   AdminsController.UpdateStatusUser
 );
 
+// forget password
+router.post("/forgot-password", AdminsController.forgotPassword);
+
+// otp
+router.post("/verify-otp", AdminsController.verifyOTP);
+
+// reset password
+router.post("/reset-password", AdminsController.resetPassword);
 module.exports = router;

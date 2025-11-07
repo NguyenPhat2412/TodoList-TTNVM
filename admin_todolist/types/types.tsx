@@ -6,6 +6,7 @@ export interface Admin {
   currentPassword?: string;
   phone?: string;
   role?: string;
+  avatar?: string | File;
   active?: boolean;
   status?: string;
 }
@@ -15,6 +16,8 @@ export type NotificationType = "success" | "info" | "warning" | "error";
 export interface NavbarProps {
   activeLink: string;
   setActiveLink: (link: string) => void;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (isOpen: boolean) => void;
 }
 
 export interface PaginationComponentProps {
@@ -43,4 +46,9 @@ export interface ModalConfirmDeleteProps {
   onConfirm?: () => void;
   itemType?: string;
   itemName?: string;
+}
+
+export interface SearchUser {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 }

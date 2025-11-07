@@ -19,6 +19,7 @@ const DashboardPage = () => {
   return (
     <div className="flex-grow min-h-screen bg-gray-50 flex flex-col px-6">
       {/* Header */}
+
       <div className="flex justify-between items-center py-6 border-b border-gray-200">
         {/* Title */}
         <div>

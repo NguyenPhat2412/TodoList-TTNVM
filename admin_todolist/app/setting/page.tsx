@@ -10,7 +10,6 @@ const Setting = () => {
   // State management
   const [adminData, setAdminData] = React.useState<Admin | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [avatarFile, setAvatarFile] = React.useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = React.useState<string>("");
 
   // Notification
@@ -47,7 +46,6 @@ const Setting = () => {
 
       const data = await response.json();
       setAdminData(data);
-      if (data.avatar) setAvatarPreview(data.avatar);
     } catch (error) {
       openNotification("error", "Cannot fetch admin data");
     } finally {
@@ -55,26 +53,16 @@ const Setting = () => {
     }
   };
 
-  // Upload Avatar
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
-    }
-  };
-
   const handleUploadAvatar = async () => {
-    if (!avatarFile) return;
-
+    if (!adminData?.avatar) return;
     const formData = new FormData();
-    formData.append("avatar", avatarFile);
+    formData.append("avatar", adminData.avatar);
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_DATABASE}/api/admin/users/upload-avatar`,
+        `${process.env.NEXT_PUBLIC_API_DATABASE}/api/admin/users/avatar/${adminData?._id}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
@@ -82,9 +70,9 @@ const Setting = () => {
         }
       );
       if (!response.ok) throw new Error("Upload failed");
-
+      const data = await response.json();
+      setAdminData({ ...adminData, avatar: data.avatar });
       openNotification("success", "Avatar uploaded successfully!");
-      fetchAdminData();
     } catch (error) {
       openNotification("error", "Failed to upload avatar");
     }
@@ -169,11 +157,17 @@ const Setting = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-6 flex justify-center">
+    <div className="bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-6 flex justify-center flex-col">
       {contextHolder}
+
+      <div className="flex mb-8 flex-row items-center gap-1 border-b border-gray-300 pb-4">
+        <p className="text-gray-600 mb-6 text-sm">{`Dashboard > `}</p>
+        <p className="text-sm font-bold mb-6">{`Setting`}</p>
+      </div>
+
       <div className="w-full max-w-8xl bg-white rounded-2xl shadow-lg border border-gray-200 p-8 space-y-10">
         {/* Header */}
-        <div className="text-center border-b border-gray-200 pb-4">
+        <div className="border-b border-gray-200 pb-4">
           <h1 className="text-3xl font-bold text-gray-800">Settings</h1>
           <p className="text-gray-500 text-sm mt-1">
             Manage your profile, account information, and security.
@@ -188,7 +182,7 @@ const Setting = () => {
           <div className="flex items-center space-x-4">
             <div className="w-30 h-30 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
               <img
-                src={avatarPreview || "https://via.placeholder.com/100"}
+                src={avatarPreview || adminData?.avatar}
                 alt="Avatar Preview"
                 className="object-cover w-full h-full"
               />
@@ -198,15 +192,24 @@ const Setting = () => {
                 type="file"
                 id="avatar"
                 name="avatar"
-                onChange={handleAvatarChange}
-                className=""
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+
+                    setAdminData({
+                      ...adminData,
+                      avatar: file,
+                    });
+                    setAvatarPreview(URL.createObjectURL(file));
+                  }
+                }}
               />
               <Button
                 type="primary"
                 icon={<UploadOutlined />}
                 onClick={handleUploadAvatar}
                 className="mt-2"
-                disabled={!avatarFile}
+                disabled={!adminData?.avatar}
               >
                 Upload
               </Button>
@@ -227,11 +230,10 @@ const Setting = () => {
                 Name
               </label>
               <Input
-                value={adminData.name}
+                value={adminData?.name}
                 onChange={(e) =>
                   setAdminData({ ...adminData, name: e.target.value })
                 }
-                disabled
               />
             </div>
 
@@ -240,24 +242,10 @@ const Setting = () => {
                 Email
               </label>
               <Input
-                value={adminData.email}
+                value={adminData?.email}
                 onChange={(e) =>
                   setAdminData({ ...adminData, email: e.target.value })
                 }
-                disabled
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <Input.Password
-                value={adminData.password}
-                onChange={(e) =>
-                  setAdminData({ ...adminData, password: e.target.value })
-                }
-                disabled
               />
             </div>
 

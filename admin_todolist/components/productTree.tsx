@@ -88,6 +88,11 @@ const ProductTree = () => {
     },
     { label: "Contact", color: "text-black", hover: "hover:bg-gray-300" },
     { label: "Help", color: "text-black", hover: "hover:bg-gray-300" },
+    {
+      label: "settings",
+      color: "text-black",
+      hover: "hover:bg-gray-300",
+    },
   ];
 
   // Trạng thái mở/đóng của các nhánh

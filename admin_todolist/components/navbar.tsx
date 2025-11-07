@@ -12,7 +12,12 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 
-const Navbar: React.FC<NavbarProps> = ({ activeLink, setActiveLink }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  activeLink,
+  setActiveLink,
+  isSidebarOpen,
+  setIsSidebarOpen,
+}) => {
   const navigate = useRouter();
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
@@ -23,6 +28,12 @@ const Navbar: React.FC<NavbarProps> = ({ activeLink, setActiveLink }) => {
       <div className="dashboard logo text-4xl font-bold text-gray-500 mb-6 flex items-center p-3">
         <h1>Dashboard</h1>
       </div>
+      <button
+        className="md:hidden fixed top-4 left-4 z-50 bg-blue-600 text-white px-3 py-2 rounded"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+      >
+        {isSidebarOpen ? "✕" : "☰"}
+      </button>
 
       <div className="space-y-1 mt-6 relative flex flex-col h-full">
         <div className="ml-4 flex flex-col g-2 pb-2">

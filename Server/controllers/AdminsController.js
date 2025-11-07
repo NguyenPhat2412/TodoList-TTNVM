@@ -3,6 +3,12 @@ const Todo = require("../models/Todo");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
+
+const generateOtp = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+const UserOtp = "";
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}, "-password");
@@ -117,11 +123,36 @@ exports.getAllUsersWithRole = async (req, res) => {
 
 exports.UpdateUser = async (req, res) => {
   const userId = req.params.id;
-  const { name, email, phone } = req.body;
+  const { name, email, phone, avatar } = req.body;
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name, email, phone },
+      { name, email, phone, avatar },
+      { new: true, fields: "-password" }
+    );
+
+    if (!avatar) {
+      updatedUser.avatar = `${process.env.LOCALHOST_URL}/uploads/avatar_admin/avatar_default.jpg`;
+    }
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.UpdateAvatarUser = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const avatarUrl = `${process.env.LOCALHOST_URL}/uploads/avatar_admin/${req.file.filename}`;
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { avatar: avatarUrl },
       { new: true, fields: "-password" }
     );
     if (!updatedUser) {
@@ -129,7 +160,7 @@ exports.UpdateUser = async (req, res) => {
     }
     res
       .status(200)
-      .json({ message: "User updated successfully", user: updatedUser });
+      .json({ message: "Avatar updated successfully", user: updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -339,6 +370,102 @@ exports.UpdateStatusUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     res.status(200).json({ message: "User status updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email, role: "admin" });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Admin with this email not found" });
+    }
+    const otp = generateOtp();
+
+    // Save OTP and its expiration time (10 minutes) to the user document
+    user.otp = otp;
+    user.otpExpiration = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+    await user.save();
+    // Send OTP via email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_HOST,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`,
+    };
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: "OTP sent to email" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.verifyOTP = async (req, res) => {
+  const { email, otp } = req.body;
+  console.log({ email, otp });
+  try {
+    const user = await User.findOne({ email, role: "admin" });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Admin with this email not found" });
+    }
+
+    console.log({ userOtp: user.otp, userOtpExpiration: user.otpExpiration });
+
+    // check otp validity
+    if (
+      user.otp !== otp ||
+      !user.otpExpiration ||
+      user.otpExpiration < Date.now()
+    ) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    if (!otp) {
+      return res.status(400).json({ message: "OTP is required" });
+    }
+
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const { email, newPassword, confirmPassword } = req.body;
+  console.log({ email, newPassword });
+  try {
+    const user = await User.findOne({ email, role: "admin" });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Admin with this email not found" });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Hash the new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPassword;
+
+    // Update the user's password
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

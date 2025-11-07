@@ -18,6 +18,7 @@ const Home = () => {
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   const socketRef = useRef<any>(null);
 
@@ -119,12 +120,27 @@ const Home = () => {
   return (
     <>
       {contextHolder}
-      <div className="min-h-screen relative flex ">
-        <div className="fixed">
-          <Navbar activeLink={activeLink} setActiveLink={setActiveLink} />
-        </div>
 
-        <div className="flex-grow ml-64">
+      <div className="min-h-screen relative flex bg-gray-100">
+        <button
+          className="md:hidden fixed top-4 left-4 z-50 bg-blue-600 text-white px-3 py-2 rounded"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          {isSidebarOpen ? "✕" : "☰"}
+        </button>
+        <div
+          className={`fixed top-0 left-0 h-full z-50 md:h-auto w-64 md:w-64 bg-white border-r border-gray-200 shadow-md transition-transform transform ${
+            !isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <Navbar
+            activeLink={activeLink}
+            setActiveLink={setActiveLink}
+            isSidebarOpen={isSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
+          />
+        </div>
+        <div className="flex-grow ml-0 md:ml-64">
           {activeLink === "/" && <DashboardPage />}
           {activeLink === "/user" && <ListUser />}
           {activeLink === "/Feedback" && <Feedback />}

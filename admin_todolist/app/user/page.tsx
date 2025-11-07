@@ -1,20 +1,37 @@
 "use client";
 import { Flex, notification } from "antd";
-import { Admin, NotificationType } from "@/types/types";
+import { Admin, NotificationType, SearchUser } from "@/types/types";
 import React, { useEffect } from "react";
 import PaginationComponent from "@/components/pagination";
 import Loading from "@/components/Loading";
 import ModalConfirmDelete from "@/components/ModalConfirmDelete";
+import ComponentSearchUser from "@/components/SearchUser";
 
 const ListUser: React.FC = () => {
   const [dataUser, setDataUser] = React.useState<Admin[]>([]);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(10);
+  const [pageSize, setPageSize] = React.useState<number>(8);
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [selectedUserId, setSelectedUserId] = React.useState<string>("");
   const [selectedUserName, setSelectedUserName] = React.useState<string>("");
+
+  // Search User State
+  const [searchTerm, setSearchTerm] =
+    React.useState<SearchUser["searchTerm"]>("");
+  const [filteredUsers, setFilteredUsers] = React.useState<Admin[]>([]);
+
+  useEffect(() => {
+    const lowercasedTerm = searchTerm.toLowerCase();
+    const filtered = dataUser.filter(
+      (user) =>
+        (user.name && user.name.toLowerCase().includes(lowercasedTerm)) ||
+        (user.email && user.email.toLowerCase().includes(lowercasedTerm)) ||
+        (user.phone && user.phone.toLowerCase().includes(lowercasedTerm))
+    );
+    setFilteredUsers(filtered);
+  }, [searchTerm, dataUser]);
 
   // Notification
   const openNotification = (type: NotificationType, message: string) => {
@@ -80,7 +97,7 @@ const ListUser: React.FC = () => {
 
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const currentUsers = dataUser.slice(startIndex, endIndex);
+  const currentUsers = filteredUsers.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number, size: number) => {
     setCurrentPage(page);
@@ -102,6 +119,10 @@ const ListUser: React.FC = () => {
         itemName={selectedUserName}
       />
 
+      <div className="flex mb-8 flex-row items-center gap-1 border-b border-gray-300 pb-4">
+        <p className="text-gray-600 mb-6 text-sm">{`Dashboard > `}</p>
+        <p className="text-sm font-bold mb-6">{`User List`}</p>
+      </div>
       {/* List User */}
       <div className="mx-auto bg-white shadow-lg rounded-xl p-6 border border-gray-200">
         <div className="flex justify-between items-center mb-6">
@@ -110,8 +131,8 @@ const ListUser: React.FC = () => {
             User TodoList
           </button>
         </div>
-
-        {dataUser.length === 0 ? (
+        <ComponentSearchUser SearchUser={{ searchTerm, setSearchTerm }} />
+        {filteredUsers.length === 0 ? (
           <div className="text-center py-10 text-gray-500 text-lg">
             No users found.
           </div>

@@ -16,6 +16,7 @@ const TodoSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
+TodoSchema.index({ userId: 1, title: 1, category: 1 });
 
 const Todo = mongoose.model("Todo", TodoSchema);
 
