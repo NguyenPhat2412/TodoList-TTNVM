@@ -83,7 +83,7 @@ const LoginAdmin = () => {
             <strong className="text-gray-800">Login</strong>
           </p>
           <h1 className="text-2xl font-semibold text-gray-800 mt-1">
-            Welcome Back 👋
+            Sign In 👋
           </h1>
         </div>
 
