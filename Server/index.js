@@ -49,8 +49,6 @@ app.use("/api", clientRoutes);
 const adminRoutes = require("./routes/admin/admin");
 app.use("/api/admin", adminRoutes);
 
-// uploads image
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Handle 404 errors
 app.use((req, res) => {
   res.status(404).json({ error: "Not found" });

@@ -5,7 +5,7 @@ const AdminsController = require("../../controllers/AdminsController");
 const authMiddlewareLocalStorageAdmin =
   require("../../middleware/authMiddleware").authMiddlewareLocalStorageAdmin;
 
-const upload = require("../../middleware/multerMiddleware");
+const upload = require("../../middleware/multerMemory");
 // Route to get all users (admin only)
 router.get("/users", /* authenticateAdmin, */ AdminsController.getAllUsers);
 
