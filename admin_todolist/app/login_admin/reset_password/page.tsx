@@ -8,7 +8,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { DatePicker, Input, notification } from "antd";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const ResetPasswordPage = () => {
@@ -17,6 +17,7 @@ const ResetPasswordPage = () => {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const email = searchParams.get("email") || "";
+  const navigation = useRouter();
 
   const [api, contextHolder] = notification.useNotification();
   const openNotification = (type: NotificationType, message: string) => {
@@ -47,7 +48,7 @@ const ResetPasswordPage = () => {
         const data = await response.json();
         if (data.message === "Password reset successfully") {
           openNotification("success", "Password reset successfully");
-          window.location.href = `/login_admin`;
+          navigation.push("/login_admin");
           setLoading(false);
         } else {
           openNotification("error", "Password reset failed");
