@@ -3,7 +3,7 @@ const Todo = require("../models/Todo");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
-const bucket = require("../middleware/firebase");
+const { bucket } = require("../middleware/firebase");
 const generateOtp = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
