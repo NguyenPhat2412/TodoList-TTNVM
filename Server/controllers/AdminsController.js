@@ -154,36 +154,26 @@ exports.UpdateAvatarUser = async (req, res) => {
     }
 
     const file = bucket.file(`avatar_admin/${req.file.originalname}`);
-
-    const stream = file.createWriteStream({
-      metadata: {
-        contentType: req.file.mimetype,
-      },
+    await file.save(req.file.buffer, {
+      metadata: { contentType: req.file.mimetype },
       public: true,
     });
 
-    stream.on("error", (err) => {
-      console.error("Error uploading to Firebase Storage:", err);
-      return res.status(500).json({ message: "Upload error", error: err });
-    });
+    const avatarUrl = `https://firebasestorage.googleapis.com/v0/b/${
+      process.env.FIREBASE_STORAGE_BUCKET
+    }/o/${encodeURIComponent(file.name)}?alt=media`;
 
-    stream.on("finish", async () => {
-      await file.makePublic();
-      const avatarUrl = `https://storage.googleapis.com/${process.env.FIREBASE_STORAGE_BUCKET}/avatar_admin/${req.file.originalname}`;
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { avatar: avatarUrl },
-        { new: true, fields: "-password" }
-      );
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      res
-        .status(200)
-        .json({ message: "Avatar updated successfully", user: updatedUser });
-    });
-
-    stream.end(req.file.buffer);
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { avatar: avatarUrl },
+      { new: true, fields: "-password" }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "User avatar updated successfully", user: updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
