@@ -9,17 +9,20 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import ExportCSVButton from "./ExportCSVButton";
+import { Admin } from "@/types/types";
 
-const data = [
-  { name: "Page A", uv: 4000, pv: 2400, amt: 2400 },
-  { name: "Page B", uv: 3000, pv: 1398, amt: 2210 },
-  { name: "Page C", uv: 2000, pv: 9800, amt: 2290 },
-  { name: "Page D", uv: 2780, pv: 3908, amt: 2000 },
-  { name: "Page E", uv: 1890, pv: 4800, amt: 2181 },
-  { name: "Page F", uv: 2390, pv: 3800, amt: 2500 },
-  { name: "Page G", uv: 3490, pv: 4300, amt: 2100 },
-];
+// const data = [
+//   { name: "Page A", uv: 4000, pv: 2400, amt: 2400 },
+//   { name: "Page B", uv: 3000, pv: 1398, amt: 2210 },
+//   { name: "Page C", uv: 2000, pv: 9800, amt: 2290 },
+//   { name: "Page D", uv: 2780, pv: 3908, amt: 2000 },
+//   { name: "Page E", uv: 1890, pv: 4800, amt: 2181 },
+//   { name: "Page F", uv: 2390, pv: 3800, amt: 2500 },
+//   { name: "Page G", uv: 3490, pv: 4300, amt: 2100 },
+// ];
 const Overview: React.FC = () => {
+  // Declare State
   const [numberTasksByUserOnDate, setNumberTasksByUserOnDate] = useState<
     { date: string; count: number }[]
   >([]);
@@ -32,6 +35,33 @@ const Overview: React.FC = () => {
   const [numberUsersOnDate, setNumberUsersOnDate] = useState<
     { date: string; count: number }[]
   >([]);
+
+  const [allUsers, setAllUsers] = useState<Admin[]>([]);
+
+  // use Promise.all
+  // get all users
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const usersResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_DATABASE}/api/admin/users`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const usersResult = await usersResponse.json();
+        setAllUsers(usersResult);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        // Cleanup or final actions if needed
+      }
+    };
+    fetchData();
+  }, []);
 
   // Fetch Number of Tasks Created by Users on Date
   useEffect(() => {
@@ -255,9 +285,7 @@ const Overview: React.FC = () => {
               Uncover performance and visitor insights with our data wizardry.
             </p>
           </div>
-          <button className="self-start px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-all">
-            Get insights →
-          </button>
+          <ExportCSVButton data={allUsers} filename="getAllUsers.csv" />
         </div>
       </div>
     </div>

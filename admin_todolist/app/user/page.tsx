@@ -28,7 +28,8 @@ const ListUser: React.FC = () => {
       (user) =>
         (user.name && user.name.toLowerCase().includes(lowercasedTerm)) ||
         (user.email && user.email.toLowerCase().includes(lowercasedTerm)) ||
-        (user.phone && user.phone.toLowerCase().includes(lowercasedTerm))
+        (user.phone && user.phone.toLowerCase().includes(lowercasedTerm)) ||
+        (user.role && user.role.toLowerCase().includes(lowercasedTerm))
     );
     setFilteredUsers(filtered);
   }, [searchTerm, dataUser]);

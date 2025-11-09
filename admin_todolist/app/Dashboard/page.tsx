@@ -3,21 +3,33 @@
 import Details from "@/components/details";
 import Overview from "@/components/overiews";
 import ProductTree from "@/components/productTree";
+import { NotificationType } from "@/types/types";
 import {
   BellFilled,
   DatabaseOutlined,
   FundOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { DatePicker, Input } from "antd";
+import { DatePicker, Input, notification } from "antd";
 import { useEffect } from "react";
 const DashboardPage = () => {
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (type: NotificationType, message: string) => {
+    api[type]({
+      message: "Notification",
+      description: message,
+      placement: "topRight",
+    });
+  };
+
   const handleNotificationClick = () => {
-    alert("Notification feature is coming soon!");
+    openNotification("info", "Notification feature is coming soon!");
   };
 
   return (
     <div className="flex-grow min-h-screen bg-gray-50 flex flex-col px-6">
+      {contextHolder}
       {/* Header */}
 
       <div className="flex justify-between items-center py-6 border-b border-gray-200">

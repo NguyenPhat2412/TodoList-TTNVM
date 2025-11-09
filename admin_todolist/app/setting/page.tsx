@@ -58,6 +58,16 @@ const Setting = () => {
     const formData = new FormData();
     formData.append("avatar", adminData.avatar);
 
+    // Validate file type
+    if (
+      adminData.avatar instanceof File &&
+      adminData.avatar.type !== "image/jpeg" &&
+      adminData.avatar.type !== "image/png"
+    ) {
+      openNotification("error", "Only JPEG and PNG files are allowed");
+      return;
+    }
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_DATABASE}/api/admin/users/avatar/${adminData?._id}`,

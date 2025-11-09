@@ -413,7 +413,6 @@ exports.forgotPassword = async (req, res) => {
 
 exports.verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
-  console.log({ email, otp });
   try {
     const user = await User.findOne({ email, role: "admin" });
     if (!user) {

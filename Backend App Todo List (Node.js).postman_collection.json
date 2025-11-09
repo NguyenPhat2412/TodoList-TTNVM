@@ -1,0 +1,807 @@
+{
+	"info": {
+		"_postman_id": "2d4fd800-e728-4cca-9b7f-cc96f9729ae1",
+		"name": "Backend App Todo List (Node.js)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40814722"
+	},
+	"item": [
+		{
+			"name": "module admin",
+			"item": [
+				{
+					"name": "module auth",
+					"item": [
+						{
+							"name": "update  a user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjVhMjI5MzljMjVkYjFiMGVjY2MzYyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjY3ODg1OSwiZXhwIjoxNzYyNjgyNDU5fQ.KKakHNIvoqJiSu-jOe7bKN3VkOTf2H6dxNm1uX0rUec",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "name",
+											"value": "Nguyễn Văn F",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/admin/users/6902f9007e861c474e415f85",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"6902f9007e861c474e415f85"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "upload avatar",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjVhMjI5MzljMjVkYjFiMGVjY2MzYyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjY3ODg1OSwiZXhwIjoxNzYyNjgyNDU5fQ.KKakHNIvoqJiSu-jOe7bKN3VkOTf2H6dxNm1uX0rUec",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "avatar",
+											"type": "file",
+											"src": "postman-cloud:///1f0bd4f9-3ba9-44f0-8fd3-59f953484256"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/admin/users/avatar/68f5a22939c25db1b0eccc3c",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"avatar",
+										"68f5a22939c25db1b0eccc3c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get a user after login",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjVhMjI5MzljMjVkYjFiMGVjY2MzYyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjY3ODg1OSwiZXhwIjoxNzYyNjgyNDU5fQ.KKakHNIvoqJiSu-jOe7bKN3VkOTf2H6dxNm1uX0rUec",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "masterrio2412@gmail.com",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/admin/users/me",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjVhMjI5MzljMjVkYjFiMGVjY2MzYyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjY3ODg1OSwiZXhwIjoxNzYyNjgyNDU5fQ.KKakHNIvoqJiSu-jOe7bKN3VkOTf2H6dxNm1uX0rUec",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "email",
+											"value": "masterrio2412@gmail.com",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/admin/users/status/68f5a22939c25db1b0eccc3c",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"status",
+										"68f5a22939c25db1b0eccc3c"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get all users",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "delete a user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/admin/delete-users/6902f9007e861c474e415f82",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"admin",
+								"delete-users",
+								"6902f9007e861c474e415f82"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/admin/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/admin/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all user with role",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/admin/users/role/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"role",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "number of user on date",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/admin/users/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/admin/contact",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"admin",
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get number tasks by userId",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "forgot password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjVhMjI5MzljMjVkYjFiMGVjY2MzYyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjY3ODg1OSwiZXhwIjoxNzYyNjgyNDU5fQ.KKakHNIvoqJiSu-jOe7bKN3VkOTf2H6dxNm1uX0rUec",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "masterrio2412@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/admin/forgot-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"admin",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify otp",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjVhMjI5MzljMjVkYjFiMGVjY2MzYyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjY3ODg1OSwiZXhwIjoxNzYyNjgyNDU5fQ.KKakHNIvoqJiSu-jOe7bKN3VkOTf2H6dxNm1uX0rUec",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "masterrio2412@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/admin/verify-otp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"admin",
+								"verify-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZjVhMjI5MzljMjVkYjFiMGVjY2MzYyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MjY3ODg1OSwiZXhwIjoxNzYyNjgyNDU5fQ.KKakHNIvoqJiSu-jOe7bKN3VkOTf2H6dxNm1uX0rUec",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "masterrio2412@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/admin/reset-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"admin",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "module client",
+			"item": [
+				{
+					"name": "module auth",
+					"item": [
+						{
+							"name": "register",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/register",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/login",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "logout",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/logout",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get user profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/profile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get todo by userId and cateogry",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/api/todos/6910596d82f45b4caacad3a7/Personal",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"todos",
+										"6910596d82f45b4caacad3a7",
+										"Personal"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create a todo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Làm việc đến sáng\",\r\n    \"completed\": true,\r\n    \"description\": \"Phải cố gắng thoi\",\r\n    \"index\": 1,\r\n    \"category\": \"Personal\",\r\n    \"startDate\": \"2025-11-08T07:49:00.000Z\",\r\n    \"dueDate\": \"2025-11-10T07:49:00.000Z\",\r\n    \"progress\": \"In Progress\",\r\n    \"prioritize\": \"High\",\r\n    \"userId\": \"68f5a22939c25db1b0eccc3c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/todos",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"todos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all todos",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "get todo by id",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "update todo",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "update todo",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/todos/690b0187fb288dac206c9323",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"690b0187fb288dac206c9323"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete a todo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "update todo",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/todos/690b0187fb288dac206c9323",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"690b0187fb288dac206c9323"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reorder todos",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "index",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/todos/reorder",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"reorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get todo by userid",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "update todo",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/todos/user/6910596d82f45b4caacad3a7",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"user",
+								"6910596d82f45b4caacad3a7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get number todo by category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/todos/category/count/6910596d82f45b4caacad3a7",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"todos",
+								"category",
+								"count",
+								"6910596d82f45b4caacad3a7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

@@ -24,6 +24,11 @@ router.post("/register", AdminsController.RegisterAdmin);
 // get all user with role
 router.get("/users/role/:role", AdminsController.getAllUsersWithRole);
 
+router.put(
+  "/users/change-password",
+  authMiddlewareLocalStorageAdmin,
+  AdminsController.changePassword
+);
 // update user
 router.put(
   "/users/:id",
@@ -36,13 +41,6 @@ router.get(
   "/users/me",
   authMiddlewareLocalStorageAdmin,
   AdminsController.getUserInfoAfterLogin
-);
-
-// change password
-router.put(
-  "/users/change-password",
-  authMiddlewareLocalStorageAdmin,
-  AdminsController.changePassword
 );
 
 // update admin profile with avatar
