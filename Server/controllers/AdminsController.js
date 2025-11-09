@@ -3,7 +3,7 @@ const Todo = require("../models/Todo");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
-
+const bucket = require("../middleware/firebase");
 const generateOtp = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
@@ -149,18 +149,41 @@ exports.UpdateUser = async (req, res) => {
 exports.UpdateAvatarUser = async (req, res) => {
   const userId = req.params.id;
   try {
-    const avatarUrl = `${process.env.LOCALHOST_URL}/uploads/avatar_admin/${req.file.filename}`;
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { avatar: avatarUrl },
-      { new: true, fields: "-password" }
-    );
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
     }
-    res
-      .status(200)
-      .json({ message: "Avatar updated successfully", user: updatedUser });
+
+    const file = bucket.file(`avatar_admin/${req.file.originalname}`);
+
+    const stream = file.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype,
+      },
+      public: true,
+    });
+
+    stream.on("error", (err) => {
+      console.error("Error uploading to Firebase Storage:", err);
+      return res.status(500).json({ message: "Upload error", error: err });
+    });
+
+    stream.on("finish", async () => {
+      await file.makePublic();
+      const avatarUrl = `https://storage.googleapis.com/${process.env.FIREBASE_STORAGE_BUCKET}/avatar_admin/${req.file.originalname}`;
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { avatar: avatarUrl },
+        { new: true, fields: "-password" }
+      );
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res
+        .status(200)
+        .json({ message: "Avatar updated successfully", user: updatedUser });
+    });
+
+    stream.end(req.file.buffer);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
