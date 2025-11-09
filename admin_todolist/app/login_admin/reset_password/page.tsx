@@ -9,5 +9,4 @@ const ResetPasswordPage = () => {
     </Suspense>
   );
 };
-
 export default ResetPasswordPage;
