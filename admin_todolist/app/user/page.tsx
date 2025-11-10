@@ -120,9 +120,11 @@ const ListUser: React.FC = () => {
         itemName={selectedUserName}
       />
 
-      <div className="flex mb-8 flex-row items-center gap-1 border-b border-gray-300 pb-4">
-        <p className="text-gray-600 mb-6 text-sm">{`Dashboard > `}</p>
-        <p className="text-sm font-bold mb-6">{`User List`}</p>
+      <div className=" mb-8 border-b border-gray-300 pb-4">
+        <div className="flex flex-row items-center gap-1">
+          <p className="text-gray-600 mb-6 text-sm">{`Dashboard > `}</p>
+          <p className="text-sm font-bold mb-6">{`User List`}</p>
+        </div>
         <span className="flex items-center">
           <h1 className="text-3xl font-bold text-gray-700 ml-2">
             User Management
