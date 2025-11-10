@@ -123,7 +123,13 @@ const ListUser: React.FC = () => {
       <div className="flex mb-8 flex-row items-center gap-1 border-b border-gray-300 pb-4">
         <p className="text-gray-600 mb-6 text-sm">{`Dashboard > `}</p>
         <p className="text-sm font-bold mb-6">{`User List`}</p>
+        <span className="flex items-center">
+          <h1 className="text-3xl font-bold text-gray-700 ml-2">
+            User Management
+          </h1>
+        </span>
       </div>
+
       {/* List User */}
       <div className="mx-auto bg-white shadow-lg rounded-xl p-6 border border-gray-200">
         <div className="flex justify-between items-center mb-6">
