@@ -11,6 +11,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { DatePicker, Input, notification } from "antd";
+import { Bell } from "lucide-react";
 import { useEffect } from "react";
 const DashboardPage = () => {
   const [api, contextHolder] = notification.useNotification();
@@ -47,15 +48,17 @@ const DashboardPage = () => {
         {/* Right side icons */}
         <div className="flex space-x-4 items-center">
           {/* Search */}
+
           <Input
             placeholder="Search..."
             size="large"
             prefix={<SearchOutlined className="text-gray-400" />}
             className="w-56 border-gray-300 rounded-lg focus:border-blue-500 focus:shadow-sm"
+            disabled
           />
 
+          {/* Calendar */}
           <div>
-            {/* Calendar */}
             <DatePicker
               size="large"
               className="w-56 rounded-lg border-gray-300 hover:border-blue-500 transition-all"
@@ -67,7 +70,7 @@ const DashboardPage = () => {
             className="relative h-10 w-20 rounded-lg bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center cursor-pointer"
             onClick={handleNotificationClick}
           >
-            <BellFilled className="text-gray-600 text-lg" />
+            <Bell className="text-gray-600 text-lg" />
             <span className="absolute top-1 right-1 inline-block w-3 h-3 bg-red-600 rounded-full border-2 border-white"></span>
           </button>
         </div>

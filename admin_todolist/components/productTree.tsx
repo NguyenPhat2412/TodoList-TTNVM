@@ -14,35 +14,39 @@ const ProductTree = () => {
   // Dữ liệu cây sản phẩm
   const treeData: TreeNode[] = [
     {
-      label: "Website",
+      label: "AppTodo",
       children: [
         { label: " Home", color: "text-black", hover: "hover:bg-gray-300" },
-        { label: " Pricing", color: "text-black", hover: "hover:bg-gray-300" },
         {
-          label: " About us",
+          label: " List Todo",
           color: "text-black",
           hover: "hover:bg-gray-300",
         },
         {
-          label: "Blog",
+          label: " Add Todo",
+          color: "text-black",
+          hover: "hover:bg-gray-300",
+        },
+        {
+          label: " About Your Info",
           children: [
             {
-              label: " Announcements",
+              label: " User Guide",
               color: "text-black",
               hover: "hover:bg-gray-300",
             },
             {
-              label: " April lookahead",
+              label: " FAQ",
               color: "text-black",
               hover: "hover:bg-gray-300",
             },
             {
-              label: " What's new",
+              label: " Data Privacy",
               color: "text-black",
               hover: "hover:bg-gray-300",
             },
             {
-              label: " Meet the team",
+              label: " Logout",
               color: "text-black",
               hover: "hover:bg-gray-300",
             },
@@ -51,35 +55,35 @@ const ProductTree = () => {
       ],
     },
     {
-      label: "Store",
+      label: "Todo",
       children: [
         {
-          label: " All products",
+          label: " Todo List",
           color: "text-black",
           hover: "hover:bg-gray-300",
         },
         {
-          label: " Categories",
+          label: " New Todo",
           children: [
             {
-              label: " Gadgets",
+              label: " Priority",
               color: "text-black",
               hover: "hover:bg-gray-300",
             },
             {
-              label: " Phones",
+              label: " Deadline",
               color: "text-black",
               hover: "hover:bg-gray-300",
             },
             {
-              label: " Wearables",
+              label: " Notes",
               color: "text-black",
               hover: "hover:bg-gray-300",
             },
           ],
         },
         {
-          label: " Bestsellers",
+          label: " Completed Todos",
           color: "text-black",
           hover: "hover:bg-gray-300",
         },
@@ -89,7 +93,7 @@ const ProductTree = () => {
     { label: "Contact", color: "text-black", hover: "hover:bg-gray-300" },
     { label: "Help", color: "text-black", hover: "hover:bg-gray-300" },
     {
-      label: "settings",
+      label: "Settings",
       color: "text-black",
       hover: "hover:bg-gray-300",
     },

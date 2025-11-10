@@ -10,7 +10,7 @@ const User = new Schema({
   status: { type: String, default: "offline" },
   avatar: {
     type: String,
-    default: `${process.env.LOCALHOST_URL}/uploads/avatar_admin/avatar_default.jpg`,
+    default: `https://firebasestorage.googleapis.com/v0/b/${process.env.FIREBASE_STORAGE_BUCKET}/o/avatar_default.jpg?alt=media`,
   },
   otp: { type: String, default: "" },
   otpExpiration: { type: Date, default: Date.now },

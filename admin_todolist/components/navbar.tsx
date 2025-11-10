@@ -4,13 +4,16 @@ import React from "react";
 import { NavbarProps } from "@/types/types";
 import {
   ExclamationCircleFilled,
+  ExclamationOutlined,
   HomeOutlined,
   LogoutOutlined,
   QuestionCircleFilled,
+  QuestionOutlined,
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import { CircleAlert, CircleQuestionMark } from "lucide-react";
 
 const Navbar: React.FC<NavbarProps> = ({
   activeLink,
@@ -25,7 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({
   };
   return (
     <div className="nav navbar w-64 h-screen bg-gray-100 p-6 flex flex-col">
-      <div className="dashboard logo text-4xl font-bold text-gray-500 mb-6 flex items-center p-3">
+      <div className="dashboard logo text-4xl font-bold text-blue-900 mb-6 flex items-center p-3">
         <h1>Dashboard</h1>
       </div>
       <button
@@ -69,18 +72,26 @@ const Navbar: React.FC<NavbarProps> = ({
               }`}
               onClick={() => setActiveLink("/About")}
             >
-              <ExclamationCircleFilled className="mr-2 mb-1" />
+              <CircleAlert
+                size={18}
+                className="mr-2 "
+                style={{ marginTop: 2 }}
+              />
               <p>About</p>
             </div>
           </div>
           <div className="flex flex-col g-2 pb-2">
             <div
-              className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold ${
+              className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold   ${
                 activeLink === "/Feedback" ? "bg-gray-300" : ""
               }`}
               onClick={() => setActiveLink("/Feedback")}
             >
-              <QuestionCircleFilled className="mr-2 mb-1" />
+              <CircleQuestionMark
+                size={18}
+                className="mr-2 "
+                style={{ marginTop: 2 }}
+              />
               <p>Feedback</p>
             </div>
           </div>
@@ -99,7 +110,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
           <Link
             href="/login_admin"
-            className="ml-4 main-list block py-2 px-4 rounded flex bg-blue-500 text-white hover:bg-blue-800 transition-colors"
+            className="ml-4 main-list block py-2 px-4 rounded flex bg-blue-700 text-white hover:bg-blue-800 transition-colors"
             onClick={handleLogout}
           >
             <LogoutOutlined className="mr-2" />
