@@ -126,7 +126,7 @@ const ListUser: React.FC = () => {
           <p className="text-sm font-bold mb-6">{`User List`}</p>
         </div>
         <span className="flex items-center">
-          <h1 className="text-3xl font-bold text-gray-700 ml-2">
+          <h1 className="text-2xl font-bold text-gray-700 ml-2">
             User Management
           </h1>
         </span>

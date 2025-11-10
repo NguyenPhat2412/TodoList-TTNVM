@@ -3,12 +3,8 @@ import Link from "next/link";
 import React from "react";
 import { NavbarProps } from "@/types/types";
 import {
-  ExclamationCircleFilled,
-  ExclamationOutlined,
   HomeOutlined,
   LogoutOutlined,
-  QuestionCircleFilled,
-  QuestionOutlined,
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";

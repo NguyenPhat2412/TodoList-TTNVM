@@ -2,7 +2,7 @@
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { JSX, useEffect, useRef, useState } from "react";
 import ListUser from "./user/page";
 import DashboardPage from "./Dashboard/page";
 import Feedback from "./Feedback/page";
@@ -11,6 +11,7 @@ import About from "./About/Page";
 import { io } from "socket.io-client";
 import { notification } from "antd";
 import { NotificationType } from "@/types/types";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
   const [activeLink, setActiveLink] = useState<string>("/");
@@ -21,6 +22,18 @@ const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   const socketRef = useRef<any>(null);
+
+  // Navigation
+  const navigate = useRouter();
+
+  // Page useRef
+  const pages = useRef<Record<string, JSX.Element>>({
+    "/": <DashboardPage />,
+    "/user": <ListUser />,
+    "/Feedback": <Feedback />,
+    "/setting": <Setting />,
+    "/About": <About />,
+  });
 
   // Notification
   const [api, contextHolder] = notification.useNotification();
@@ -34,7 +47,7 @@ const Home = () => {
   const checkToken = () => {
     const token = localStorage.getItem("adminToken");
     if (!token) {
-      window.location.href = "/login_admin";
+      navigate.push("/login_admin");
     }
   };
 
@@ -140,13 +153,17 @@ const Home = () => {
             setIsSidebarOpen={setIsSidebarOpen}
           />
         </div>
+        {/* Main content */}
         <div className="flex-grow ml-0 md:ml-64">
-          {activeLink === "/" && <DashboardPage />}
-          {activeLink === "/user" && <ListUser />}
-          {activeLink === "/Feedback" && <Feedback />}
-          {activeLink === "/setting" && <Setting />}
-          {activeLink === "/About" && <About />}
-        </div>
+          {Object.entries(pages.current).map(([key, component]) => (
+            <div
+              key={key}
+              style={{ display: activeLink === key ? "block" : "none" }}
+            >
+              {component}
+            </div>
+          ))}
+        </div>{" "}
         <div className="absolute bottom-0 w-full">
           <Footer />
         </div>
