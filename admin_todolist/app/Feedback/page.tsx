@@ -80,7 +80,7 @@ const Feedback = () => {
     return <Loading />;
   }
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="flex justify-center items-center min-h-screen bg-[var(--background)] p-4">
       {contextHolder}
 
       <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 w-full max-w-lg">

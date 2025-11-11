@@ -204,7 +204,9 @@ const Overview: React.FC = () => {
   };
   return (
     <div className="mt-8">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">Overview</h2>
+      <h2 className="text-lg font-semibold text-[var(--text-dashboard)] mb-4">
+        Overview
+      </h2>
 
       <div className="grid grid-cols-4 gap-6">
         {/* Chart 1 */}

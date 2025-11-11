@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Admin, NotificationType } from "@/types/types";
 import Loading from "@/components/Loading";
+import NavbarDashboard from "@/components/navbarDashboard";
 
 const Setting = () => {
   // State management
@@ -167,12 +168,22 @@ const Setting = () => {
     );
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-6 flex justify-center flex-col">
+    <div className="bg-[var(--background)] py-10 px-6 flex justify-center flex-col">
       {contextHolder}
 
-      <div className="flex mb-8 flex-row items-center gap-1 border-b border-gray-300 pb-4">
-        <p className="text-gray-600 mb-6 text-sm">{`Dashboard > `}</p>
-        <p className="text-sm font-bold mb-6">{`Setting`}</p>
+      <div className=" mb-8 border-b border-gray-300 pb-4 flex justify-between items-center">
+        <div>
+          <div className="flex flex-row items-center gap-1 mb-2">
+            <p className="text-gray-600 text-sm">{`Dashboard > `}</p>
+            <p className="text-sm font-bold">{`Setting`}</p>
+          </div>
+          <span className="flex items-center">
+            <h1 className="text-2xl font-bold text-[var(--text-dashboard)]">
+              Setting Account
+            </h1>
+          </span>
+        </div>
+        <NavbarDashboard />
       </div>
 
       <div className="w-full max-w-8xl bg-white rounded-2xl shadow-lg border border-gray-200 p-8 space-y-10">

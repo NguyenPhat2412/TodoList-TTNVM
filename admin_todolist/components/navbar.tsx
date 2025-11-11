@@ -23,12 +23,12 @@ const Navbar: React.FC<NavbarProps> = ({
     navigate.push("/login_admin");
   };
   return (
-    <div className="nav navbar w-64 h-screen bg-gray-100 p-6 flex flex-col">
-      <div className="dashboard logo text-4xl font-bold text-blue-900 mb-6 flex items-center p-3">
+    <div className="nav navbar w-64 h-screen bg-[var(--background)] p-6 flex flex-col ">
+      <div className="dashboard logo text-4xl font-bold text-[var(--logo-color)] mb-6 flex items-center p-3">
         <h1>Dashboard</h1>
       </div>
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-blue-600 text-white px-3 py-2 rounded"
+        className="md:hidden fixed top-4 left-4 z-50 bg-[var(--button-background)] text-white px-3 py-2 rounded"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
         {isSidebarOpen ? "✕" : "☰"}
@@ -39,7 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <div
             onClick={() => setActiveLink("/")}
             className={`main-list block py-1 px-2 rounded flex cursor-pointer font-bold ${
-              activeLink === "/" ? "bg-gray-300" : ""
+              activeLink === "/" ? "bg-[var(--button-background)]" : ""
             }`}
           >
             <HomeOutlined className="mr-2 mb-1" />
@@ -50,7 +50,7 @@ const Navbar: React.FC<NavbarProps> = ({
         <div className="flex flex-col g-2 pb-2">
           <div
             className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold ${
-              activeLink === "/user" ? "bg-gray-300" : ""
+              activeLink === "/user" ? "bg-[var(--button-background)]" : ""
             }`}
             onClick={() => setActiveLink("/user")}
           >
@@ -64,7 +64,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <div className="flex flex-col g-2 pb-2">
             <div
               className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold ${
-                activeLink === "/About" ? "bg-gray-300" : ""
+                activeLink === "/About" ? "bg-[var(--button-background)]" : ""
               }`}
               onClick={() => setActiveLink("/About")}
             >
@@ -79,7 +79,9 @@ const Navbar: React.FC<NavbarProps> = ({
           <div className="flex flex-col g-2 pb-2">
             <div
               className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold   ${
-                activeLink === "/Feedback" ? "bg-gray-300" : ""
+                activeLink === "/Feedback"
+                  ? "bg-[var(--button-background)]"
+                  : ""
               }`}
               onClick={() => setActiveLink("/Feedback")}
             >
@@ -95,7 +97,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <div className="flex flex-col g-2 pb-2">
             <div
               className={`ml-4 main-list block py-1 px-2 rounded flex cursor-pointer font-bold  ${
-                activeLink === "/setting" ? "bg-gray-300" : ""
+                activeLink === "/setting" ? "bg-[var(--button-background)]" : ""
               }`}
               onClick={() => setActiveLink("/setting")}
             >
@@ -106,7 +108,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
           <Link
             href="/login_admin"
-            className="ml-4 main-list block py-2 px-4 rounded flex bg-blue-700 text-white hover:bg-blue-800 transition-colors"
+            className="ml-4 main-list block py-2 px-4 rounded flex bg-[var(--logo-color)] text-white hover:bg-blue-800 transition-colors"
             onClick={handleLogout}
           >
             <LogoutOutlined className="mr-2" />

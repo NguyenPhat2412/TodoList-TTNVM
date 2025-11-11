@@ -6,11 +6,13 @@ import PaginationComponent from "@/components/pagination";
 import Loading from "@/components/Loading";
 import ModalConfirmDelete from "@/components/ModalConfirmDelete";
 import ComponentSearchUser from "@/components/SearchUser";
+import Navbar from "@/components/navbar";
+import NavbarDashboard from "@/components/navbarDashboard";
 
 const ListUser: React.FC = () => {
   const [dataUser, setDataUser] = React.useState<Admin[]>([]);
   const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [pageSize, setPageSize] = React.useState<number>(8);
+  const [pageSize, setPageSize] = React.useState<number>(7);
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -108,7 +110,7 @@ const ListUser: React.FC = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="flex-grow min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 p-8 relative">
+    <div className="flex-grow min-h-screen bg-[var(--background)] text-[var(--text-dashboard)] p-8 relative">
       {contextHolder}
 
       {/* Modal Confirm Delete */}
@@ -120,22 +122,27 @@ const ListUser: React.FC = () => {
         itemName={selectedUserName}
       />
 
-      <div className=" mb-8 border-b border-gray-300 pb-4">
-        <div className="flex flex-row items-center gap-1">
-          <p className="text-gray-600 mb-6 text-sm">{`Dashboard > `}</p>
-          <p className="text-sm font-bold mb-6">{`User List`}</p>
+      <div className=" mb-8 border-b border-gray-300 pb-4 flex justify-between items-center">
+        <div>
+          {" "}
+          <div className="flex flex-row items-center gap-1 mb-2">
+            <p className="text-gray-600 text-sm">{`Dashboard > `}</p>
+            <p className="text-sm font-bold">{`User List`}</p>
+          </div>
+          <span className="flex items-center">
+            <h1 className="text-2xl font-bold text-[var(--text-dashboard)]">
+              User Management
+            </h1>
+          </span>
         </div>
-        <span className="flex items-center">
-          <h1 className="text-2xl font-bold text-gray-700 ml-2">
-            User Management
-          </h1>
-        </span>
+
+        <NavbarDashboard />
       </div>
 
       {/* List User */}
       <div className="mx-auto bg-white shadow-lg rounded-xl p-6 border border-gray-200">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-700">User List</h1>
+          <h1 className="text-3xl font-bold text-gray-800">User List</h1>
           <button className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition-all">
             User TodoList
           </button>
@@ -163,7 +170,7 @@ const ListUser: React.FC = () => {
                 {currentUsers.map((user, index) => (
                   <tr
                     key={user._id}
-                    className="hover:bg-gray-50 border-b border-gray-200 transition"
+                    className="hover:bg-gray-50 border-b border-gray-200 transition text-gray-600"
                   >
                     <td className="py-3 px-4 font-medium text-gray-600">
                       {startIndex + index + 1}
@@ -212,7 +219,7 @@ const ListUser: React.FC = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-6 text-[var(--text-dashboard)]">
         <PaginationComponent
           total={dataUser.length}
           itemsPerPage={pageSize}

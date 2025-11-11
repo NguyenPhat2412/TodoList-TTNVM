@@ -94,10 +94,12 @@ const Details: React.FC = () => {
     );
   }
   return (
-    <div className="flex-grow mt-5 bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
+    <div className="flex-grow mt-5 from-gray-50 to-gray-100 text-gray-800">
       {contextHolder}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-bold text-gray-700">Users</h1>
+        <h1 className="text-xl font-bold text-[var(--text-dashboard)]">
+          Users
+        </h1>
       </div>
       <div className=" bg-white shadow-lg rounded-xl p-6 border border-gray-200">
         {dataUser.length === 0 ? (

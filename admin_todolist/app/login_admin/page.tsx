@@ -1,5 +1,6 @@
 "use client";
 import Footer from "@/components/footer";
+import NavbarDashboard from "@/components/navbarDashboard";
 import { Admin, NotificationType } from "@/types/types";
 import {
   BellFilled,
@@ -78,42 +79,18 @@ const LoginAdmin = () => {
       <div className="flex justify-between items-center py-6 border-b border-gray-200 px-6">
         {/* Title */}
         <div>
-          <p className="text-gray-500 text-sm">
+          <p className="text-[var(--text-dashboard)] text-sm">
             Dashboard <span className="text-gray-400">{">"}</span>{" "}
-            <strong className="text-gray-800">Login</strong>
+            <strong className="text-[var(--text-dashboard)]">Login</strong>
           </p>
-          <h1 className="text-2xl font-semibold text-gray-800 mt-1">
+          <h1 className="text-2xl font-semibold text-[var(--text-dashboard)] mt-1">
             Sign In 👋
           </h1>
         </div>
-
-        {/* Right side icons */}
-        <div className="flex space-x-4 items-center">
-          {/* Search */}
-          <Input
-            placeholder="Search..."
-            size="large"
-            prefix={<SearchOutlined className="text-gray-400" />}
-            className="w-56 border-gray-300 rounded-lg focus:border-blue-500 focus:shadow-sm"
-          />
-
-          <div>
-            {/* Calendar */}
-            <DatePicker
-              size="large"
-              className="w-56 rounded-lg border-gray-300 hover:border-blue-500 transition-all"
-              suffixIcon={<DatabaseOutlined className="text-gray-500" />}
-            />
-          </div>
-          {/* Notification */}
-          <button className="relative h-10 w-20 rounded-lg bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center cursor-pointer">
-            <BellFilled className="text-gray-600 text-lg" />
-            <span className="absolute top-1 right-1 inline-block w-3 h-3 bg-red-600 rounded-full border-2 border-white"></span>
-          </button>
-        </div>
+        <NavbarDashboard />
       </div>
 
-      <div className="bg-white text-white flex flex-col justify-center items-center">
+      <div className="bg-[var(--background)] text-white flex flex-col justify-center items-center">
         {contextHolder}
         <div className="flex flex-row border justify-center items-center rounded-lg shadow-lg mx-4">
           <div className="text-center px-8 py-39 bg-gradient-to-r from-[#61058bff] via-[#6c3d8bff] to-[#bd6cecff] rounded-l-lg hidden md:block">

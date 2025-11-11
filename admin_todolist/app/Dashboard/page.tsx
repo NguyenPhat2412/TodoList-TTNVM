@@ -1,6 +1,8 @@
 "use client";
 
+import DarkModeToggle from "@/components/btnDarkMode";
 import Details from "@/components/details";
+import NavbarDashboard from "@/components/navbarDashboard";
 import Overview from "@/components/overiews";
 import ProductTree from "@/components/productTree";
 import { NotificationType } from "@/types/types";
@@ -10,7 +12,7 @@ import {
   FundOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { DatePicker, Input, notification } from "antd";
+import { Button, DatePicker, Input, notification } from "antd";
 import { Bell } from "lucide-react";
 import { useEffect } from "react";
 const DashboardPage = () => {
@@ -29,51 +31,23 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="flex-grow min-h-screen bg-gray-50 flex flex-col px-6">
+    <div className="flex-grow min-h-screen bg-[var(--background)] flex flex-col px-6">
       {contextHolder}
       {/* Header */}
 
       <div className="flex justify-between items-center py-6 border-b border-gray-200">
         {/* Title */}
         <div>
-          <p className="text-gray-500 text-sm">
+          <p className="text-[var(--text-color)] text-sm">
             Dashboard <span className="text-gray-400">{">"}</span>{" "}
-            <strong className="text-gray-800">Home</strong>
+            <strong className="text-[var(--text-dashboard)]">Home</strong>
           </p>
-          <h1 className="text-2xl font-semibold text-gray-800 mt-1">
+          <h1 className="text-2xl font-semibold text-[var(--text-dashboard)] mt-1">
             Welcome Back 👋
           </h1>
         </div>
 
-        {/* Right side icons */}
-        <div className="flex space-x-4 items-center">
-          {/* Search */}
-
-          <Input
-            placeholder="Search..."
-            size="large"
-            prefix={<SearchOutlined className="text-gray-400" />}
-            className="w-56 border-gray-300 rounded-lg focus:border-blue-500 focus:shadow-sm"
-            disabled
-          />
-
-          {/* Calendar */}
-          <div>
-            <DatePicker
-              size="large"
-              className="w-56 rounded-lg border-gray-300 hover:border-blue-500 transition-all"
-              suffixIcon={<DatabaseOutlined className="text-gray-500" />}
-            />
-          </div>
-          {/* Notification */}
-          <button
-            className="relative h-10 w-20 rounded-lg bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center cursor-pointer"
-            onClick={handleNotificationClick}
-          >
-            <Bell className="text-gray-600 text-lg" />
-            <span className="absolute top-1 right-1 inline-block w-3 h-3 bg-red-600 rounded-full border-2 border-white"></span>
-          </button>
-        </div>
+        <NavbarDashboard />
       </div>
 
       {/* Overview */}

@@ -19,6 +19,7 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
       total={total}
       pageSize={itemsPerPage}
       onChange={onChange}
+      className="!text-[var(--foreground)] [&_.ant-pagination-item-active]:!border-[var(--foreground)] [&_.ant-pagination-item-active]:!text-[var(--foreground)] [&_.ant-pagination-item:hover]:!border-[var(--foreground)] [&_.ant-pagination-item:hover]:!text-[var(--foreground)]"
     />
   </>
 );
