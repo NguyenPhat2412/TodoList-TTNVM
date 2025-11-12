@@ -35,3 +35,14 @@ export interface CategoryCount {
   category: string;
   count: number;
 }
+
+export type BottomTabBarProps = {
+  state: {
+    index: number;
+    routes: { name: string }[];
+  };
+  navigation: {
+    navigate: (screen: string) => void;
+    jumpTo: (screen: string) => void;
+  };
+};

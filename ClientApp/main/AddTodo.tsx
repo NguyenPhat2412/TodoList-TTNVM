@@ -117,6 +117,7 @@ export default function CategorySelect() {
       setPrioritize('Low');
       setProgress('In Progress');
       Keyboard.dismiss();
+      navigator.navigate('MainScreen' as never);
     } catch (err) {
       console.error('Error adding todo:', err);
     }

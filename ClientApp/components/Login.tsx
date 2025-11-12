@@ -43,7 +43,7 @@ const Login = () => {
         // Navigate to Home or Home screen
         await AsyncStorage.setItem('userToken', data.token);
         await AsyncStorage.setItem('userId', data.user.id.toString());
-        navigation.navigate('Home' as never);
+        navigation.navigate('MainScreen' as never);
       } else {
         alert('Login failed. Please check your credentials.');
       }
@@ -58,7 +58,7 @@ const Login = () => {
       const token = await AsyncStorage.getItem('userToken');
 
       if (token) {
-        navigation.navigate('Home' as never);
+        navigation.navigate('MainScreen' as never);
       }
     };
     checkLogin();

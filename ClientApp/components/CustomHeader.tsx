@@ -5,7 +5,14 @@ const CustomHeader = ({ title }: { title: string }) => {
   const navigate = useNavigation();
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity onPress={() => navigate.goBack()}>
+      <TouchableOpacity
+        onPress={() => {
+          if (navigate.canGoBack()) {
+            navigate.goBack();
+          } else {
+            navigate.navigate('MainScreen' as never);
+          }
+        }}>
         <Text style={styles.backButton}>Back</Text>
       </TouchableOpacity>
       <Text style={styles.title}>{title}</Text>

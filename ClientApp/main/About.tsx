@@ -33,48 +33,49 @@ const About = () => {
   const [userId, setUserId] = useState<string | null>(null);
 
   const navigation = useNavigation<AboutNavProp>();
+
   // Lấy userId từ AsyncStorage
-  useFocusEffect(
-    useCallback(() => {
-      const loadUserId = async () => {
-        try {
-          const userId = await AsyncStorage.getItem('userId');
-          if (userId) {
-            setUserId(userId);
-          } else {
-            console.log('No userId found, user not logged in');
-          }
-        } catch (error) {
-          console.error('Error reading userId:', error);
-        }
-      };
-      loadUserId();
-    }, [])
-  );
-
-  // Fetch todos
   useEffect(() => {
-    if (!userId) return;
-    const fetchData = async () => {
+    const loadUserId = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/todos/user/${userId}`);
-        const data = await res.json();
-
-        if (res?.ok) {
-          const sortedData = data.sort((a: Todo, b: Todo) => (a.index || 0) - (b.index || 0));
-          setAllTodos(sortedData);
-          setTodos(sortedData);
+        const userId = await AsyncStorage.getItem('userId');
+        if (userId) {
+          setUserId(userId);
         } else {
-          setTodos([]);
+          console.log('No userId found, user not logged in');
         }
-      } catch (err) {
-        console.error('Error fetching todos:', err);
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error('Error reading userId:', error);
       }
     };
-    fetchData();
-  }, [userId]);
+    loadUserId();
+  }, []);
+
+  // Fetch todos
+  useFocusEffect(
+    useCallback(() => {
+      if (!userId) return;
+      const fetchData = async () => {
+        try {
+          const res = await fetch(`${API_URL}/api/todos/user/${userId}`);
+          const data = await res.json();
+
+          if (res?.ok) {
+            const sortedData = data.sort((a: Todo, b: Todo) => (a.index || 0) - (b.index || 0));
+            setAllTodos(sortedData);
+            setTodos(sortedData);
+          } else {
+            setTodos([]);
+          }
+        } catch (err) {
+          console.error('Error fetching todos:', err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }, [userId])
+  );
 
   // Lọc theo danh mục đã chọn
   useEffect(() => {

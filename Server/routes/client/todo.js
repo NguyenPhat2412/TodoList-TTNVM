@@ -42,4 +42,7 @@ router.get(
 // get todo by userId and category
 router.get("/todos/:userId/:category", todoController.getTodoByCategory);
 
+// update status user
+router.put("/users/status/:userId", todoController.updateStatusUser);
+
 module.exports = router;

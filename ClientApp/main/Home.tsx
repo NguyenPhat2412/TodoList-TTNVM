@@ -114,31 +114,30 @@ const Home = () => {
   // }, [userId]);
 
   // Use useFocusEffect to refresh counts when screen is focused
-  useFocusEffect(
-    useCallback(() => {
-      if (!userId) return;
-      const fetchCounts = async () => {
-        try {
-          const res = await fetch(`${API_URL}/api/todos/category/count/${userId}`);
-          const data = await res.json();
-          if (res.ok && data && typeof data === 'object') {
-            const formattedData = Object.entries(data).map(([category, count]) => ({
-              category,
-              count: Number(count),
-            }));
-            setCounts(formattedData);
-          } else {
-            setCounts([]);
-          }
-        } catch (err) {
-          throw new Error('Error fetching todos:', err as any);
-        } finally {
-          setLoading(false);
+
+  useEffect(() => {
+    if (!userId) return;
+    const fetchCounts = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/todos/category/count/${userId}`);
+        const data = await res.json();
+        if (res.ok && data && typeof data === 'object') {
+          const formattedData = Object.entries(data).map(([category, count]) => ({
+            category,
+            count: Number(count),
+          }));
+          setCounts(formattedData);
+        } else {
+          setCounts([]);
         }
-      };
-      fetchCounts();
-    }, [userId])
-  );
+      } catch (err) {
+        throw new Error('Error fetching todos:', err as any);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCounts();
+  }, [userId]);
 
   // set up socket connection
   useEffect(() => {
@@ -159,10 +158,24 @@ const Home = () => {
     });
 
     socketSetup.on('users_status', ({ status, userId }) => {
+      fetch(`${API_URL}/api/users/status/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
       console.log(`User ${userId} is now ${status}`);
     });
+
     return () => {
-      socketSetup.disconnect();
+      const updateStatusAndDisconnect = async () => {
+        await fetch(`${API_URL}/api/users/status/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'offline' }),
+        });
+        socketSetup.disconnect();
+      };
+      updateStatusAndDisconnect();
     };
   }, [userId]);
 
@@ -194,7 +207,7 @@ const Home = () => {
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, marginTop: Platform.OS === 'ios' ? 0 : 60 }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

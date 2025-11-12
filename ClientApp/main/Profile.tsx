@@ -171,13 +171,13 @@ const Profile = () => {
               <Text style={styles.menuText}>Transaction History</Text>
               <Feather name="chevron-right" size={18} color="#ccc" />
             </TouchableOpacity>
-
+          </View>
+          <View style={styles.menuButtonLogout}>
             <TouchableOpacity
-              style={[styles.menuItem, { borderBottomWidth: 0 }]}
+              style={[styles.menuItemButton, { borderBottomWidth: 0 }]}
               onPress={handleLogout}>
-              <Feather name="log-out" size={18} color="#ef4444" />
-              <Text style={[styles.menuText, { color: '#ef4444' }]}>Logout</Text>
-              <Feather name="chevron-right" size={18} color="#ef4444" />
+              <Feather name="log-out" size={18} color="#000000ff" />
+              <Text style={[styles.menuTextButton, { color: '#000000ff' }]}>Logout</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -259,6 +259,29 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
+
+  menuButtonLogout: {
+    backgroundColor: '#fff',
+    marginHorizontal: 25,
+    marginTop: 15,
+    marginBottom: 30,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+
+  menuItemButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -274,5 +297,12 @@ const styles = StyleSheet.create({
     color: '#333',
     fontSize: 16,
     fontWeight: '500',
+  },
+
+  menuTextButton: {
+    color: '#333',
+    fontSize: 16,
+    fontWeight: '900',
+    marginLeft: 12,
   },
 });

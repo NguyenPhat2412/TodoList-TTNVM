@@ -358,3 +358,21 @@ exports.selectCategory = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve todos" });
   }
 };
+
+exports.updateStatusUser = async (req, res) => {
+  const userId = req.params.userId;
+  const { status } = req.body;
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { status: status },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update user status" });
+  }
+};

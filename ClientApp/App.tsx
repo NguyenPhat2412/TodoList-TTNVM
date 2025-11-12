@@ -20,6 +20,7 @@ import { RootStackParamList } from 'types/types';
 import { CategoryProvider } from 'Context/useCategory';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OnboardingScreen from 'main/FirstScreen';
+import MainScreen from 'components/MainTabs';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -82,6 +83,12 @@ export default function App() {
                   />
 
                   <Stack.Screen
+                    name="MainScreen"
+                    component={MainScreen}
+                    options={{ headerShown: false }}
+                  />
+                  {/* 
+                  <Stack.Screen
                     name="Home"
                     component={Home}
                     options={{
@@ -105,7 +112,7 @@ export default function App() {
                     name="Profile"
                     component={Profile}
                     options={{ headerShown: false }}
-                  />
+                  /> */}
                   <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
                   <Stack.Screen
                     name="Register"
@@ -119,12 +126,6 @@ export default function App() {
                   />
                 </Stack.Navigator>
               </View>
-
-              {!firstLaunch && (
-                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-                  <Footer />
-                </View>
-              )}
             </View>
           </Pressable>
         </NavigationContainer>

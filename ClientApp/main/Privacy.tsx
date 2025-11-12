@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f5f5f7',
     flexGrow: 1,
+    marginTop: 40,
   },
   card: {
     backgroundColor: '#fff',

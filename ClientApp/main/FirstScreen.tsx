@@ -8,14 +8,13 @@ const { width, height } = Dimensions.get('window');
 export default function OnboardingScreen({ navigation }: any) {
   const handleFinish = async () => {
     await AsyncStorage.setItem('hasLaunched', 'true');
-    navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+    navigation.reset({ index: 0, routes: [{ name: 'MainScreen' }] });
   };
 
   return (
     <View style={styles.container}>
-      {/* Hình minh họa */}
       <Image
-        source={require('../assets/onboarding.png')} // thêm ảnh 3D illustration vào assets
+        source={require('../assets/onboarding.png')}
         style={styles.image}
         resizeMode="contain"
       />

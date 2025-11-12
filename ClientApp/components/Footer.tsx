@@ -1,24 +1,29 @@
 import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
 import { useNavigation } from '@react-navigation/native';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Defs, Path, Stop, LinearGradient } from 'react-native-svg';
 import { useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 const height = 70;
 const notchWidth = 120;
 const notchDepth = 40;
 
-const Footer = () => {
+const Footer = ({
+  activeTab,
+  setActiveTab,
+}: {
+  activeTab: string;
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState('Home');
+
+  const [colors, setColors] = useState<string[]>(['#7e57c2', '#673ab7']);
 
   const TabItem = ({ name, icon, screen }: { name: string; icon: string; screen: string }) => (
     <TouchableOpacity
       onPress={() => {
         setActiveTab(name);
-        navigation.navigate(screen as never);
       }}>
       <Feather
         name={icon}
@@ -31,6 +36,7 @@ const Footer = () => {
       />
     </TouchableOpacity>
   );
+
   // Vẽ path với chỗ lõm ở giữa
   const d = `
       M0 0 
@@ -45,31 +51,34 @@ const Footer = () => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#61058bff', '#6c3d8bff', '#bd6cecff']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={{ width: width, height: height }}>
-        <Svg width={width} height={height} style={styles.background}>
-          <Path d={d} fill="#7e57c2" />
-        </Svg>
+      <Svg width={width} height={height} style={styles.background}>
+        <Defs>
+          <LinearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            {colors.map((color, index) => (
+              <Stop
+                key={index}
+                offset={`${(index / (colors.length - 1)) * 100}%`}
+                stopColor={color}
+              />
+            ))}
+          </LinearGradient>
+        </Defs>
+        <Path d={d} fill="url(#grad)" />
+      </Svg>
 
-        <View style={styles.iconRow}>
-          <TabItem name="Home" icon="home" screen="Home" />
-          <TabItem name="About" icon="calendar" screen="About" />
-          <View style={{ width: 70 }} />
-          <TabItem name="Privacy" icon="shield" screen="Privacy" />
-          <TabItem name="Profile" icon="user" screen="Profile" />
-        </View>
+      <View style={styles.iconRow}>
+        <TabItem name="Home" icon="home" screen="Home" />
+        <TabItem name="About" icon="calendar" screen="About" />
+        <View style={{ width: 70 }} />
+        <TabItem name="Privacy" icon="shield" screen="Privacy" />
+        <TabItem name="Profile" icon="user" screen="Profile" />
+      </View>
 
-        <View style={styles.plusWrapper}>
-          <TouchableOpacity
-            style={styles.plusButton}
-            onPress={() => navigation.navigate('AddTodo' as never)}>
-            <Feather name="plus" size={28} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
+      <View style={styles.plusWrapper}>
+        <TouchableOpacity style={styles.plusButton} onPress={() => setActiveTab('AddTodo')}>
+          <Feather name="plus" size={28} color="#fff" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
