@@ -71,7 +71,7 @@ const InProgress = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>List In Progress</Text>
-      {/* Horizontal ScrollView for cards */}
+
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

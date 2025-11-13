@@ -27,6 +27,11 @@ const Login = () => {
       return;
     }
 
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      alert('Please enter a valid email address!');
+      return;
+    }
+
     // Fetch API to login user
     try {
       const response = await fetch(`${API_URL}/api/login`, {

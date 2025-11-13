@@ -29,7 +29,7 @@ const Navbar = () => {
           }
           return 'User';
         } catch (error) {
-          console.error('Error retrieving user name:', error);
+          console.error('Error fetching user name:', error);
           return 'User';
         }
       };

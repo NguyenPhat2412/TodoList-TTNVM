@@ -5,14 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
 
 //Main Screens
-import Home from 'main/Home';
 import { ActivityIndicator, Keyboard, Pressable, View } from 'react-native';
-import CustomHeaderHome from 'components/CustomHeaderHome';
-import Footer from 'components/Footer';
-import About from 'main/About';
-import Privacy from 'main/Privacy';
-import Profile from 'main/Profile';
-import AddTodo from 'main/AddTodo';
 import Login from 'components/Login';
 import Register from 'components/Register';
 import UpdateTodo from 'main/Update';
@@ -88,31 +81,31 @@ export default function App() {
                     options={{ headerShown: false }}
                   />
                   {/* 
-                  <Stack.Screen
-                    name="Home"
-                    component={Home}
-                    options={{
-                      headerTitle: () => <CustomHeaderHome />,
-                      headerBackVisible: false,
-                    }}
-                  />
+                    <Stack.Screen
+                      name="Home"
+                      component={Home}
+                      options={{
+                        headerTitle: () => <CustomHeaderHome />,
+                        headerBackVisible: false,
+                      }}
+                    />
 
-                  <Stack.Screen name="About" component={About} options={{ headerShown: false }} />
-                  <Stack.Screen
-                    name="AddTodo"
-                    component={AddTodo}
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="Privacy"
-                    component={Privacy}
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="Profile"
-                    component={Profile}
-                    options={{ headerShown: false }}
-                  /> */}
+                    <Stack.Screen name="About" component={About} options={{ headerShown: false }} />
+                    <Stack.Screen
+                      name="AddTodo"
+                      component={AddTodo}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Privacy"
+                      component={Privacy}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Profile"
+                      component={Profile}
+                      options={{ headerShown: false }}
+                    /> */}
                   <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
                   <Stack.Screen
                     name="Register"

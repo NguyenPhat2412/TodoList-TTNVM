@@ -70,6 +70,7 @@ const About = () => {
         } catch (err) {
           console.error('Error fetching todos:', err);
         } finally {
+          console.log('Finished fetching todos');
           setLoading(false);
         }
       };

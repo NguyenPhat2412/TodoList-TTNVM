@@ -173,6 +173,7 @@ const Home = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'offline' }),
         });
+        console.log(`User ${userId} is now offline`);
         socketSetup.disconnect();
       };
       updateStatusAndDisconnect();

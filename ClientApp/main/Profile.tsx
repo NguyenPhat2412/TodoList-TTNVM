@@ -87,6 +87,7 @@ const Profile = () => {
 
       if (response.ok) {
         alert('Profile updated successfully!');
+        console.log('Profile updated successfully');
         fetchUser();
       } else {
         alert('Failed to update profile.');

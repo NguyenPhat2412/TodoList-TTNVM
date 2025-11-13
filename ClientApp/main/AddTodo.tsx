@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, Dispatch, SetStateAction } from 'react';
 import {
   StyleSheet,
   Text,
@@ -22,7 +22,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import CustomHeader from 'components/CustomHeader';
 
-export default function CategorySelect() {
+interface CategorySelectProps {
+  setActiveTab?: Dispatch<SetStateAction<string>>;
+}
+
+export default function CategorySelect({ setActiveTab }: CategorySelectProps) {
   const [selected, setSelected] = useState('Work');
   const [open, setOpen] = useState(false);
   const [showProjectName, setShowProjectName] = useState(false);
@@ -52,7 +56,6 @@ export default function CategorySelect() {
       const loadUserId = async () => {
         try {
           const storedId = await AsyncStorage.getItem('userId');
-          console.log(storedId);
 
           if (storedId) {
             setUserId(storedId);
@@ -117,7 +120,7 @@ export default function CategorySelect() {
       setPrioritize('Low');
       setProgress('In Progress');
       Keyboard.dismiss();
-      navigator.navigate('MainScreen' as never);
+      setActiveTab?.('About');
     } catch (err) {
       console.error('Error adding todo:', err);
     }
