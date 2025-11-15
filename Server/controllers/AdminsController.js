@@ -391,11 +391,11 @@ exports.UpdateStatusUser = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
-    const user = await User.findOne({ email, role: "admin" });
+    const user = await User.findOne({ email });
     if (!user) {
       return res
         .status(404)
-        .json({ message: "Admin with this email not found" });
+        .json({ message: "User with this email not found" });
     }
     const otp = generateOtp();
 
@@ -427,11 +427,11 @@ exports.forgotPassword = async (req, res) => {
 exports.verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
   try {
-    const user = await User.findOne({ email, role: "admin" });
+    const user = await User.findOne({ email });
     if (!user) {
       return res
         .status(404)
-        .json({ message: "Admin with this email not found" });
+        .json({ message: "User with this email not found" });
     }
 
     console.log({ userOtp: user.otp, userOtpExpiration: user.otpExpiration });
@@ -457,13 +457,12 @@ exports.verifyOTP = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   const { email, newPassword, confirmPassword } = req.body;
-  console.log({ email, newPassword });
   try {
-    const user = await User.findOne({ email, role: "admin" });
+    const user = await User.findOne({ email });
     if (!user) {
       return res
         .status(404)
-        .json({ message: "Admin with this email not found" });
+        .json({ message: "User with this email not found" });
     }
 
     if (newPassword !== confirmPassword) {

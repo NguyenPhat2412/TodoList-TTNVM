@@ -29,6 +29,9 @@ export type RootStackParamList = {
   UpdateTodo: { todo: Todo };
   AddTodo: undefined;
   OnboardingScreen: undefined;
+  MainScreen: undefined;
+  ForgotPassword: undefined;
+  ResetPassword: { email: string };
 };
 
 export interface CategoryCount {

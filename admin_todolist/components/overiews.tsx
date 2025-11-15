@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import {
   Area,
   AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -215,20 +218,21 @@ const Overview: React.FC = () => {
             Create Task on 7 days
           </h3>
           <ResponsiveContainer width="100%" height={120}>
-            <AreaChart
+            <BarChart
               data={numberTasksByUserOnDate}
               margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
             >
+              <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
               <XAxis dataKey="date" tick={<CustomXAxisTick />} />
               <YAxis />
-              <Area
-                type="monotone"
+              <Bar
                 dataKey="count"
-                stroke="#3b82f6"
-                fill="#bfdbfe"
+                fill="#8884d8"
+                type="monotone"
+                stroke="#8884d8"
               />
-            </AreaChart>
+            </BarChart>
           </ResponsiveContainer>
         </div>
 
@@ -238,20 +242,21 @@ const Overview: React.FC = () => {
             Completed Tasks on 7 days
           </h3>
           <ResponsiveContainer width="100%" height={120}>
-            <AreaChart
+            <BarChart
               data={numberCompletedTasksByUserOnDate}
               margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
             >
+              <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
               <XAxis dataKey="date" tick={<CustomXAxisTick />} />
               <YAxis />
-              <Area
-                type="monotone"
+              <Bar
                 dataKey="completedCount"
+                fill="#10b981"
+                type="monotone"
                 stroke="#10b981"
-                fill="#a7f3d0"
               />
-            </AreaChart>
+            </BarChart>
           </ResponsiveContainer>
         </div>
 
@@ -261,20 +266,21 @@ const Overview: React.FC = () => {
             Number of Users on 7 days
           </h3>
           <ResponsiveContainer width="100%" height={120}>
-            <AreaChart
+            <BarChart
               data={numberUsersOnDate}
               margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
             >
+              <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
               <XAxis dataKey="date" tick={<CustomXAxisTick />} />
               <YAxis />
-              <Area
+              <Bar
                 type="monotone"
                 dataKey="count"
                 stroke="#1037b9ff"
                 fill="#5861b6ff"
               />
-            </AreaChart>
+            </BarChart>
           </ResponsiveContainer>
         </div>
 

@@ -28,7 +28,7 @@ export default function DarkModeToggle() {
   return (
     <button
       onClick={toggleDarkMode}
-      className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-110 transition-all"
+      className="p-2 rounded-full bg-gray-200  hover:scale-110 transition-all"
       title="Chuyển chế độ sáng/tối"
     >
       {darkMode ? (

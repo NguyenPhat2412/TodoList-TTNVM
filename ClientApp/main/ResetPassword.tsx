@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
-import { useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useState } from 'react';
 import {
   Text,
   TextInput,
@@ -11,64 +11,36 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Feather from '@react-native-vector-icons/feather';
 import { LinearGradient } from 'expo-linear-gradient';
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-
+import { RootStackParamList } from 'types/types';
+type ResetPasswordRouteProp = RouteProp<RootStackParamList, 'ResetPassword'>;
+const ResetPassword = () => {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const route = useRoute<ResetPasswordRouteProp>();
+  const { email } = route.params;
   const navigation = useNavigation();
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      alert('Please enter both email and password!');
-      return;
-    }
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      alert('Please enter a valid email address!');
-      return;
-    }
-
-    // Fetch API to login user
-    try {
-      const response = await fetch(`${API_URL}/api/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+  const handleResetPassword = () => {
+    fetch(`${API_URL}/api/admin/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, newPassword, confirmPassword }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message === 'Password reset successfully') {
+          alert('Password reset successfully');
+          navigation.navigate('Login' as never);
+        } else {
+          alert(data.message || 'Failed to reset password');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('An error occurred. Please try again.');
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        alert('Login successful!');
-        // Navigate to Home or Home screen
-        await AsyncStorage.setItem('userToken', data.token);
-        await AsyncStorage.setItem('userId', data.user.id.toString());
-        navigation.navigate('MainScreen' as never);
-      } else {
-        alert('Login failed. Please check your credentials.');
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-      alert('An error occurred. Please try again later.');
-    }
   };
-
-  useEffect(() => {
-    const checkLogin = async () => {
-      const token = await AsyncStorage.getItem('userToken');
-
-      if (token) {
-        navigation.navigate('MainScreen' as never);
-      }
-    };
-    checkLogin();
-  }, []);
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -86,87 +58,55 @@ const Login = () => {
               <Text style={styles.appSubtitle}>Organize your day with ease ✨</Text>
 
               <View style={styles.registerWrapper}>
-                <Text style={styles.footerText}>Don’t have an account? </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Register' as never)}>
-                  <Text style={styles.footerLink}>Get Started</Text>
+                <Text style={styles.footerText}>Reset your password?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Login' as never)}>
+                  <Text style={styles.footerLink}>Let’s reset it</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
 
           <View style={styles.formContainer}>
-            <Text style={styles.mainTitle}>Welcome Back 👋</Text>
-            <Text style={styles.subTitle}>Login to continue using the app</Text>
+            <Text style={styles.mainTitle}>Reset Password</Text>
+            <Text style={styles.subTitle}>Let’s reset it</Text>
 
             {/* Email */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>New Password</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Enter your email"
+                placeholder="Enter your new password"
                 placeholderTextColor="#aaa"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
+                value={newPassword}
+                onChangeText={setNewPassword}
+                keyboardType="default"
                 autoCapitalize="none"
               />
             </View>
 
-            {/* Password */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={styles.passwordInput}
-                  placeholder="Enter your password"
-                  placeholderTextColor="#aaa"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                  <Feather name={showPassword ? 'eye' : 'eye-off'} size={20} color="#999" />
-                </TouchableOpacity>
-              </View>
+              <Text style={styles.label}>Confirm Password</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your confirm password"
+                placeholderTextColor="#aaa"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                keyboardType="default"
+                autoCapitalize="none"
+              />
             </View>
 
-            {/* Forgot password */}
-            <TouchableOpacity
-              style={styles.forgotButton}
-              onPress={() => navigation.navigate('ForgotPassword' as never)}>
-              <Text style={styles.forgotText}>Forgot your password?</Text>
-            </TouchableOpacity>
-
             {/* Login button */}
-            <TouchableOpacity onPress={handleLogin}>
+            <TouchableOpacity onPress={handleResetPassword} activeOpacity={0.8}>
               <LinearGradient
                 colors={['#61058bff', '#9c56caff', '#bd6cecff']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.loginButton}>
-                <Text style={styles.loginButtonText}>Login</Text>
+                <Text style={styles.loginButtonText}>Reset Password</Text>
               </LinearGradient>
             </TouchableOpacity>
-
-            {/* OR divider */}
-            <View style={styles.divider}>
-              <View style={styles.line} />
-              <Text style={styles.orText}>OR</Text>
-              <View style={styles.line} />
-            </View>
-
-            {/* Social login */}
-            <View style={styles.socialContainer}>
-              <TouchableOpacity style={[styles.socialButton, { borderColor: '#3b5998' }]}>
-                <Feather name="facebook" size={22} color="#3b5998" />
-                <Text style={styles.socialText}>Facebook</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={[styles.socialButton, { borderColor: '#db4a39' }]}>
-                <Feather name="mail" size={22} color="#db4a39" />
-                <Text style={styles.socialText}>Google</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </LinearGradient>
       </View>
@@ -174,7 +114,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;
 
 const styles = StyleSheet.create({
   container: {

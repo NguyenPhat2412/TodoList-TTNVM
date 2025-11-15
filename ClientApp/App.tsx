@@ -14,6 +14,8 @@ import { CategoryProvider } from 'Context/useCategory';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OnboardingScreen from 'main/FirstScreen';
 import MainScreen from 'components/MainTabs';
+import ForgotPassword from 'main/ForgotPassword';
+import ResetPassword from 'main/ResetPassword';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -115,6 +117,18 @@ export default function App() {
                   <Stack.Screen
                     name="UpdateTodo"
                     component={UpdateTodo}
+                    options={{ headerShown: false }}
+                  />
+
+                  <Stack.Screen
+                    name="ForgotPassword"
+                    component={ForgotPassword}
+                    options={{ headerShown: false }}
+                  />
+
+                  <Stack.Screen
+                    name="ResetPassword"
+                    component={ResetPassword}
                     options={{ headerShown: false }}
                   />
                 </Stack.Navigator>

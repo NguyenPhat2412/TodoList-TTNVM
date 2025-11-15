@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Text,
   TextInput,
@@ -11,63 +11,59 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Feather from '@react-native-vector-icons/feather';
 import { LinearGradient } from 'expo-linear-gradient';
-const Login = () => {
+import { RootStackParamList } from 'types/types';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ForgotPassword'>;
+const ForgotPassword = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [otp, setOtp] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      alert('Please enter both email and password!');
-      return;
-    }
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      alert('Please enter a valid email address!');
-      return;
-    }
-
-    // Fetch API to login user
-    try {
-      const response = await fetch(`${API_URL}/api/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+  const handleSendOtp = () => {
+    fetch(`${API_URL}/api/admin/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message === 'OTP sent to email') {
+          alert('OTP sent to your email');
+          setOtp(true);
+        } else {
+          alert(data.message || 'Failed to send OTP');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('An error occurred. Please try again.');
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        alert('Login successful!');
-        // Navigate to Home or Home screen
-        await AsyncStorage.setItem('userToken', data.token);
-        await AsyncStorage.setItem('userId', data.user.id.toString());
-        navigation.navigate('MainScreen' as never);
-      } else {
-        alert('Login failed. Please check your credentials.');
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-      alert('An error occurred. Please try again later.');
-    }
   };
 
-  useEffect(() => {
-    const checkLogin = async () => {
-      const token = await AsyncStorage.getItem('userToken');
-
-      if (token) {
-        navigation.navigate('MainScreen' as never);
-      }
-    };
-    checkLogin();
-  }, []);
+  const handleVerifyOtp = () => {
+    fetch(`${API_URL}/api/admin/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp: otpCode }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message === 'OTP verified successfully') {
+          alert('OTP verified successfully');
+          navigation.navigate('ResetPassword', { email });
+        } else {
+          alert(data.message || 'Failed to verify OTP');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('An error occurred. Please try again.');
+      });
+  };
 
   return (
     <KeyboardAvoidingView
@@ -86,95 +82,81 @@ const Login = () => {
               <Text style={styles.appSubtitle}>Organize your day with ease ✨</Text>
 
               <View style={styles.registerWrapper}>
-                <Text style={styles.footerText}>Don’t have an account? </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Register' as never)}>
-                  <Text style={styles.footerLink}>Get Started</Text>
+                <Text style={styles.footerText}>Forgot your password?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword' as never)}>
+                  <Text style={styles.footerLink}>Let’s reset it</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
 
-          <View style={styles.formContainer}>
-            <Text style={styles.mainTitle}>Welcome Back 👋</Text>
-            <Text style={styles.subTitle}>Login to continue using the app</Text>
+          {!otp ? (
+            <View style={styles.formContainer}>
+              <Text style={styles.mainTitle}>Reset Password</Text>
+              <Text style={styles.subTitle}>Enter your email to reset your password</Text>
 
-            {/* Email */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your email"
-                placeholderTextColor="#aaa"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-
-            {/* Password */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.passwordContainer}>
+              {/* Email */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Email</Text>
                 <TextInput
-                  style={styles.passwordInput}
-                  placeholder="Enter your password"
+                  style={styles.input}
+                  placeholder="Enter your email"
                   placeholderTextColor="#aaa"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                  <Feather name={showPassword ? 'eye' : 'eye-off'} size={20} color="#999" />
-                </TouchableOpacity>
               </View>
-            </View>
 
-            {/* Forgot password */}
-            <TouchableOpacity
-              style={styles.forgotButton}
-              onPress={() => navigation.navigate('ForgotPassword' as never)}>
-              <Text style={styles.forgotText}>Forgot your password?</Text>
-            </TouchableOpacity>
-
-            {/* Login button */}
-            <TouchableOpacity onPress={handleLogin}>
-              <LinearGradient
-                colors={['#61058bff', '#9c56caff', '#bd6cecff']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.loginButton}>
-                <Text style={styles.loginButtonText}>Login</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            {/* OR divider */}
-            <View style={styles.divider}>
-              <View style={styles.line} />
-              <Text style={styles.orText}>OR</Text>
-              <View style={styles.line} />
-            </View>
-
-            {/* Social login */}
-            <View style={styles.socialContainer}>
-              <TouchableOpacity style={[styles.socialButton, { borderColor: '#3b5998' }]}>
-                <Feather name="facebook" size={22} color="#3b5998" />
-                <Text style={styles.socialText}>Facebook</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={[styles.socialButton, { borderColor: '#db4a39' }]}>
-                <Feather name="mail" size={22} color="#db4a39" />
-                <Text style={styles.socialText}>Google</Text>
+              {/* Login button */}
+              <TouchableOpacity onPress={handleSendOtp} activeOpacity={0.8}>
+                <LinearGradient
+                  colors={['#61058bff', '#9c56caff', '#bd6cecff']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.loginButton}>
+                  <Text style={styles.loginButtonText}>Send Email</Text>
+                </LinearGradient>
               </TouchableOpacity>
             </View>
-          </View>
+          ) : (
+            <View style={styles.formContainer}>
+              {' '}
+              <Text style={styles.mainTitle}>Verify OTP</Text>
+              <Text style={styles.subTitle}>Enter the OTP sent to your email</Text>
+              {/* Email */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>OTP</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your OTP"
+                  placeholderTextColor="#aaa"
+                  value={otpCode}
+                  onChangeText={setOtpCode}
+                  keyboardType="numeric"
+                  autoCapitalize="none"
+                />
+              </View>
+              {/* Login button */}
+              <TouchableOpacity onPress={handleVerifyOtp} activeOpacity={0.8}>
+                <LinearGradient
+                  colors={['#61058bff', '#9c56caff', '#bd6cecff']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.loginButton}>
+                  <Text style={styles.loginButtonText}>Send OTP</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          )}
         </LinearGradient>
       </View>
     </KeyboardAvoidingView>
   );
 };
 
-export default Login;
+export default ForgotPassword;
 
 const styles = StyleSheet.create({
   container: {

@@ -239,10 +239,10 @@ const Setting = () => {
         </div>
 
         {/* Two-column layout */}
-        <div className="flex flex-col md:flex-row md:space-x-8 space-y-10 md:space-y-0">
+        <div className="flex flex-col max-w-md md:flex-row md:space-x-8 space-y-10 md:space-y-0">
           {/* Personal Information */}
           <form onSubmit={handleUpdateAdminData} className="flex-1 space-y-5">
-            <h2 className="text-xl font-semibold text-gray-700 mb-3 border-b border-gray-200 pb-2">
+            <h2 className="text-xl font-semibold text-gray-700 mb-3 border-b border-gray-200 pb-2 ">
               Personal Information
             </h2>
 
@@ -280,7 +280,7 @@ const Setting = () => {
             </Button>
           </form>
 
-          {/* Change Password */}
+          {/* Change Password
           <form onSubmit={handleChangePassword} className="flex-1 space-y-5">
             <h2 className="text-xl font-semibold text-gray-700 mb-3 border-b border-gray-200 pb-2">
               Change Password
@@ -314,7 +314,7 @@ const Setting = () => {
             >
               Update Password
             </Button>
-          </form>
+          </form> */}
         </div>
       </div>
     </div>
