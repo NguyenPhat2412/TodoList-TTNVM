@@ -8,7 +8,6 @@ import {
   Platform,
 } from 'react-native';
 import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
@@ -42,7 +41,7 @@ const About = () => {
         if (userId) {
           setUserId(userId);
         } else {
-          console.log('No userId found, user not logged in');
+          console.log('No userId found, user not logged in!');
         }
       } catch (error) {
         console.error('Error reading userId:', error);
@@ -106,15 +105,17 @@ const About = () => {
           styles.todoItem,
           {
             backgroundColor:
-              item.prioritize === 'Low'
-                ? '#d4edda'
-                : item.prioritize === 'Medium'
-                  ? '#fff3cd'
-                  : item.prioritize === 'High'
-                    ? '#f8d7da'
-                    : isActive
-                      ? '#e2e3e5'
-                      : '#ffffff',
+              item.completed === true
+                ? '#1cc267ff'
+                : item.completed === false && item.prioritize === 'Low'
+                  ? '#d4edda'
+                  : item.prioritize === 'Medium'
+                    ? '#fff3cd'
+                    : item.prioritize === 'High'
+                      ? '#f8d7da'
+                      : isActive
+                        ? '#e2e3e5'
+                        : '#ffffff',
           },
         ]}
         onLongPress={drag}
@@ -126,8 +127,8 @@ const About = () => {
           <Text style={styles.todoText}>{item.title}</Text>
         </View>
         <TouchableOpacity onPress={() => deleteTodo(item._id)}>
-          <Text style={styles.deleteText}>❌</Text>
           <Text style={styles.progress}>{item.progress}</Text>
+          <Text style={styles.deleteText}>Delete</Text>
         </TouchableOpacity>
       </TouchableOpacity>
     ),
@@ -280,8 +281,11 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   deleteText: {
-    fontSize: 20,
+    fontSize: 12,
     color: '#d63031',
+    marginTop: 4,
+    textAlign: 'right',
+    fontWeight: '600',
   },
   sectionTitle: {
     fontSize: 20,

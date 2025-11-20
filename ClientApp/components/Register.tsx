@@ -63,7 +63,7 @@ const Register = () => {
         style={{ flex: 1 }}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}>
-        {/* HEADER */}
+        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.appTitle}>Create Account</Text>
           <Text style={styles.appSubtitle}>Join us and start your journey 🚀</Text>
@@ -76,7 +76,7 @@ const Register = () => {
           </View>
         </View>
 
-        {/* FORM */}
+        {/* Form */}
         <View style={styles.formContainer}>
           <Text style={styles.mainTitle}>Register</Text>
           <Text style={styles.subTitle}>Fill in your information below</Text>

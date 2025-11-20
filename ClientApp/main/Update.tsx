@@ -82,7 +82,7 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
   const handleDueDateChange = (event: any, selectedDate: Date | undefined) => {
     setShowDueDatePicker(false);
     if (selectedDate && startDate && selectedDate < startDate) {
-      alert('Due date cannot be earlier than start date.');
+      alert('Due date cannot be earlier than start date!.');
       return;
     }
     setDueDate(selectedDate || dueDate);
@@ -101,7 +101,7 @@ export default function UpdateTodo({ route }: { route: UpdateRouteProp }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: projectName,
-          completed: false,
+          completed: progress === 'Completed' ? true : false,
           index,
           description,
           startDate: startDate ? startDate.toISOString() : null,

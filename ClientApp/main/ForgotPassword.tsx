@@ -83,7 +83,7 @@ const ForgotPassword = () => {
 
               <View style={styles.registerWrapper}>
                 <Text style={styles.footerText}>Forgot your password?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword' as never)}>
+                <TouchableOpacity onPress={() => navigation.navigate('Login' as never)}>
                   <Text style={styles.footerLink}>Let’s reset it</Text>
                 </TouchableOpacity>
               </View>

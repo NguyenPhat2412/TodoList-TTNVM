@@ -44,13 +44,13 @@ const Login = () => {
 
       const data = await response.json();
       if (response.ok) {
-        alert('Login successful!');
+        alert('Welcome to Todo App!');
         // Navigate to Home or Home screen
         await AsyncStorage.setItem('userToken', data.token);
         await AsyncStorage.setItem('userId', data.user.id.toString());
         navigation.navigate('MainScreen' as never);
       } else {
-        alert('Login failed. Please check your credentials.');
+        alert('Login failed. Please check your credentials!.');
       }
     } catch (error) {
       console.error('Error during login:', error);

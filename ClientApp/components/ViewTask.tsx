@@ -40,8 +40,8 @@ const ViewTask = () => {
   const progress = (completedCount / data.length) * 100;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
+  // Handle View Tasks button press
   const handleViewTasks = () => {
-    // Logic to navigate to the task list or perform any action
     Alert.alert('View Tasks', 'Navigating to task list...');
   };
 

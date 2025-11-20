@@ -44,30 +44,29 @@ const Home = () => {
 
   const socketRef = useRef<any>(null);
 
-  // load custom fonts
+  // Load custom fonts
   const [fontsLoaded] = useFonts({
     'PatrickHand-Regular': require('../assets/fonts/PatrickHand-Regular.ttf'),
   });
 
   // get userId from AsyncStorage
-  useFocusEffect(
-    useCallback(() => {
-      const loadUserId = async () => {
-        try {
-          const storedId = await AsyncStorage.getItem('userId');
+  useEffect(() => {
+    const loadUserId = async () => {
+      try {
+        const storedId = await AsyncStorage.getItem('userId');
 
-          if (storedId) {
-            setUserId(storedId);
-          } else {
-            navigator.navigate('Login' as never);
-          }
-        } catch (error) {
-          throw new Error('Error reading userId:', error as any);
+        if (storedId) {
+          setUserId(storedId);
+        } else {
+          navigator.navigate('Login' as never);
         }
-      };
-      loadUserId();
-    }, [])
-  );
+      } catch (error) {
+        throw new Error('Error reading userId:', error as any);
+      }
+    };
+    loadUserId();
+  }, []);
+
   // Fetch tasks by category (for modal)
   const fetchTasksByCategory = async (category: string) => {
     if (!userId) return;

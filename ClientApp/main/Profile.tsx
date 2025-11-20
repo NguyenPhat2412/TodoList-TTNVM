@@ -26,6 +26,7 @@ const Profile = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [dataTasks, setDataTasks] = useState<Todo[]>([]);
+  const [tasksCompleted, setTasksCompleted] = useState(0);
 
   const fetchUser = async () => {
     try {
@@ -57,7 +58,11 @@ const Profile = () => {
       const response = await fetch(`${API_URL}/api/todos/user/${userId}`);
       if (response.ok) {
         const data = await response.json();
+        setTasksCompleted(data.filter((task: Todo) => task.completed).length);
+        console.log(data.filter((task: Todo) => task.completed).length);
         setDataTasks(data);
+      } else {
+        console.log('Failed to fetch user tasks');
       }
     } catch (error) {
       console.error('Error fetching user tasks:', error);
@@ -87,7 +92,6 @@ const Profile = () => {
 
       if (response.ok) {
         alert('Profile updated successfully!');
-        console.log('Profile updated successfully');
         fetchUser();
       } else {
         alert('Failed to update profile.');

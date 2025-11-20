@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
-import { useCallback, useEffect, useState, Dispatch, SetStateAction } from 'react';
+import { useCallback, useState, Dispatch, SetStateAction } from 'react';
 import {
   StyleSheet,
   Text,

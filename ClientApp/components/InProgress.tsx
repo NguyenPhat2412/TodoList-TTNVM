@@ -33,7 +33,6 @@ const InProgress = () => {
     useCallback(() => {
       if (userId) {
         setLoading(true);
-        // Fetch data from API
         const fetchData = async () => {
           try {
             const response = await fetch(`${API_URL}/api/todos/user/${userId}`);
@@ -52,6 +51,7 @@ const InProgress = () => {
     }, [userId])
   );
 
+  // Render loading state1
   if (loading) {
     return (
       <View style={styles.center}>
@@ -60,6 +60,7 @@ const InProgress = () => {
     );
   }
 
+  // Render when no tasks in progress
   if (data.length === 0) {
     return (
       <View style={styles.center}>
